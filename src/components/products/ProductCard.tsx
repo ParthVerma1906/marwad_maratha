@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 type Product = {
   id: number;
@@ -11,6 +12,7 @@ type Product = {
   image: string;
   description: string;
   ingredients: string[];
+  isPopular?: boolean;
 };
 
 type ProductCardProps = {
@@ -62,9 +64,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="relative h-full flex flex-col">
             <div className="h-[60%] relative overflow-hidden bg-muted">
               <div className="absolute inset-0 bg-gradient-to-b from-spiceYellow/40 to-turmeric/10 z-10"></div>
-              {/* Placeholder for product image */}
+              {product.isPopular && (
+                <div className="absolute top-2 left-2 z-20">
+                  <Badge variant="secondary" className="bg-saffron text-white">
+                    Best Seller
+                  </Badge>
+                </div>
+              )}
+              {/* Product image */}
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-turmeric/30 to-spiceYellow/20">
-                <div className="text-6xl">{product.category === "pickle" ? "🥒" : "🍘"}</div>
+                <div className="text-6xl">
+                  {product.category === "aachar" ? "🥒" : 
+                   product.category === "papad" ? "🍘" :
+                   product.category === "powder" ? "🌿" :
+                   product.category === "namkeen" ? "🍪" : "✨"}
+                </div>
               </div>
             </div>
 

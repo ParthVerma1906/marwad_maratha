@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -6,65 +5,113 @@ import ProductCard from "./ProductCard";
 
 // Product data
 const products = [
+  // Aachar (Pickles)
   {
     id: 1,
-    name: "Mango Pickle",
-    category: "pickle",
+    name: "Aam Aachar",
+    category: "aachar",
     spiceLevel: "medium",
     price: 299,
     image: "/src/assets/mango-pickle.jpg",
     description: "Traditional raw mango pickle with authentic Rajasthani spices.",
-    ingredients: ["Raw Mango", "Mustard Oil", "Fenugreek", "Fennel Seeds", "Red Chili", "Turmeric"],
+    ingredients: ["Raw Mango", "Mustard Oil", "Spices"],
+    isPopular: true,
   },
   {
     id: 2,
-    name: "Garlic Pickle",
-    category: "pickle",
+    name: "Lassan Aachar",
+    category: "aachar",
     spiceLevel: "hot",
     price: 249,
     image: "/src/assets/garlic-pickle.jpg",
     description: "Spicy garlic pickle made with hand-picked garlic cloves.",
-    ingredients: ["Garlic", "Mustard Oil", "Red Chili", "Asafoetida", "Cumin", "Salt"],
+    ingredients: ["Garlic", "Mustard Oil", "Spices"],
+    isPopular: true,
   },
   {
     id: 3,
-    name: "Lemon Pickle",
-    category: "pickle",
-    spiceLevel: "mild",
-    price: 279,
-    image: "/src/assets/lemon-pickle.jpg", 
-    description: "Tangy and sweet lemon pickle prepared in Maharashtrian style.",
-    ingredients: ["Lemon", "Sugar", "Salt", "Red Chili", "Mustard Seeds", "Turmeric"],
-  },
-  {
-    id: 4,
-    name: "Masala Papad",
-    category: "papad",
-    spiceLevel: "medium",
-    price: 199,
-    image: "/src/assets/masala-papad.jpg",
-    description: "Crispy urad dal papad infused with cumin and black pepper.",
-    ingredients: ["Urad Dal", "Cumin", "Black Pepper", "Salt", "Asafoetida"],
-  },
-  {
-    id: 5,
-    name: "Rice Papad",
-    category: "papad",
-    spiceLevel: "mild",
-    price: 149,
-    image: "/src/assets/rice-papad.jpg",
-    description: "Light and crispy rice papad, perfect for snacking.",
-    ingredients: ["Rice Flour", "Black Pepper", "Cumin", "Salt"],
-  },
-  {
-    id: 6,
-    name: "Mirchi Pickle",
-    category: "pickle",
+    name: "Mirch Kuta",
+    category: "aachar",
     spiceLevel: "extra-hot",
     price: 229,
     image: "/src/assets/mirchi-pickle.jpg",
-    description: "Fiery green chili pickle for spice lovers.",
-    ingredients: ["Green Chili", "Mustard Oil", "Fenugreek", "Salt", "Turmeric"],
+    description: "Fiery ground chili pickle for spice lovers.",
+    ingredients: ["Green Chili", "Spices", "Oil"],
+    isPopular: true,
+  },
+  {
+    id: 4,
+    name: "Aam Chunda",
+    category: "aachar",
+    spiceLevel: "mild",
+    price: 279,
+    image: "/src/assets/mango-pickle.jpg",
+    description: "Sweet and tangy grated mango pickle.",
+    ingredients: ["Mango", "Sugar", "Spices"],
+  },
+  // ... Additional Aachar products
+
+  // Papad
+  {
+    id: 20,
+    name: "Potato Chips",
+    category: "papad",
+    spiceLevel: "medium",
+    price: 149,
+    image: "/src/assets/masala-papad.jpg",
+    description: "Crispy hand-cut potato chips.",
+    ingredients: ["Potato", "Oil", "Salt"],
+    isPopular: true,
+  },
+  {
+    id: 21,
+    name: "Moong Lassan Papad",
+    category: "papad",
+    spiceLevel: "medium",
+    price: 199,
+    image: "/src/assets/rice-papad.jpg",
+    description: "Crispy moong dal papad with garlic flavor.",
+    ingredients: ["Moong Dal", "Garlic", "Spices"],
+  },
+  // ... Additional Papad products
+
+  // Dehydrated Powders
+  {
+    id: 30,
+    name: "Aawla Powder",
+    category: "powder",
+    spiceLevel: "none",
+    price: 199,
+    image: "/placeholder.svg",
+    description: "Pure dehydrated amla powder.",
+    ingredients: ["Amla"],
+  },
+  // ... Additional Powder products
+
+  // Namkeen
+  {
+    id: 40,
+    name: "Big Bhakarwadi",
+    category: "namkeen",
+    spiceLevel: "medium",
+    price: 249,
+    image: "/placeholder.svg",
+    description: "Traditional spiral-shaped savory snack.",
+    ingredients: ["Gram Flour", "Spices"],
+  },
+  // ... Additional Namkeen products
+
+  // Special Items
+  {
+    id: 50,
+    name: "Wheat Kurodi",
+    category: "special",
+    spiceLevel: "mild",
+    price: 179,
+    image: "/placeholder.svg",
+    description: "Traditional wheat-based crunchy snack.",
+    ingredients: ["Wheat Flour", "Spices"],
+    isPopular: true,
   },
 ];
 
@@ -83,8 +130,8 @@ const ProductShowcase = () => {
     return categoryMatch && spiceLevelMatch;
   });
 
-  const categories = ["all", "pickle", "papad"];
-  const spiceLevels = ["all", "mild", "medium", "hot", "extra-hot"];
+  const categories = ["all", "aachar", "papad", "powder", "namkeen", "special"];
+  const spiceLevels = ["all", "none", "mild", "medium", "hot", "extra-hot"];
 
   const containerVariants = {
     hidden: { opacity: 0 },
