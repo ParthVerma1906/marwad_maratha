@@ -61,7 +61,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Indian-inspired color palette
+				turmeric: '#FEC006',
+				maroon: '#850E35',
+				saffron: '#FF671F',
+				indianRed: '#CD5C5C',
+				mehendi: '#5C9735',
+				spiceYellow: '#FEF7CD',
+				terracotta: '#E2725B',
+				royalPurple: '#8B5CF6',
+				peacockBlue: '#016064',
+				bandhani: '#F1C0E8',
+				paithani: '#FFBF00'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,12 +96,60 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+                'float': {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-10px)' }
+                },
+                'spice-drift': {
+                    '0%': { transform: 'translate(0px, 0px) rotate(0deg)' },
+                    '25%': { transform: 'translate(5px, -5px) rotate(2deg)' },
+                    '50%': { transform: 'translate(0px, -10px) rotate(0deg)' },
+                    '75%': { transform: 'translate(-5px, -5px) rotate(-2deg)' },
+                    '100%': { transform: 'translate(0px, 0px) rotate(0deg)' }
+                },
+                'shimmer': {
+                    '0%': { backgroundPosition: '-200% 0' },
+                    '100%': { backgroundPosition: '200% 0' }
+                },
+                'rotate-slow': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' }
+                },
+                'scale-up-down': {
+                    '0%, 100%': { transform: 'scale(1)' },
+                    '50%': { transform: 'scale(1.1)' }
+                },
+                'fade-in-up': {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'translateY(20px)'
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'translateY(0)'
+                    }
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+                'float': 'float 3s ease-in-out infinite',
+                'spice-drift': 'spice-drift 6s ease infinite',
+                'shimmer': 'shimmer 3s linear infinite',
+                'rotate-slow': 'rotate-slow 15s linear infinite',
+                'scale-up-down': 'scale-up-down 5s ease-in-out infinite',
+                'fade-in-up': 'fade-in-up 0.7s ease-out forwards',
+			},
+            fontFamily: {
+                'spicefont': ['Poppins', 'sans-serif'],
+                'heritage': ['Cormorant Garamond', 'serif'],
+                'display': ['Playfair Display', 'serif']
+            },
+            backgroundImage: {
+                'spice-pattern': "url('/src/assets/spice-pattern.png')",
+                'fabric-texture': "url('/src/assets/fabric-texture.png')"
+            }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
