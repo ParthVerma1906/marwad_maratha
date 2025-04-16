@@ -1,21 +1,22 @@
 
-import { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 import { motion } from "framer-motion";
-import HeroScene from "./HeroScene";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 const HeroSection = () => {
+  const images = [
+    "/src/assets/mango-pickle.jpg",
+    "/src/assets/masala-papad.jpg",
+    "/src/assets/mirchi-pickle.jpg",
+    "/src/assets/rice-papad.jpg",
+  ];
+
   return (
     <section
       id="home"
       className="min-h-screen pt-16 relative overflow-hidden bg-gradient-to-br from-spiceYellow/30 via-background to-background"
     >
-      {/* Decorative elements */}
       <div className="absolute top-20 right-20 w-32 h-32 rounded-full bg-turmeric/20 blur-3xl"></div>
       <div className="absolute bottom-10 left-10 w-64 h-64 rounded-full bg-maroon/10 blur-3xl"></div>
-
-      {/* Pattern overlay */}
       <div className="absolute inset-0 bg-spice-pattern opacity-5"></div>
 
       <div className="container mx-auto grid md:grid-cols-2 gap-8 items-center min-h-[calc(100vh-4rem)] py-12">
@@ -98,14 +99,29 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} intensity={1} />
-              <Suspense fallback={null}>
-                <HeroScene />
-              </Suspense>
-              <OrbitControls enableZoom={false} />
-            </Canvas>
+            <Carousel className="w-full h-full">
+              <CarouselContent>
+                {images.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <div className="w-full h-full p-1">
+                      <motion.div
+                        className="relative w-full h-[400px] rounded-lg overflow-hidden"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <img
+                          src={image}
+                          alt={`Product ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </motion.div>
         </div>
       </div>

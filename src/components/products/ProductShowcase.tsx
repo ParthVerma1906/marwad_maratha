@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -365,17 +366,18 @@ const products = [
 
 const ProductShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [showAllProducts, setShowAllProducts] = useState(false);
   
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.1,
   });
 
-  const filteredProducts = products.filter(product => 
-    activeCategory === "all" || product.category === activeCategory
-  );
+  const popularProducts = products.filter(product => product.isPopular);
+  const displayedProducts = showAllProducts ? 
+    products.filter(product => activeCategory === "all" || product.category === activeCategory) : 
+    popularProducts;
 
-  // Updated categories list
   const categories = ["all", "aachar", "papad", "powder", "namkeen", "special"];
 
   const containerVariants = {
@@ -408,44 +410,44 @@ const ProductShowcase = () => {
           </p>
         </motion.div>
 
-        <div className="mb-10">
-          {/* Category Filter Controls */}
-          <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Category</p>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      activeCategory === category
-                        ? "bg-maroon text-white"
-                        : "bg-muted hover:bg-muted/80 text-foreground"
-                    }`}
-                  >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </button>
-                ))}
+        {showAllProducts && (
+          <div className="mb-10">
+            <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Category</p>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setActiveCategory(category)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                        activeCategory === category
+                          ? "bg-maroon text-white"
+                          : "bg-muted hover:bg-muted/80 text-foreground"
+                      }`}
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Product grid */}
-          <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </motion.div>
-        </div>
+        )}
 
         <motion.div 
-          className="text-center"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+        >
+          {displayedProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </motion.div>
+
+        <motion.div 
+          className="text-center mt-12"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.6 }}
@@ -454,8 +456,9 @@ const ProductShowcase = () => {
             className="bg-maroon hover:bg-maroon/90 text-white rounded-full py-3 px-8 font-medium inline-flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => setShowAllProducts(!showAllProducts)}
           >
-            View All Products
+            {showAllProducts ? "Show Less" : "View All Products"}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"

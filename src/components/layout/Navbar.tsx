@@ -1,23 +1,18 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Phone, Mail } from "lucide-react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -31,22 +26,55 @@ const Navbar = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container mx-auto flex items-center justify-between">
-        <motion.div
-          className="flex items-center gap-2"
-          whileHover={{ scale: 1.05 }}
-        >
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-saffron to-maroon flex items-center justify-center">
-            <span className="text-white font-heritage text-xl font-bold">M</span>
-          </div>
-          <span className="font-heritage text-xl font-bold">
-            <span className="text-maroon">Marwad</span>{" "}
-            <span className="text-saffron">Maratha</span>
-          </span>
-        </motion.div>
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+        <div className="flex items-center justify-between w-full md:w-auto">
+          <motion.div
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+          >
+            <img 
+              src="/src/assets/logo.png" 
+              alt="Marwad Maratha" 
+              className="h-12 w-auto"
+            />
+            <span className="font-heritage text-xl font-bold">
+              <span className="text-maroon">Marwad</span>{" "}
+              <span className="text-saffron">Maratha</span>
+            </span>
+          </motion.div>
+
+          <button className="md:hidden text-foreground">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="4" x2="20" y1="12" y2="12"></line>
+              <line x1="4" x2="20" y1="6" y2="6"></line>
+              <line x1="4" x2="20" y1="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div className="hidden md:flex items-center gap-6 text-sm">
+          <a href="tel:+918830257574" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+            <Phone size={16} />
+            <span>+91-8830257574</span>
+          </a>
+          <a href="mailto:durgagurhudyoggondia@gmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+            <Mail size={16} />
+            <span>durgagurhudyoggondia@gmail.com</span>
+          </a>
+        </div>
 
         <nav className="hidden md:flex items-center space-x-6">
-          {["Home", "Products", "Story", "Testimonials"].map((item) => (
+          {["Home", "Products", "About", "Contact"].map((item) => (
             <motion.a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -79,24 +107,6 @@ const Navbar = () => {
             <path d="M6 12h12m-6-6 6 6-6 6"></path>
           </svg>
         </motion.button>
-
-        <button className="md:hidden text-foreground">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="4" x2="20" y1="12" y2="12"></line>
-            <line x1="4" x2="20" y1="6" y2="6"></line>
-            <line x1="4" x2="20" y1="18" y2="18"></line>
-          </svg>
-        </button>
       </div>
     </motion.header>
   );
