@@ -1,16 +1,16 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCard from "./ProductCard";
 
-// Product data
+// Updated Product data based on provided list
 const products = [
   // Aachar (Pickles)
   {
     id: 1,
     name: "Aam Aachar",
     category: "aachar",
-    spiceLevel: "medium",
     price: 299,
     image: "/src/assets/mango-pickle.jpg",
     description: "Traditional raw mango pickle with authentic Rajasthani spices.",
@@ -21,7 +21,6 @@ const products = [
     id: 2,
     name: "Lassan Aachar",
     category: "aachar",
-    spiceLevel: "hot",
     price: 249,
     image: "/src/assets/garlic-pickle.jpg",
     description: "Spicy garlic pickle made with hand-picked garlic cloves.",
@@ -32,7 +31,6 @@ const products = [
     id: 3,
     name: "Mirch Kuta",
     category: "aachar",
-    spiceLevel: "extra-hot",
     price: 229,
     image: "/src/assets/mirchi-pickle.jpg",
     description: "Fiery ground chili pickle for spice lovers.",
@@ -41,97 +39,40 @@ const products = [
   },
   {
     id: 4,
-    name: "Aam Chunda",
-    category: "aachar",
-    spiceLevel: "mild",
-    price: 279,
-    image: "/src/assets/mango-pickle.jpg",
-    description: "Sweet and tangy grated mango pickle.",
-    ingredients: ["Mango", "Sugar", "Spices"],
-  },
-  // ... Additional Aachar products
-
-  // Papad
-  {
-    id: 20,
-    name: "Potato Chips",
-    category: "papad",
-    spiceLevel: "medium",
-    price: 149,
-    image: "/src/assets/masala-papad.jpg",
-    description: "Crispy hand-cut potato chips.",
-    ingredients: ["Potato", "Oil", "Salt"],
-    isPopular: true,
-  },
-  {
-    id: 21,
-    name: "Moong Lassan Papad",
-    category: "papad",
-    spiceLevel: "medium",
-    price: 199,
-    image: "/src/assets/rice-papad.jpg",
-    description: "Crispy moong dal papad with garlic flavor.",
-    ingredients: ["Moong Dal", "Garlic", "Spices"],
-  },
-  // ... Additional Papad products
-
-  // Dehydrated Powders
-  {
-    id: 30,
-    name: "Aawla Powder",
-    category: "powder",
-    spiceLevel: "none",
-    price: 199,
-    image: "/placeholder.svg",
-    description: "Pure dehydrated amla powder.",
-    ingredients: ["Amla"],
-  },
-  // ... Additional Powder products
-
-  // Namkeen
-  {
-    id: 40,
-    name: "Big Bhakarwadi",
-    category: "namkeen",
-    spiceLevel: "medium",
-    price: 249,
-    image: "/placeholder.svg",
-    description: "Traditional spiral-shaped savory snack.",
-    ingredients: ["Gram Flour", "Spices"],
-  },
-  // ... Additional Namkeen products
-
-  // Special Items
-  {
-    id: 50,
     name: "Wheat Kurodi",
     category: "special",
-    spiceLevel: "mild",
     price: 179,
     image: "/placeholder.svg",
     description: "Traditional wheat-based crunchy snack.",
     ingredients: ["Wheat Flour", "Spices"],
     isPopular: true,
   },
+  {
+    id: 5,
+    name: "Potato Chips",
+    category: "papad",
+    price: 149,
+    image: "/src/assets/masala-papad.jpg",
+    description: "Crispy hand-cut potato chips.",
+    ingredients: ["Potato", "Oil", "Salt"],
+    isPopular: true,
+  }
 ];
 
 const ProductShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [activeSpiceLevel, setActiveSpiceLevel] = useState<string>("all");
   
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.1,
   });
 
-  const filteredProducts = products.filter(product => {
-    const categoryMatch = activeCategory === "all" || product.category === activeCategory;
-    const spiceLevelMatch = activeSpiceLevel === "all" || product.spiceLevel === activeSpiceLevel;
-    return categoryMatch && spiceLevelMatch;
-  });
+  const filteredProducts = products.filter(product => 
+    activeCategory === "all" || product.category === activeCategory
+  );
 
-  const categories = ["all", "aachar", "papad", "powder", "namkeen", "special"];
-  const spiceLevels = ["all", "none", "mild", "medium", "hot", "extra-hot"];
+  // Updated categories without spice level
+  const categories = ["all", "aachar", "papad", "special"];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -159,12 +100,12 @@ const ProductShowcase = () => {
           <span className="text-maroon font-heritage text-lg">Handcrafted with Love</span>
           <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">Our Product Range</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Explore our collection of traditional pickles and papads, made with recipes passed down through generations.
+            Explore our collection of traditional pickles and snacks, made with recipes passed down through generations.
           </p>
         </motion.div>
 
         <div className="mb-10">
-          {/* Filter controls */}
+          {/* Category Filter Controls */}
           <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Category</p>
@@ -180,25 +121,6 @@ const ProductShowcase = () => {
                     }`}
                   >
                     {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Spice Level</p>
-              <div className="flex flex-wrap gap-2">
-                {spiceLevels.map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => setActiveSpiceLevel(level)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      activeSpiceLevel === level
-                        ? "bg-saffron text-white"
-                        : "bg-muted hover:bg-muted/80 text-foreground"
-                    }`}
-                  >
-                    {level.charAt(0).toUpperCase() + level.slice(1)}
                   </button>
                 ))}
               </div>

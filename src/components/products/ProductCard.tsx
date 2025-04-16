@@ -7,7 +7,6 @@ type Product = {
   id: number;
   name: string;
   category: string;
-  spiceLevel: string;
   price: number;
   image: string;
   description: string;
@@ -21,21 +20,6 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const [isRotated, setIsRotated] = useState(false);
-
-  const getSpiceLevelIcon = (level: string) => {
-    switch (level) {
-      case "mild":
-        return "🌶️";
-      case "medium":
-        return "🌶️🌶️";
-      case "hot":
-        return "🌶️🌶️🌶️";
-      case "extra-hot":
-        return "🌶️🌶️🌶️🌶️";
-      default:
-        return "";
-    }
-  };
 
   return (
     <motion.div
@@ -76,8 +60,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <div className="text-6xl">
                   {product.category === "aachar" ? "🥒" : 
                    product.category === "papad" ? "🍘" :
-                   product.category === "powder" ? "🌿" :
-                   product.category === "namkeen" ? "🍪" : "✨"}
+                   product.category === "special" ? "🍲" : "✨"}
                 </div>
               </div>
             </div>
@@ -89,11 +72,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   <span className="text-xs inline-block px-2 py-1 bg-saffron/10 text-saffron rounded-full">
                     {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
                   </span>
-                </div>
-                
-                <div className="mt-1 text-sm text-muted-foreground">
-                  <span className="mr-1">{getSpiceLevelIcon(product.spiceLevel)}</span>
-                  <span>{product.spiceLevel.charAt(0).toUpperCase() + product.spiceLevel.slice(1)}</span>
                 </div>
 
                 <p className="mt-2 text-sm line-clamp-2">{product.description}</p>
@@ -140,10 +118,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
         >
           <div className="p-6 flex flex-col h-full">
             <h3 className="font-heritage text-xl font-semibold mb-2">{product.name}</h3>
-            <div className="mb-2">
-              <span className="text-sm font-medium">Spice Level: </span>
-              <span className="text-sm">{getSpiceLevelIcon(product.spiceLevel)}</span>
-            </div>
 
             <div className="mb-4">
               <h4 className="text-sm font-medium mb-1">Description:</h4>
