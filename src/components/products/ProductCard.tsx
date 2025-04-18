@@ -10,7 +10,7 @@ type Product = {
   price: number;
   image: string;
   description: string;
-  ingredients: string[];
+  ingredients?: string[]; // Make ingredients optional
   isPopular?: boolean;
 };
 
@@ -127,12 +127,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <div className="mb-4 flex-1">
               <h4 className="text-sm font-medium mb-1">Ingredients:</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                {product.ingredients.map((ingredient, index) => (
-                  <li key={index} className="flex items-center gap-2">
+                {product.ingredients && product.ingredients.length > 0 ? (
+                  product.ingredients.map((ingredient, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-saffron"></span>
+                      {ingredient}
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-center gap-2">
                     <span className="w-1 h-1 rounded-full bg-saffron"></span>
-                    {ingredient}
+                    Ingredients information not available
                   </li>
-                ))}
+                )}
               </ul>
             </div>
 

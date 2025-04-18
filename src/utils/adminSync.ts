@@ -1,3 +1,4 @@
+
 // This is a simple utility to help synchronize data between the admin panel and the frontend
 
 // Product synchronization
@@ -12,8 +13,15 @@ export const syncProductData = (products) => {
 
 // Initialize with default products if not already set
 export const initializeProducts = (defaultProducts) => {
+  // Ensure all products have the required fields, including empty ingredients array if missing
+  const processedProducts = defaultProducts.map(product => ({
+    ...product,
+    // Add empty array for ingredients if it doesn't exist
+    ingredients: product.ingredients || []
+  }));
+  
   if (!localStorage.getItem("adminProducts")) {
-    localStorage.setItem("adminProducts", JSON.stringify(defaultProducts));
+    localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
   }
   return JSON.parse(localStorage.getItem("adminProducts") || "[]");
 };
@@ -51,7 +59,11 @@ export const getBusinessInfo = () => {
 // Get all products or filter by categories
 export const getProducts = (category = null) => {
   try {
-    const products = JSON.parse(localStorage.getItem("adminProducts") || "[]");
+    const products = JSON.parse(localStorage.getItem("adminProducts") || "[]").map(product => ({
+      ...product,
+      ingredients: product.ingredients || [] // Ensure ingredients is never undefined
+    }));
+    
     if (category) {
       return products.filter(p => p.category === category);
     }
@@ -65,7 +77,10 @@ export const getProducts = (category = null) => {
 // Get popular products (those marked as isPopular or a sampling of each category)
 export const getPopularProducts = (limit = 8) => {
   try {
-    const products = JSON.parse(localStorage.getItem("adminProducts") || "[]");
+    const products = JSON.parse(localStorage.getItem("adminProducts") || "[]").map(product => ({
+      ...product,
+      ingredients: product.ingredients || [] // Ensure ingredients is never undefined
+    }));
     
     // First try to get products specifically marked as popular
     const popularProducts = products.filter(p => p.isPopular);
