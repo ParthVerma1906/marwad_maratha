@@ -12,12 +12,12 @@ const StoryContent = () => {
       >
         <h2 className="text-3xl md:text-4xl font-heritage font-bold text-maroon">Our Heritage</h2>
         <p className="text-muted-foreground leading-relaxed">
-          From the heart of Gondia, we bring you authentic flavors that have been cherished across generations. 
-          Our journey is rooted in tradition, focused on preserving the authentic taste and quality of 
+          From the heart of Gondia, we bring you authentic flavors that have been crafted with care and tradition.
+          Our journey is rooted in preserving authentic tastes and quality of 
           handcrafted pickles, papads, and snacks.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Each product in our collection is carefully crafted using time-honored methods and the finest 
+          Each product in our collection is carefully prepared using time-honored methods and the finest 
           ingredients, ensuring that every bite delivers the genuine taste of traditional Indian cuisine to 
           your family's table.
         </p>
@@ -31,7 +31,7 @@ const StoryContent = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Learn More
+            Contact Us
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

@@ -1,11 +1,10 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCard from "./ProductCard";
 
-// Complete product data
-const products = [
+// Initial product data - this will be replaced with the data from the admin panel in a real app
+const initialProducts = [
   // Aachar (Pickles)
   {
     id: 1,
@@ -367,11 +366,41 @@ const products = [
 const ProductShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showAllProducts, setShowAllProducts] = useState(false);
+  const [products, setProducts] = useState(initialProducts);
   
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.1,
   });
+
+  useEffect(() => {
+    const storedProducts = localStorage.getItem("adminProducts");
+    if (storedProducts) {
+      try {
+        const parsedProducts = JSON.parse(storedProducts);
+        setProducts(parsedProducts);
+      } catch (error) {
+        console.error("Error parsing stored products", error);
+      }
+    }
+    
+    const handleProductUpdate = () => {
+      const updatedProducts = localStorage.getItem("adminProducts");
+      if (updatedProducts) {
+        try {
+          setProducts(JSON.parse(updatedProducts));
+        } catch (error) {
+          console.error("Error parsing updated products", error);
+        }
+      }
+    };
+    
+    window.addEventListener("productsUpdated", handleProductUpdate);
+    
+    return () => {
+      window.removeEventListener("productsUpdated", handleProductUpdate);
+    };
+  }, []);
 
   const popularProducts = products.filter(product => product.isPopular);
   const displayedProducts = showAllProducts ? 
