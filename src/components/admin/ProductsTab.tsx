@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Image, Upload, XCircle, Check, Pencil, Trash2 } from "lucide-react";
@@ -238,9 +239,10 @@ const ProductsTab = () => {
                           src={product.image} 
                           alt={product.name} 
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/placeholder.svg";
+                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                            const target = e.currentTarget;
+                            target.onerror = null;
+                            target.src = "/placeholder.svg";
                           }}
                         />
                       ) : (
@@ -291,9 +293,10 @@ const ProductsTab = () => {
                       src={editingProduct.image} 
                       alt="Product preview" 
                       className="w-full h-full object-contain p-2"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "/placeholder.svg";
+                      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                        const target = e.currentTarget;
+                        target.onerror = null;
+                        target.src = "/placeholder.svg";
                       }}
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity">

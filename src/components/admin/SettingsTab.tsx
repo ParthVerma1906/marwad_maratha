@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { CalendarCheck, User, Mail, Phone, Video } from "lucide-react";
 
@@ -17,10 +17,28 @@ const SettingsTab = () => {
     time: "",
     description: "",
   });
+  
+  // Load saved business info on component mount
+  useEffect(() => {
+    const savedInfo = localStorage.getItem("businessInfo");
+    if (savedInfo) {
+      try {
+        setBusinessInfo(JSON.parse(savedInfo));
+      } catch (error) {
+        console.error("Error loading business info", error);
+      }
+    }
+  }, []);
 
   const handleBusinessUpdate = (e) => {
     e.preventDefault();
-    // In a real app, this would make an API call
+    // Save business info to localStorage
+    localStorage.setItem("businessInfo", JSON.stringify(businessInfo));
+    
+    // Dispatch an event to notify other components
+    const event = new Event("businessInfoUpdated");
+    window.dispatchEvent(event);
+    
     toast({
       title: "Settings updated",
       description: "Your business information has been updated successfully.",
@@ -39,7 +57,15 @@ const SettingsTab = () => {
       return;
     }
     
-    // In a real app, this would schedule a call via an API
+    // Save the scheduled call information
+    const scheduledCalls = JSON.parse(localStorage.getItem("scheduledCalls") || "[]");
+    scheduledCalls.push({
+      ...calendarInfo,
+      id: Date.now(), // Use timestamp as ID
+      status: "pending"
+    });
+    localStorage.setItem("scheduledCalls", JSON.stringify(scheduledCalls));
+    
     toast({
       title: "Video call scheduled",
       description: `Your call has been scheduled for ${calendarInfo.date} at ${calendarInfo.time}.`,
@@ -175,6 +201,31 @@ const SettingsTab = () => {
             </button>
           </div>
         </form>
+      </div>
+      
+      <div>
+        <h3 className="text-xl font-heritage font-bold mb-4">Scheduled Calls</h3>
+        <div className="bg-muted/30 p-4 rounded-lg">
+          {JSON.parse(localStorage.getItem("scheduledCalls") || "[]").length > 0 ? (
+            <ul className="divide-y divide-muted">
+              {JSON.parse(localStorage.getItem("scheduledCalls") || "[]").map(call => (
+                <li key={call.id} className="py-3">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium">{call.date} at {call.time}</p>
+                      <p className="text-sm text-muted-foreground">{call.description}</p>
+                    </div>
+                    <span className="px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-800">
+                      {call.status}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground text-center py-4">No calls scheduled yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );
