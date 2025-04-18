@@ -16,12 +16,6 @@ const StorySection = () => {
         "Started as a family recipe sharing initiative in our hometown.",
     },
     {
-      year: "2019",
-      title: "First Local Store",
-      description:
-        "Opened our first physical store in Jaipur, bringing our products to local food lovers.",
-    },
-    {
       year: "2020",
       title: "Online Journey",
       description:

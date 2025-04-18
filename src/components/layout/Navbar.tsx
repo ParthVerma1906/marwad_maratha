@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Phone, Mail } from "lucide-react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +13,13 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <motion.header
@@ -35,7 +41,7 @@ const Navbar = () => {
             <img 
               src="/src/assets/logo.png" 
               alt="Marwad Maratha" 
-              className="h-12 w-auto"
+              className="h-12 w-auto object-contain"
             />
             <span className="font-heritage text-xl font-bold">
               <span className="text-maroon">Marwad</span>{" "}
@@ -62,32 +68,27 @@ const Navbar = () => {
           </button>
         </div>
 
-        <div className="hidden md:flex items-center gap-6 text-sm">
-          <a href="tel:+918830257574" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-            <Phone size={16} />
-            <span>+91-8830257574</span>
-          </a>
-          <a href="mailto:durgagurhudyoggondia@gmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-            <Mail size={16} />
-            <span>durgagurhudyoggondia@gmail.com</span>
-          </a>
-        </div>
-
         <nav className="hidden md:flex items-center space-x-6">
-          {["Home", "Products", "About", "Contact"].map((item) => (
+          {[
+            { name: "Home", id: "home" },
+            { name: "Products", id: "products" },
+            { name: "About", id: "story" },
+            { name: "Contact", id: "contact" }
+          ].map((item) => (
             <motion.a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="font-medium relative group"
+              key={item.name}
+              onClick={() => scrollToSection(item.id)}
+              className="font-medium relative group cursor-pointer"
               whileHover={{ scale: 1.05 }}
             >
-              {item}
+              {item.name}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-maroon transition-all group-hover:w-full"></span>
             </motion.a>
           ))}
         </nav>
 
         <motion.button
+          onClick={() => scrollToSection('products')}
           className="bg-maroon hover:bg-maroon/90 text-white rounded-full py-2 px-4 md:px-6 flex items-center gap-2"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

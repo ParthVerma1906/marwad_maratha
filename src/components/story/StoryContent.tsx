@@ -22,6 +22,10 @@ const StoryContent = () => {
         </p>
         <div className="pt-4">
           <motion.button
+            onClick={() => {
+              const element = document.getElementById('contact');
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }}
             className="bg-maroon text-white px-6 py-3 rounded-full inline-flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -50,8 +54,8 @@ const StoryContent = () => {
         className="relative aspect-square rounded-lg overflow-hidden"
       >
         <img
-          src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf"
-          alt="Traditional Indian Spices"
+          src="/src/assets/mango-pickle.jpg"
+          alt="Traditional Indian Pickles"
           className="w-full h-full object-cover rounded-lg"
         />
       </motion.div>

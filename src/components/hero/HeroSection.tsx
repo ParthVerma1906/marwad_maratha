@@ -8,6 +8,8 @@ const HeroSection = () => {
     "/src/assets/masala-papad.jpg",
     "/src/assets/mirchi-pickle.jpg",
     "/src/assets/rice-papad.jpg",
+    "/src/assets/garlic-pickle.jpg",
+    "/src/assets/lemon-pickle.jpg"
   ];
 
   return (
@@ -42,6 +44,10 @@ const HeroSection = () => {
 
             <div className="flex flex-wrap gap-4">
               <motion.button
+                onClick={() => {
+                  const element = document.getElementById('products');
+                  if (element) element.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="bg-maroon hover:bg-maroon/90 text-white rounded-full py-3 px-8 font-medium flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -62,6 +68,10 @@ const HeroSection = () => {
                 </svg>
               </motion.button>
               <motion.button
+                onClick={() => {
+                  const element = document.getElementById('story');
+                  if (element) element.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="border-2 border-saffron text-saffron hover:bg-saffron/10 rounded-full py-3 px-8 font-medium"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
