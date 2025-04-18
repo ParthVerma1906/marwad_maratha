@@ -13,12 +13,13 @@ const StoryContent = () => {
         <h2 className="text-3xl md:text-4xl font-heritage font-bold text-maroon">Our Heritage</h2>
         <p className="text-muted-foreground leading-relaxed">
           From the heart of Gondia, we bring you authentic flavors that have been cherished across generations. 
-          Our journey began with a passion for preserving traditional recipes and bringing the authentic taste 
-          of home-made pickles, papads, and snacks to every household.
+          Our journey is rooted in tradition, focused on preserving the authentic taste and quality of 
+          handcrafted pickles, papads, and snacks.
         </p>
         <p className="text-muted-foreground leading-relaxed">
           Each product in our collection is carefully crafted using time-honored methods and the finest 
-          ingredients, ensuring that every bite takes you back to the warmth of traditional Indian kitchens.
+          ingredients, ensuring that every bite delivers the genuine taste of traditional Indian cuisine to 
+          your family's table.
         </p>
         <div className="pt-4">
           <motion.button

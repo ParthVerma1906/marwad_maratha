@@ -53,9 +53,9 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-heritage font-bold text-lg mb-4">Products</h3>
+            <h3 className="font-heritage font-bold text-lg mb-4">Product Categories</h3>
             <ul className="space-y-3">
-              {["Mango Pickle", "Garlic Pickle", "Lemon Pickle", "Masala Papad", "Rice Papad"].map((item) => (
+              {["Aachar (Pickles)", "Papad", "Dehydrated Powder", "Millets", "Namkeen", "Special Items"].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-muted-foreground hover:text-saffron transition-colors">
                     {item}

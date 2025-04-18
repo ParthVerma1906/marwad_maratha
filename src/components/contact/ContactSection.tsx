@@ -98,31 +98,31 @@ const ContactSection = () => {
                     <div className="flex items-center">
                       <input
                         type="checkbox"
-                        id="mango-pickle"
+                        id="aam-aachar"
                         className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
                       />
-                      <label htmlFor="mango-pickle">
-                        Mango Pickle (₹299/jar)
+                      <label htmlFor="aam-aachar">
+                        Aam Aachar (₹299/jar)
                       </label>
                     </div>
                     <div className="flex items-center">
                       <input
                         type="checkbox"
-                        id="garlic-pickle"
+                        id="lassan-aachar"
                         className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
                       />
-                      <label htmlFor="garlic-pickle">
-                        Garlic Pickle (₹249/jar)
+                      <label htmlFor="lassan-aachar">
+                        Lassan Aachar (₹249/jar)
                       </label>
                     </div>
                     <div className="flex items-center">
                       <input
                         type="checkbox"
-                        id="masala-papad"
+                        id="hari-mirch-kuta"
                         className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
                       />
-                      <label htmlFor="masala-papad">
-                        Masala Papad (₹199/pack)
+                      <label htmlFor="hari-mirch-kuta">
+                        Hari Mirch Kuta (₹229/jar)
                       </label>
                     </div>
                     <div className="flex items-center">
@@ -132,7 +132,27 @@ const ContactSection = () => {
                         className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
                       />
                       <label htmlFor="rice-papad">
-                        Rice Papad (₹149/pack)
+                        Rice Papad (₹159/pack)
+                      </label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="potato-chips"
+                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                      />
+                      <label htmlFor="potato-chips">
+                        Potato Chips (₹149/pack)
+                      </label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="wheat-kurodi"
+                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                      />
+                      <label htmlFor="wheat-kurodi">
+                        Wheat Kurodi (₹179/pack)
                       </label>
                     </div>
                   </div>
@@ -266,7 +286,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Phone</h4>
-                    <p className="text-saffron">+91 98765 43210</p>
+                    <p className="text-saffron">+91 8830257574</p>
                   </div>
                 </div>
 
@@ -289,7 +309,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-saffron">info@marwadmaratha.com</p>
+                    <p className="text-saffron">durgagurhudyoggondia@gmail.com</p>
                   </div>
                 </div>
 
@@ -313,7 +333,7 @@ const ContactSection = () => {
                   <div>
                     <h4 className="font-medium">Address</h4>
                     <p className="text-sm text-muted-foreground">
-                      123 Spice Lane, Jaipur, Rajasthan, India
+                      Gokuldham Colony, Near Gaurav Furniture, Fulture Peth, Gondia (441601)
                     </p>
                   </div>
                 </div>
