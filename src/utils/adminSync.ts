@@ -1,13 +1,27 @@
-
 // This is a simple utility to help synchronize data between the admin panel and the frontend
 
 // Product synchronization
 export const syncProductData = (products) => {
-  // Save products to localStorage
-  localStorage.setItem("adminProducts", JSON.stringify(products));
+  // Process products to ensure they have all required fields
+  const processedProducts = products.map(product => ({
+    ...product,
+    ingredients: product.ingredients || []
+  }));
   
-  // Create and dispatch a custom event that the ProductShowcase can listen for
-  const event = new Event("productsUpdated");
+  // Save products to localStorage
+  localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
+  
+  // Create and dispatch a custom event that components can listen for
+  const event = new CustomEvent("productsUpdated", { detail: processedProducts });
+  window.dispatchEvent(event);
+};
+
+// Business information synchronization
+export const syncBusinessInfo = (info) => {
+  localStorage.setItem("businessInfo", JSON.stringify(info));
+  
+  // Create and dispatch a custom event with the updated info
+  const event = new CustomEvent("businessInfoUpdated", { detail: info });
   window.dispatchEvent(event);
 };
 
@@ -24,15 +38,6 @@ export const initializeProducts = (defaultProducts) => {
     localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
   }
   return JSON.parse(localStorage.getItem("adminProducts") || "[]");
-};
-
-// Business information synchronization
-export const syncBusinessInfo = (info) => {
-  localStorage.setItem("businessInfo", JSON.stringify(info));
-  
-  // Create and dispatch a custom event
-  const event = new Event("businessInfoUpdated");
-  window.dispatchEvent(event);
 };
 
 // Get business information

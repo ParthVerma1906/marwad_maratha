@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCard from "./ProductCard";
 
-// Initial product data - this will be replaced with the data from the admin panel in a real app
 const initialProducts = [
   // Aachar (Pickles)
   {
@@ -433,7 +432,7 @@ const ProductShowcase = () => {
           transition={{ duration: 0.7 }}
         >
           <span className="text-maroon font-heritage text-lg">Handcrafted with Love</span>
-          <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">Our Product Range</h2>
+          <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">Most Preferred Products</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Explore our collection of traditional pickles and snacks, made with recipes passed down through generations.
           </p>
