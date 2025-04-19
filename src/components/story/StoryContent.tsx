@@ -55,7 +55,7 @@ const StoryContent = () => {
         className="relative aspect-square rounded-lg overflow-hidden"
       >
         <img
-          src="/src/assets/mango-pickle.jpg"
+          src="/images/mango-pickle.jpg"
           alt="Traditional Indian Pickles"
           className="w-full h-full object-cover rounded-lg"
         />

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -73,7 +72,7 @@ const Navbar = () => {
               whileHover={{ scale: 1.05 }}
             >
               <img 
-                src="/src/assets/logo.png" 
+                src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
                 alt="Marwad Maratha Logo"
                 className="h-12 w-auto object-contain"
                 onError={(e) => {

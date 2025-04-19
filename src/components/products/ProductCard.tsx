@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { getImageUrl } from "@/utils/imageAssets";
 
 interface ProductProps {
   product: {
@@ -31,6 +32,11 @@ const ProductCard = ({ product }: ProductProps) => {
     addToCart(product, 1);
   };
 
+  // Handle image paths appropriately
+  const imageUrl = product.image.startsWith('/src/assets/') 
+    ? `/images/${product.image.split('/').pop()}` 
+    : product.image;
+
   return (
     <motion.div
       className="relative group"
@@ -41,13 +47,14 @@ const ProductCard = ({ product }: ProductProps) => {
         {/* Product Image */}
         <div className="h-48 overflow-hidden relative">
           <img
-            src={product.image}
+            src={imageUrl}
             alt={product.name}
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
             onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
               const target = e.currentTarget;
               target.onerror = null;
               target.src = "/placeholder.svg";
+              console.log(`Image failed to load: ${imageUrl}, falling back to placeholder`);
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-start p-4">

@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Upload } from "lucide-react";
 import { Product, ProductFormData } from "./types/product";
+import { getImageUrl } from "@/utils/imageAssets";
 
 interface ProductFormProps {
   product?: Product;
@@ -27,11 +29,24 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         const imageUrl = URL.createObjectURL(file);
+        // Store as a blob URL temporarily - in a real app, you'd upload this to a server
         setFormData({...formData, image: imageUrl});
       }
     };
     input.click();
   };
+
+  // Function to handle form submission with proper image processing
+  const handleSave = () => {
+    // In a real application, we would upload the image to a server here
+    // For now, we'll just pass the data to the parent component
+    onSave(formData);
+  };
+
+  // Fix image preview URL if it's a src/assets path
+  const imagePreviewUrl = formData.image.startsWith('/src/assets/') 
+    ? `/images/${formData.image.split('/').pop()}` 
+    : formData.image;
 
   return (
     <div className="bg-muted/30 p-4 rounded-lg border border-muted">
@@ -45,9 +60,15 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
             {formData.image && formData.image !== '/placeholder.svg' ? (
               <div className="relative w-full h-full">
                 <img 
-                  src={formData.image} 
+                  src={imagePreviewUrl} 
                   alt="Product preview" 
-                  className="w-full h-full object-contain p-2" 
+                  className="w-full h-full object-contain p-2"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    console.error("Product image failed to load:", target.src);
+                    target.onerror = null;
+                    target.src = '/placeholder.svg';
+                  }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity">
                   <Upload size={24} className="text-white" />

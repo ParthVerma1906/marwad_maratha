@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCard from "./ProductCard";
+import { getImageUrl } from "@/utils/imageAssets";
 
 const initialProducts = [
   // Aachar (Pickles)
@@ -10,7 +11,7 @@ const initialProducts = [
     name: "Aam Aachar",
     category: "aachar",
     price: 299,
-    image: "/src/assets/mango-pickle.jpg",
+    image: "/images/mango-pickle.jpg",
     description: "Traditional raw mango pickle with authentic Rajasthani spices.",
     ingredients: ["Raw Mango", "Mustard Oil", "Spices"],
     isPopular: true,
@@ -128,7 +129,7 @@ const initialProducts = [
     name: "Hari Mirch Kuta",
     category: "aachar",
     price: 229,
-    image: "/src/assets/mirchi-pickle.jpg",
+    image: "/images/mirchi-pickle.jpg",
     description: "Ground green chili pickle.",
     ingredients: ["Green Chilies", "Spices", "Oil"],
     isPopular: true,
@@ -156,7 +157,7 @@ const initialProducts = [
     name: "Lassan Aachar",
     category: "aachar",
     price: 249,
-    image: "/src/assets/garlic-pickle.jpg",
+    image: "/images/garlic-pickle.jpg",
     description: "Spicy garlic pickle.",
     ingredients: ["Garlic", "Oil", "Spices"],
     isPopular: true,
@@ -213,7 +214,7 @@ const initialProducts = [
     name: "Rice Papad",
     category: "papad",
     price: 159,
-    image: "/src/assets/rice-papad.jpg",
+    image: "/images/rice-papad.jpg",
     description: "Traditional rice papad.",
     ingredients: ["Rice Flour", "Spices"],
   },
@@ -222,7 +223,7 @@ const initialProducts = [
     name: "Potato Chips",
     category: "papad",
     price: 149,
-    image: "/src/assets/masala-papad.jpg",
+    image: "/images/masala-papad.jpg",
     description: "Crispy hand-cut potato chips.",
     ingredients: ["Potato", "Oil", "Salt"],
     isPopular: true,
@@ -377,7 +378,13 @@ const ProductShowcase = () => {
     if (storedProducts) {
       try {
         const parsedProducts = JSON.parse(storedProducts);
-        setProducts(parsedProducts);
+        const productsWithFixedImagePaths = parsedProducts.map((product: any) => ({
+          ...product,
+          image: product.image.startsWith('/src/assets/') ? 
+            `/images/${product.image.split('/').pop()}` : 
+            product.image
+        }));
+        setProducts(productsWithFixedImagePaths);
       } catch (error) {
         console.error("Error parsing stored products", error);
       }
@@ -387,7 +394,14 @@ const ProductShowcase = () => {
       const updatedProducts = localStorage.getItem("adminProducts");
       if (updatedProducts) {
         try {
-          setProducts(JSON.parse(updatedProducts));
+          const parsedProducts = JSON.parse(updatedProducts);
+          const productsWithFixedImagePaths = parsedProducts.map((product: any) => ({
+            ...product,
+            image: product.image.startsWith('/src/assets/') ? 
+              `/images/${product.image.split('/').pop()}` : 
+              product.image
+          }));
+          setProducts(productsWithFixedImagePaths);
         } catch (error) {
           console.error("Error parsing updated products", error);
         }

@@ -4,12 +4,12 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 
 const HeroSection = () => {
   const images = [
-    "/src/assets/mango-pickle.jpg",
-    "/src/assets/masala-papad.jpg",
-    "/src/assets/mirchi-pickle.jpg",
-    "/src/assets/rice-papad.jpg",
-    "/src/assets/garlic-pickle.jpg",
-    "/src/assets/lemon-pickle.jpg"
+    "/images/mango-pickle.jpg",
+    "/images/masala-papad.jpg",
+    "/images/mirchi-pickle.jpg",
+    "/images/rice-papad.jpg",
+    "/images/garlic-pickle.jpg",
+    "/images/lemon-pickle.jpg"
   ];
 
   return (
