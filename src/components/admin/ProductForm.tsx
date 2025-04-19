@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { Upload } from "lucide-react";
 import { Product, ProductFormData } from "./types/product";
 

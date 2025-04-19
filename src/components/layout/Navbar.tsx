@@ -74,13 +74,13 @@ const Navbar = () => {
             >
               <img 
                 src="/src/assets/logo.png" 
-                alt="Marwad Maratha"
+                alt="Marwad Maratha Logo"
                 className="h-12 w-auto object-contain"
                 onError={(e) => {
-                  console.error("Logo failed to load");
-                  const target = e.currentTarget;
+                  const target = e.target as HTMLImageElement;
+                  console.error("Logo failed to load:", target.src);
                   target.onerror = null;
-                  target.style.display = 'none';
+                  target.src = '/placeholder.svg';
                 }}
               />
               <span className="font-heritage text-xl font-bold">
