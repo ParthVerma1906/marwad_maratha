@@ -3,11 +3,15 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
 import AdminPanel from "../admin/AdminPanel";
+import ShoppingCart from "../cart/ShoppingCart";
+import { useCart } from "@/hooks/useCart";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const { cartItemsCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +46,12 @@ const Navbar = () => {
 
   const handleCloseAdminPanel = () => {
     setShowAdminPanel(false);
+    // Explicitly set adminLoggedIn to false in localStorage to prevent auto-open
+    localStorage.setItem("adminLoggedIn", "false");
+  };
+
+  const toggleCart = () => {
+    setShowCart(prev => !prev);
   };
 
   return (
@@ -139,6 +149,34 @@ const Navbar = () => {
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </motion.button>
+
+            <motion.button
+              onClick={toggleCart}
+              className="text-gray-700 hover:text-maroon p-2 rounded-full relative"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+              </svg>
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-maroon text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartItemsCount}
+                </span>
+              )}
+            </motion.button>
             
             <motion.button
               onClick={() => scrollToSection('contact')}
@@ -167,6 +205,7 @@ const Navbar = () => {
 
       {showAdminLogin && <AdminLogin onLoginSuccess={handleLoginSuccess} />}
       {showAdminPanel && <AdminPanel onClose={handleCloseAdminPanel} />}
+      {showCart && <ShoppingCart onClose={toggleCart} />}
     </>
   );
 };

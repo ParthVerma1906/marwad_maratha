@@ -14,7 +14,7 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
   const { toast } = useToast();
 
   const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn");
+    localStorage.setItem("adminLoggedIn", "false");
     toast({
       title: "Logged out",
       description: "You have been logged out successfully.",

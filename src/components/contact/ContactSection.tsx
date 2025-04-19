@@ -1,12 +1,61 @@
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/components/ui/use-toast";
 
 const ContactSection = () => {
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.1,
   });
+
+  const { cartItems, clearCart } = useCart();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    address: ""
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // In a real app, this would submit to a backend
+    console.log("Order submitted:", {
+      customer: formData,
+      items: cartItems
+    });
+    
+    toast({
+      title: "Order Placed Successfully!",
+      description: "Thank you for your order. We will contact you shortly.",
+    });
+    
+    setSubmitted(true);
+    clearCart();
+    setFormData({
+      name: "",
+      phone: "",
+      email: "",
+      address: ""
+    });
+    
+    // Reset submitted state after a delay
+    setTimeout(() => {
+      setSubmitted(false);
+    }, 5000);
+  };
 
   return (
     <section
@@ -27,7 +76,7 @@ const ContactSection = () => {
         >
           <span className="text-maroon font-heritage text-lg">Get in Touch</span>
           <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">
-            Order Now
+            Most Preferred Products
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Bring the authentic taste of traditional pickles and papads to your
@@ -46,7 +95,7 @@ const ContactSection = () => {
               <h3 className="text-xl font-heritage font-bold mb-6">
                 Quick Order Form
               </h3>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">
@@ -54,8 +103,12 @@ const ContactSection = () => {
                     </label>
                     <input
                       type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
                       placeholder="Your name"
+                      required
                     />
                   </div>
                   <div>
@@ -64,8 +117,12 @@ const ContactSection = () => {
                     </label>
                     <input
                       type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
                       className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
                       placeholder="Your phone number"
+                      required
                     />
                   </div>
                 </div>
@@ -74,6 +131,9 @@ const ContactSection = () => {
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
                     placeholder="Your email address"
                   />
@@ -84,9 +144,13 @@ const ContactSection = () => {
                     Delivery Address
                   </label>
                   <textarea
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
                     className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
                     rows={3}
                     placeholder="Your full address"
+                    required
                   ></textarea>
                 </div>
 
@@ -94,68 +158,83 @@ const ContactSection = () => {
                   <label className="block text-sm font-medium mb-1">
                     Products
                   </label>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="aam-aachar"
-                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
-                      />
-                      <label htmlFor="aam-aachar">
-                        Aam Aachar (₹299/jar)
-                      </label>
+                  {cartItems.length > 0 ? (
+                    <div className="space-y-2 max-h-48 overflow-y-auto border border-muted rounded-lg p-3">
+                      {cartItems.map(item => (
+                        <div key={item.id} className="flex justify-between items-center text-sm border-b pb-1">
+                          <span>{item.name} x {item.quantity}</span>
+                          <span>₹{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                      <div className="pt-2 font-medium flex justify-between">
+                        <span>Total:</span>
+                        <span>₹{cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="lassan-aachar"
-                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
-                      />
-                      <label htmlFor="lassan-aachar">
-                        Lassan Aachar (₹249/jar)
-                      </label>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="aam-aachar"
+                          className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                        />
+                        <label htmlFor="aam-aachar">
+                          Aam Aachar (₹299/jar)
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="lassan-aachar"
+                          className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                        />
+                        <label htmlFor="lassan-aachar">
+                          Lassan Aachar (₹249/jar)
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="hari-mirch-kuta"
+                          className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                        />
+                        <label htmlFor="hari-mirch-kuta">
+                          Hari Mirch Kuta (₹229/jar)
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="rice-papad"
+                          className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                        />
+                        <label htmlFor="rice-papad">
+                          Rice Papad (₹159/pack)
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="potato-chips"
+                          className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                        />
+                        <label htmlFor="potato-chips">
+                          Potato Chips (₹149/pack)
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="wheat-kurodi"
+                          className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
+                        />
+                        <label htmlFor="wheat-kurodi">
+                          Wheat Kurodi (₹179/pack)
+                        </label>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="hari-mirch-kuta"
-                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
-                      />
-                      <label htmlFor="hari-mirch-kuta">
-                        Hari Mirch Kuta (₹229/jar)
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="rice-papad"
-                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
-                      />
-                      <label htmlFor="rice-papad">
-                        Rice Papad (₹159/pack)
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="potato-chips"
-                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
-                      />
-                      <label htmlFor="potato-chips">
-                        Potato Chips (₹149/pack)
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="wheat-kurodi"
-                        className="mr-2 h-4 w-4 text-maroon rounded focus:ring-maroon"
-                      />
-                      <label htmlFor="wheat-kurodi">
-                        Wheat Kurodi (₹179/pack)
-                      </label>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 <motion.button
@@ -163,8 +242,9 @@ const ContactSection = () => {
                   className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full py-3 font-medium"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  disabled={submitted}
                 >
-                  Place Order
+                  {submitted ? "Order Placed!" : "Place Order"}
                 </motion.button>
               </form>
             </div>
