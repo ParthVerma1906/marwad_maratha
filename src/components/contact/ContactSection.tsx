@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -76,27 +75,26 @@ const ContactSection = () => {
         >
           <span className="text-maroon font-heritage text-lg">Get in Touch</span>
           <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">
-            Most Preferred Products
+            Quick Order Form
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Bring the authentic taste of traditional pickles and papads to your
-            kitchen with our easy ordering system.
+            Place your order easily with our simple form. We'll contact you shortly!
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <motion.div
-            className="bg-white rounded-xl shadow-lg overflow-hidden indian-border"
+            className="bg-white rounded-xl shadow-lg overflow-hidden indian-border order-2 md:order-1"
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <div className="p-6 md:p-8">
+            <div className="p-4 md:p-8">
               <h3 className="text-xl font-heritage font-bold mb-6">
-                Quick Order Form
+                Order Details
               </h3>
               <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium mb-1">
                       Name
@@ -106,7 +104,7 @@ const ContactSection = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
+                      className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon text-base"
                       placeholder="Your name"
                       required
                     />
@@ -120,7 +118,7 @@ const ContactSection = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
+                      className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon text-base"
                       placeholder="Your phone number"
                       required
                     />
@@ -134,7 +132,7 @@ const ContactSection = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
+                    className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon text-base"
                     placeholder="Your email address"
                   />
                 </div>
@@ -147,7 +145,7 @@ const ContactSection = () => {
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon"
+                    className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon text-base"
                     rows={3}
                     placeholder="Your full address"
                     required
@@ -239,7 +237,7 @@ const ContactSection = () => {
 
                 <motion.button
                   type="submit"
-                  className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full py-3 font-medium"
+                  className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full py-4 font-medium text-lg"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   disabled={submitted}
@@ -251,7 +249,7 @@ const ContactSection = () => {
           </motion.div>
 
           <motion.div
-            className="flex flex-col space-y-6"
+            className="flex flex-col space-y-6 order-1 md:order-2"
             initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
             transition={{ duration: 0.7, delay: 0.4 }}
