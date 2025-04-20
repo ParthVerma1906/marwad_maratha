@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -10,6 +11,27 @@ const BUSINESS_PHONE = "+91 8830257574";
 const PAYMENT_UPI_ID = "durgagurhudyog@oksbi";
 const PAYMENT_UPI_LINK = "upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR";
 const PAYMENT_CARD_LINK = "https://paytm.me/a-Paylink-Dummy"; // Example/paytm link as placeholder, replace with your own
+
+const paymentOptions = [
+  {
+    id: "upi",
+    label: "UPI / QR Code",
+    description: "Pay via UPI app or scan the QR code. Order is confirmed after payment.",
+    value: "upi"
+  },
+  {
+    id: "card",
+    label: "Credit / Debit Card",
+    description: "Pay using credit or debit card. Order is confirmed after payment.",
+    value: "card"
+  },
+  {
+    id: "cod",
+    label: "Cash on Delivery (COD)",
+    description: "Pay with cash when you receive your order. Order is confirmed instantly.",
+    value: "cod"
+  }
+];
 
 const ContactSection = () => {
   const { ref, inView } = useInView({
@@ -25,7 +47,10 @@ const ContactSection = () => {
     email: "",
     address: ""
   });
+  const [paymentMode, setPaymentMode] = useState("upi");
+  const [paymentDone, setPaymentDone] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -34,24 +59,45 @@ const ContactSection = () => {
     });
   };
 
+  // Simulate payment redirection/action for demo purposes
+  const handlePayment = () => {
+    if (paymentMode === "upi") {
+      window.open(PAYMENT_UPI_LINK, "_blank", "noopener");
+    } else if (paymentMode === "card") {
+      window.open(PAYMENT_CARD_LINK, "_blank", "noopener");
+    }
+    // For demo: ask for payment confirmation
+    setTimeout(() => setPaymentDone(true), 500);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Prepare order payload for backend
+    if (paymentMode !== "cod" && !paymentDone) {
+      toast({
+        title: "Complete Payment",
+        description: "Please complete payment before placing your order.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setProcessing(true);
+
+    // Prepare order payload
     const orderPayload = {
       customer: { ...formData },
       items: cartItems,
       amount: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
       submittedAt: new Date().toISOString(),
+      paymentMode,
+      paymentDone: paymentMode === "cod" ? false : true
     };
 
-    // Send order notification via Edge Function
     try {
       await fetch("https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/send-business-order-notification", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderPayload),
       });
     } catch (err) {
@@ -64,30 +110,19 @@ const ContactSection = () => {
     });
 
     setSubmitted(true);
+    setProcessing(false);
     clearCart();
-    setFormData({
-      name: "",
-      phone: "",
-      email: "",
-      address: ""
-    });
+    setFormData({ name: "", phone: "", email: "", address: "" });
+    setPaymentDone(false);
 
-    // Reset submitted state after a delay
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
+    setTimeout(() => setSubmitted(false), 5000);
   };
 
   return (
-    <section
-      id="contact"
-      ref={ref}
-      className="py-14 md:py-24 relative overflow-hidden"
-    >
+    <section id="contact" ref={ref} className="py-14 md:py-24 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 rounded-full bg-turmeric/10 blur-3xl -z-10"></div>
       <div className="absolute bottom-0 right-0 w-40 h-40 md:w-64 md:h-64 rounded-full bg-maroon/5 blur-3xl -z-10"></div>
       <div className="absolute inset-0 bg-spice-pattern opacity-5 -z-10"></div>
-
       <div className="container mx-auto px-2 md:px-4">
         <motion.div
           className="text-center mb-10 md:mb-12"
@@ -261,14 +296,131 @@ const ContactSection = () => {
                     </div>
                   )}
                 </div>
+
+                {/* Payment Options */}
+                <div className="mt-6">
+                  <label className="block text-sm font-medium mb-2">
+                    Choose Payment Option <span className="text-xs text-muted-foreground">(Order confirmation depends on selected method.)</span>
+                  </label>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {paymentOptions.map(option => (
+                      <label
+                        key={option.id}
+                        className={`cursor-pointer flex flex-col border rounded-lg p-4 transition ${
+                          paymentMode === option.value
+                            ? "border-maroon bg-maroon/5 shadow"
+                            : "border-muted hover:bg-muted/30"
+                        }`}
+                      >
+                        <span className="font-semibold">{option.label}</span>
+                        <span className="text-xs text-muted-foreground mt-1">{option.description}</span>
+                        <input
+                          type="radio"
+                          value={option.value}
+                          onChange={() => { setPaymentMode(option.value); setPaymentDone(false); }}
+                          checked={paymentMode === option.value}
+                          className="mt-3 mr-2"
+                          name="paymentMode"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                  {/* Dynamic payment action/notice */}
+                  <div className="mt-4">
+                    {paymentMode === "upi" && (
+                      <div>
+                        <div className="flex flex-col items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={handlePayment}
+                            className="bg-maroon hover:bg-maroon/90 text-white rounded px-5 py-2 font-semibold mb-2"
+                          >
+                            Pay via UPI Link / Scan QR
+                          </button>
+                          <div className="text-xs mb-2">
+                            <span className="font-semibold">UPI ID:</span>{" "}
+                            <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">
+                              {PAYMENT_UPI_ID}
+                            </span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <span className="font-semibold mb-1">Or scan QR:</span>
+                            <img
+                              src={`https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=${encodeURIComponent(PAYMENT_UPI_LINK)}`}
+                              alt="Scan to pay UPI QR"
+                              className="w-32 h-32 object-contain"
+                            />
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-2 text-center">
+                            After paying, click below to confirm payment.<br />
+                            <button
+                              type="button"
+                              className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                              onClick={() => setPaymentDone(true)}
+                              disabled={paymentDone}
+                            >
+                              {paymentDone ? "Payment Confirmed" : "I have paid"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {paymentMode === "card" && (
+                      <div className="flex flex-col items-start gap-2">
+                        <button
+                          type="button"
+                          onClick={handlePayment}
+                          className="bg-saffron hover:bg-maroon/90 hover:text-white text-maroon rounded px-4 py-2 font-semibold mt-1 mb-2"
+                        >
+                          Pay Now via Card/Link
+                        </button>
+                        <div className="text-xs text-muted-foreground text-left">
+                          Card payment is redirected to a secure Paytm link.<br />
+                          After paying, click to confirm payment.<br />
+                          <button
+                            type="button"
+                            className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                            onClick={() => setPaymentDone(true)}
+                            disabled={paymentDone}
+                          >
+                            {paymentDone ? "Payment Confirmed" : "I have paid"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {paymentMode === "cod" && (
+                      <div className="text-green-700 text-sm my-2">
+                        Order will be confirmed instantly.<br />
+                        You pay with cash when you receive your order.
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <motion.button
                   type="submit"
-                  className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full py-4 font-medium text-lg"
-                  whileHover={{ scale: 1.02 }}
+                  className={`w-full rounded-full py-4 font-medium text-lg ${
+                    paymentMode !== "cod" && !paymentDone
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-maroon hover:bg-maroon/90 text-white"
+                  }`}
+                  whileHover={{ scale: paymentMode !== "cod" && !paymentDone ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  disabled={submitted}
+                  disabled={
+                    submitted ||
+                    processing ||
+                    (paymentMode !== "cod" && !paymentDone)
+                  }
                 >
-                  {submitted ? "Order Placed!" : "Place Order"}
+                  {processing
+                    ? "Processing..."
+                    : submitted
+                    ? "Order Placed!"
+                    : paymentMode === "cod"
+                    ? "Place Order"
+                    : paymentDone
+                    ? "Place Order"
+                    : "Complete Payment to Place Order"}
                 </motion.button>
                 {submitted && (
                   <div className="mt-3 text-xs text-green-700 bg-green-100 border border-green-200 px-3 py-2 rounded-lg">
@@ -494,3 +646,4 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
+
