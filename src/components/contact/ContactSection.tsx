@@ -4,6 +4,9 @@ import { useInView } from "react-intersection-observer";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/components/ui/use-toast";
 
+const BUSINESS_EMAIL = "durgagurhudyoggondia@gmail.com";
+const BUSINESS_PHONE = "+91 8830257574";
+
 const ContactSection = () => {
   const { ref, inView } = useInView({
     triggerOnce: false,
@@ -27,20 +30,35 @@ const ContactSection = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // In a real app, this would submit to a backend
-    console.log("Order submitted:", {
-      customer: formData,
-      items: cartItems
-    });
-    
+
+    // Prepare order payload for backend
+    const orderPayload = {
+      customer: { ...formData },
+      items: cartItems,
+      amount: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+      submittedAt: new Date().toISOString(),
+    };
+
+    // Send order notification via Edge Function
+    try {
+      await fetch("https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/send-business-order-notification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderPayload),
+      });
+    } catch (err) {
+      console.error("Failed to notify business owner:", err);
+    }
+
     toast({
       title: "Order Placed Successfully!",
       description: "Thank you for your order. We will contact you shortly.",
     });
-    
+
     setSubmitted(true);
     clearCart();
     setFormData({
@@ -49,7 +67,7 @@ const ContactSection = () => {
       email: "",
       address: ""
     });
-    
+
     // Reset submitted state after a delay
     setTimeout(() => {
       setSubmitted(false);
@@ -263,20 +281,26 @@ const ContactSection = () => {
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit">
+            <motion.div
+              className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.7, delay: 0.6 }}
+            >
               <h3 className="text-xl font-heritage font-bold mb-4">
                 Payment Options
               </h3>
               <div className="rounded bg-maroon/10 text-maroon px-2 py-1 text-xs md:text-sm mb-4 border border-maroon/20">
-                All payments are arranged after we contact you and confirm your order. No direct online payments are made through this form.
+                All payments are arranged after we contact you. You can use the preferred payment link or QR. No direct online payments are made through this form.
               </div>
-              <div className="space-y-3 md:space-y-4">
-                <details className="rounded border border-maroon/40 bg-saffron/5 py-3 px-3 group">
+
+              <div className="mb-4">
+                <details className="rounded border border-maroon/40 bg-saffron/5 py-3 px-3 group" open>
                   <summary className="cursor-pointer font-medium flex items-center gap-2 text-maroon">
                     <span>
                       <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M6 8h.01"/><path d="M6 16h.01"/><path d="M16 8h.01"/><path d="M8 18v.01"/><path d="M8 6v.01"/><path d="M18 8v.01"/><path d="M8 16v.01"/><path d="M16 16v.01"/><path d="M18 16v.01"/></svg>
                     </span>
-                    Pay via UPI (recommended)
+                    Pay via UPI / Payment Link / QR
                   </summary>
                   <div className="mt-2 space-y-2 text-sm text-maroon">
                     <div>
@@ -284,21 +308,19 @@ const ContactSection = () => {
                       <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">durgagurhudyog@oksbi</span>
                     </div>
                     <div>
-                      <span className="font-semibold">Payment Link:</span>{" "}
-                      <a 
-                        className="underline text-saffron hover:text-maroon"
+                      <a
+                        className="bg-saffron/90 hover:bg-maroon/90 hover:text-white transition rounded px-3 py-1 text-maroon font-medium"
                         href="upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR"
                         target="_blank"
                         rel="noopener"
                       >
-                        Click to Pay via UPI
+                        Pay Now via UPI link
                       </a>
                     </div>
-                    <div className="flex items-center gap-4 mt-2">
+                    <div className="flex items-center gap-4">
                       <div>
                         <span className="font-semibold">Scan UPI QR:</span>
                         <div className="mt-1 border border-saffron/30 rounded p-2 bg-white shadow">
-                          {/* Use any online QR for now; let user replace this image if desired */}
                           <img
                             src="https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR"
                             alt="Scan to pay UPI QR"
@@ -308,91 +330,48 @@ const ContactSection = () => {
                       </div>
                     </div>
                     <div className="mt-2 text-xs text-muted-foreground">
-                      After payment, please keep your transaction ID ready; payment will be confirmed by phone.
+                      After completing your payment, keep your transaction ID. It will be confirmed by phone or WhatsApp.
                     </div>
                   </div>
                 </details>
+              </div>
 
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect width="20" height="14" x="2" y="5" rx="2" />
-                      <line x1="2" x2="22" y1="10" y2="10" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Credit/Debit Cards</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">
-                      Secure payment via all major cards, coordinated after order confirmation.
-                    </p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                    <line x1="2" x2="22" y1="10" y2="10" />
+                  </svg>
                 </div>
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                      <path d="M3 6h18" />
-                      <path d="M16 10a4 4 0 0 1-8 0" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Cash on Delivery</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">
-                      Pay when your order arrives. Option can be confirmed by phone.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="18" cy="6" r="3" />
-                      <circle cx="6" cy="18" r="3" />
-                      <path d="M18 9v12" />
-                      <path d="M6 15V3" />
-                      <path d="M9 6H3" />
-                      <path d="M21 18h-6" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">UPI</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">
-                      Pay via Google Pay, PhonePe, or Paytm (instructions provided after we connect).
-                    </p>
-                  </div>
+                <div>
+                  <h4 className="font-medium">Credit/Debit Cards</h4>
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Card payment link will be shared on WhatsApp or email after order confirmation.
+                  </p>
                 </div>
               </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit">
+              <div className="flex items-center gap-4 mt-4">
+                <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <path d="M3 6h18" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-medium">Cash on Delivery</h4>
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Available for local deliveries. Confirm with our team after placing the order.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.7, delay: 0.8 }}
+            >
               <h3 className="text-xl font-heritage font-bold mb-4">
                 Connect With Us
               </h3>
@@ -489,7 +468,7 @@ const ContactSection = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

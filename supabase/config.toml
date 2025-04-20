@@ -1,1 +1,5 @@
+
 project_id = "bbjtukueneekrzuieuxw"
+
+[functions.send-business-order-notification]
+verify_jwt = false
