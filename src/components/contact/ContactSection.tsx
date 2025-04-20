@@ -60,15 +60,15 @@ const ContactSection = () => {
     <section
       id="contact"
       ref={ref}
-      className="py-16 md:py-24 relative overflow-hidden"
+      className="py-14 md:py-24 relative overflow-hidden"
     >
-      <div className="absolute top-0 left-0 w-96 h-96 rounded-full bg-turmeric/10 blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-maroon/5 blur-3xl -z-10"></div>
+      <div className="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 rounded-full bg-turmeric/10 blur-3xl -z-10"></div>
+      <div className="absolute bottom-0 right-0 w-40 h-40 md:w-64 md:h-64 rounded-full bg-maroon/5 blur-3xl -z-10"></div>
       <div className="absolute inset-0 bg-spice-pattern opacity-5 -z-10"></div>
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 md:px-4">
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-10 md:mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.7 }}
@@ -82,19 +82,26 @@ const ContactSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
           <motion.div
             className="bg-white rounded-xl shadow-lg overflow-hidden indian-border order-2 md:order-1"
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <div className="p-4 md:p-8">
+            <div className="p-3 md:p-8">
+              <div className="mb-4">
+                <div className="rounded bg-saffron/10 border border-saffron px-2 py-1 text-xs md:text-sm text-maroon font-medium">
+                  <span>
+                    This is a demo order form and does <b>not</b> place an actual order. Your details are only shared for follow-up; no payment will be charged now.
+                  </span>
+                </div>
+              </div>
               <h3 className="text-xl font-heritage font-bold mb-6">
                 Order Details
               </h3>
               <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                   <div>
                     <label className="block text-sm font-medium mb-1">
                       Name
@@ -124,7 +131,6 @@ const ContactSection = () => {
                     />
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input
@@ -136,7 +142,6 @@ const ContactSection = () => {
                     placeholder="Your email address"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium mb-1">
                     Delivery Address
@@ -154,7 +159,7 @@ const ContactSection = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Products
+                    Most Preferred Products <span className="text-xs text-muted-foreground">(select or review your selection below)</span>
                   </label>
                   {cartItems.length > 0 ? (
                     <div className="space-y-2 max-h-48 overflow-y-auto border border-muted rounded-lg p-3">
@@ -234,7 +239,6 @@ const ContactSection = () => {
                     </div>
                   )}
                 </div>
-
                 <motion.button
                   type="submit"
                   className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full py-4 font-medium text-lg"
@@ -244,23 +248,31 @@ const ContactSection = () => {
                 >
                   {submitted ? "Order Placed!" : "Place Order"}
                 </motion.button>
+                {submitted && (
+                  <div className="mt-3 text-xs text-green-700 bg-green-100 border border-green-200 px-3 py-2 rounded-lg">
+                    Your order was recorded in this browser only. We will contact you via the details provided. No payment has been processed online. <b>Orders are not recorded online or sent to the shop automatically!</b>
+                  </div>
+                )}
               </form>
             </div>
           </motion.div>
 
           <motion.div
-            className="flex flex-col space-y-6 order-1 md:order-2"
+            className="flex flex-col space-y-4 md:space-y-6 order-1 md:order-2"
             initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-8 h-fit">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit">
               <h3 className="text-xl font-heritage font-bold mb-4">
                 Payment Options
               </h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+              <div className="rounded bg-maroon/10 text-maroon px-2 py-1 text-xs md:text-sm mb-4 border border-maroon/20">
+                All payments are arranged after we contact you and confirm your order. No direct online payments are made through this form.
+              </div>
+              <div className="space-y-3 md:space-y-4">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -278,14 +290,13 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Credit/Debit Cards</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Secure payment via all major cards
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      Secure payment via all major cards, coordinated after order confirmation.
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -304,14 +315,13 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Cash on Delivery</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Pay when your order arrives
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      Pay when your order arrives. Option can be confirmed by phone.
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -333,21 +343,20 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">UPI</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Pay via Google Pay, PhonePe, or Paytm
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      Pay via Google Pay, PhonePe, or Paytm (instructions provided after we connect).
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-8 h-fit">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit">
               <h3 className="text-xl font-heritage font-bold mb-4">
                 Connect With Us
               </h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+              <div className="space-y-3 md:space-y-4">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -364,12 +373,11 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Phone</h4>
-                    <p className="text-saffron">+91 8830257574</p>
+                    <p className="text-saffron text-xs md:text-sm">+91 8830257574</p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -387,12 +395,11 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-saffron">durgagurhudyoggondia@gmail.com</p>
+                    <p className="text-saffron text-xs md:text-sm">durgagurhudyoggondia@gmail.com</p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -410,14 +417,13 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Address</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs md:text-sm text-muted-foreground">
                       Gokuldham Colony, Near Gaurav Furniture, Fulture Peth, Gondia (441601)
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted rounded-lg p-3">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="bg-muted rounded-lg p-2 md:p-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -435,7 +441,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium">Newsletter</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs md:text-sm text-muted-foreground">
                       Subscribe for new product updates and offers
                     </p>
                   </div>
