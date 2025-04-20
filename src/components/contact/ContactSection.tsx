@@ -7,6 +7,10 @@ import { useToast } from "@/components/ui/use-toast";
 const BUSINESS_EMAIL = "durgagurhudyoggondia@gmail.com";
 const BUSINESS_PHONE = "+91 8830257574";
 
+const PAYMENT_UPI_ID = "durgagurhudyog@oksbi";
+const PAYMENT_UPI_LINK = "upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR";
+const PAYMENT_CARD_LINK = "https://paytm.me/a-Paylink-Dummy"; // Example/paytm link as placeholder, replace with your own
+
 const ContactSection = () => {
   const { ref, inView } = useInView({
     triggerOnce: false,
@@ -291,51 +295,64 @@ const ContactSection = () => {
                 Payment Options
               </h3>
               <div className="rounded bg-maroon/10 text-maroon px-2 py-1 text-xs md:text-sm mb-4 border border-maroon/20">
-                All payments are arranged after we contact you. You can use the preferred payment link or QR. No direct online payments are made through this form.
+                All payments are arranged after we contact you. You can use the preferred payment link, UPI, QR, or Card. No direct online payments are made through this form.
               </div>
-
               <div className="mb-4">
                 <details className="rounded border border-maroon/40 bg-saffron/5 py-3 px-3 group" open>
                   <summary className="cursor-pointer font-medium flex items-center gap-2 text-maroon">
                     <span>
                       <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M6 8h.01"/><path d="M6 16h.01"/><path d="M16 8h.01"/><path d="M8 18v.01"/><path d="M8 6v.01"/><path d="M18 8v.01"/><path d="M8 16v.01"/><path d="M16 16v.01"/><path d="M18 16v.01"/></svg>
                     </span>
-                    Pay via UPI / Payment Link / QR
+                    Pay via UPI, QR, Card, or Payment Link
                   </summary>
-                  <div className="mt-2 space-y-2 text-sm text-maroon">
-                    <div>
-                      <span className="font-semibold">UPI ID:</span>{" "}
-                      <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">durgagurhudyog@oksbi</span>
-                    </div>
-                    <div>
-                      <a
-                        className="bg-saffron/90 hover:bg-maroon/90 hover:text-white transition rounded px-3 py-1 text-maroon font-medium"
-                        href="upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR"
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        Pay Now via UPI link
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-4">
+                  <div className="mt-2 flex flex-col md:flex-row md:items-start gap-5 text-sm text-maroon">
+                    <div className="flex flex-col gap-2 flex-1">
                       <div>
-                        <span className="font-semibold">Scan UPI QR:</span>
-                        <div className="mt-1 border border-saffron/30 rounded p-2 bg-white shadow">
-                          <img
-                            src="https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR"
-                            alt="Scan to pay UPI QR"
-                            className="w-32 h-32 object-contain"
-                          />
+                        <span className="font-semibold">UPI ID:</span>{" "}
+                        <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">{PAYMENT_UPI_ID}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold">UPI Pay Link:</span>{" "}
+                        <a
+                          className="bg-saffron/90 hover:bg-maroon/90 hover:text-white transition rounded px-3 py-1 text-maroon font-medium"
+                          href={PAYMENT_UPI_LINK}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          Pay Now via UPI
+                        </a>
+                      </div>
+                      <div>
+                        <span className="font-semibold">Credit/Debit Card:</span>{" "}
+                        <a
+                          className="bg-maroon/90 hover:bg-saffron/90 hover:text-maroon transition rounded px-3 py-1 text-white font-medium"
+                          href={PAYMENT_CARD_LINK}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          Pay Now via Card/Link
+                        </a>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          This link is for demo purposes. Final card link will be shared on WhatsApp or Email after order confirmation.
                         </div>
                       </div>
                     </div>
-                    <div className="mt-2 text-xs text-muted-foreground">
-                      After completing your payment, keep your transaction ID. It will be confirmed by phone or WhatsApp.
+                    <div className="flex flex-col items-center">
+                      <span className="font-semibold">Scan QR to pay:</span>
+                      <div className="mt-1 border border-saffron/30 rounded p-2 bg-white shadow">
+                        <img
+                          src={`https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=${encodeURIComponent(PAYMENT_UPI_LINK)}`}
+                          alt="Scan to pay UPI QR"
+                          className="w-32 h-32 object-contain"
+                        />
+                      </div>
+                      <div className="mt-2 text-xs text-muted-foreground text-center">
+                        After completing your payment, please retain your transaction ID. Our team will confirm payment via call or WhatsApp.
+                      </div>
                     </div>
                   </div>
                 </details>
               </div>
-
               <div className="flex items-center gap-4">
                 <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -353,7 +370,7 @@ const ContactSection = () => {
               <div className="flex items-center gap-4 mt-4">
                 <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <path d="M6 2 3 6v14a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                     <path d="M3 6h18" />
                     <path d="M16 10a4 4 0 0 1-8 0" />
                   </svg>

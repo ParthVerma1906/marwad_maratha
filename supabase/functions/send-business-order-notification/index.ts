@@ -6,6 +6,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Replace with Fast2SMS or any real SMS API. This is a DEMO function!
+async function sendDemoSms(to: string, message: string) {
+  // Replace this with actual SMS provider integration (Fast2SMS, Twilio, etc)
+  // For demonstration, we log it.
+  console.log(`[SMS] Sent to ${to}: ${message}`);
+  // For real SMS, you can use fetch to call the SMS provider's API.
+  return { status: "mocked", to, message };
+}
+
 interface OrderPayload {
   customer: {
     name: string;
@@ -62,7 +71,14 @@ serve(async (req) => {
       html: emailHtml,
     });
 
-    console.log("Sent notification to business owner:", sendRes);
+    // Send SMS notification (demo version)
+    const smsMessage = `New order by ${body.customer.name} (Phone: ${body.customer.phone}, ₹${body.amount}) - Check your email for details.`;
+    // Use your real business phone number here
+    const BUSINESS_PHONE = "+918830257574";
+    const smsRes = await sendDemoSms(BUSINESS_PHONE, smsMessage);
+
+    console.log("Sent notification to business owner (email):", sendRes);
+    console.log("Sent SMS notification to business owner:", smsRes);
 
     return new Response(
       JSON.stringify({ message: "Order notification sent!" }),
