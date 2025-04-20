@@ -271,6 +271,48 @@ const ContactSection = () => {
                 All payments are arranged after we contact you and confirm your order. No direct online payments are made through this form.
               </div>
               <div className="space-y-3 md:space-y-4">
+                <details className="rounded border border-maroon/40 bg-saffron/5 py-3 px-3 group">
+                  <summary className="cursor-pointer font-medium flex items-center gap-2 text-maroon">
+                    <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M6 8h.01"/><path d="M6 16h.01"/><path d="M16 8h.01"/><path d="M8 18v.01"/><path d="M8 6v.01"/><path d="M18 8v.01"/><path d="M8 16v.01"/><path d="M16 16v.01"/><path d="M18 16v.01"/></svg>
+                    </span>
+                    Pay via UPI (recommended)
+                  </summary>
+                  <div className="mt-2 space-y-2 text-sm text-maroon">
+                    <div>
+                      <span className="font-semibold">UPI ID:</span>{" "}
+                      <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">durgagurhudyog@oksbi</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Payment Link:</span>{" "}
+                      <a 
+                        className="underline text-saffron hover:text-maroon"
+                        href="upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR"
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        Click to Pay via UPI
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-4 mt-2">
+                      <div>
+                        <span className="font-semibold">Scan UPI QR:</span>
+                        <div className="mt-1 border border-saffron/30 rounded p-2 bg-white shadow">
+                          {/* Use any online QR for now; let user replace this image if desired */}
+                          <img
+                            src="https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR"
+                            alt="Scan to pay UPI QR"
+                            className="w-32 h-32 object-contain"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      After payment, please keep your transaction ID ready; payment will be confirmed by phone.
+                    </div>
+                  </div>
+                </details>
+
                 <div className="flex items-center gap-3 md:gap-4">
                   <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
                     <svg
