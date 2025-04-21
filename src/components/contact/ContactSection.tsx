@@ -1,37 +1,17 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useCart } from "@/hooks/useCart";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import OrderPaymentOptions from "./OrderPaymentOptions";
 
 const BUSINESS_EMAIL = "durgagurhudyoggondia@gmail.com";
 const BUSINESS_PHONE = "+91 8830257574";
 
-const PAYMENT_UPI_ID = "durgagurhudyog@oksbi";
-const PAYMENT_UPI_LINK = "upi://pay?pa=durgagurhudyog@oksbi&pn=Durga Gurhudyog&cu=INR";
-const PAYMENT_CARD_LINK = "https://paytm.me/a-Paylink-Dummy"; // Example/paytm link as placeholder, replace with your own
-
-const paymentOptions = [
-  {
-    id: "upi",
-    label: "UPI / QR Code",
-    description: "Pay via UPI app or scan the QR code. Order is confirmed after payment.",
-    value: "upi"
-  },
-  {
-    id: "card",
-    label: "Credit / Debit Card",
-    description: "Pay using credit or debit card. Order is confirmed after payment.",
-    value: "card"
-  },
-  {
-    id: "cod",
-    label: "Cash on Delivery (COD)",
-    description: "Pay with cash when you receive your order. Order is confirmed instantly.",
-    value: "cod"
-  }
-];
+// These should be set to the latest values you provide!
+const YOUR_UPI_ID = "your-upi@oksbi"; // TODO: REPLACE THIS with what you give me
+const UPI_LINK = `upi://pay?pa=${YOUR_UPI_ID}&pn=Durga Gurhudyog&cu=INR`;
+const QR_URL = `https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=${encodeURIComponent(UPI_LINK)}`;
 
 const ContactSection = () => {
   const { ref, inView } = useInView({
@@ -59,20 +39,10 @@ const ContactSection = () => {
     });
   };
 
-  // Simulate payment redirection/action for demo purposes
-  const handlePayment = () => {
-    if (paymentMode === "upi") {
-      window.open(PAYMENT_UPI_LINK, "_blank", "noopener");
-    } else if (paymentMode === "card") {
-      window.open(PAYMENT_CARD_LINK, "_blank", "noopener");
-    }
-    // For demo: ask for payment confirmation
-    setTimeout(() => setPaymentDone(true), 500);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Order can only be placed if COD or payment is confirmed
     if (paymentMode !== "cod" && !paymentDone) {
       toast({
         title: "Complete Payment",
@@ -297,105 +267,17 @@ const ContactSection = () => {
                   )}
                 </div>
 
-                {/* Payment Options */}
-                <div className="mt-6">
-                  <label className="block text-sm font-medium mb-2">
-                    Choose Payment Option <span className="text-xs text-muted-foreground">(Order confirmation depends on selected method.)</span>
-                  </label>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {paymentOptions.map(option => (
-                      <label
-                        key={option.id}
-                        className={`cursor-pointer flex flex-col border rounded-lg p-4 transition ${
-                          paymentMode === option.value
-                            ? "border-maroon bg-maroon/5 shadow"
-                            : "border-muted hover:bg-muted/30"
-                        }`}
-                      >
-                        <span className="font-semibold">{option.label}</span>
-                        <span className="text-xs text-muted-foreground mt-1">{option.description}</span>
-                        <input
-                          type="radio"
-                          value={option.value}
-                          onChange={() => { setPaymentMode(option.value); setPaymentDone(false); }}
-                          checked={paymentMode === option.value}
-                          className="mt-3 mr-2"
-                          name="paymentMode"
-                        />
-                      </label>
-                    ))}
-                  </div>
-                  {/* Dynamic payment action/notice */}
-                  <div className="mt-4">
-                    {paymentMode === "upi" && (
-                      <div>
-                        <div className="flex flex-col items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={handlePayment}
-                            className="bg-maroon hover:bg-maroon/90 text-white rounded px-5 py-2 font-semibold mb-2"
-                          >
-                            Pay via UPI Link / Scan QR
-                          </button>
-                          <div className="text-xs mb-2">
-                            <span className="font-semibold">UPI ID:</span>{" "}
-                            <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">
-                              {PAYMENT_UPI_ID}
-                            </span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-semibold mb-1">Or scan QR:</span>
-                            <img
-                              src={`https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=${encodeURIComponent(PAYMENT_UPI_LINK)}`}
-                              alt="Scan to pay UPI QR"
-                              className="w-32 h-32 object-contain"
-                            />
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-2 text-center">
-                            After paying, click below to confirm payment.<br />
-                            <button
-                              type="button"
-                              className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                              onClick={() => setPaymentDone(true)}
-                              disabled={paymentDone}
-                            >
-                              {paymentDone ? "Payment Confirmed" : "I have paid"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {paymentMode === "card" && (
-                      <div className="flex flex-col items-start gap-2">
-                        <button
-                          type="button"
-                          onClick={handlePayment}
-                          className="bg-saffron hover:bg-maroon/90 hover:text-white text-maroon rounded px-4 py-2 font-semibold mt-1 mb-2"
-                        >
-                          Pay Now via Card/Link
-                        </button>
-                        <div className="text-xs text-muted-foreground text-left">
-                          Card payment is redirected to a secure Paytm link.<br />
-                          After paying, click to confirm payment.<br />
-                          <button
-                            type="button"
-                            className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                            onClick={() => setPaymentDone(true)}
-                            disabled={paymentDone}
-                          >
-                            {paymentDone ? "Payment Confirmed" : "I have paid"}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                    {paymentMode === "cod" && (
-                      <div className="text-green-700 text-sm my-2">
-                        Order will be confirmed instantly.<br />
-                        You pay with cash when you receive your order.
-                      </div>
-                    )}
-                  </div>
-                </div>
+                {/* Payment Options (now only shows once, in order details) */}
+                <OrderPaymentOptions
+                  paymentMode={paymentMode}
+                  setPaymentMode={setPaymentMode}
+                  paymentDone={paymentDone}
+                  setPaymentDone={setPaymentDone}
+                  upiId={YOUR_UPI_ID}
+                  upiLink={UPI_LINK}
+                  qrUrl={QR_URL}
+                  processing={processing}
+                />
 
                 <motion.button
                   type="submit"
@@ -461,13 +343,13 @@ const ContactSection = () => {
                     <div className="flex flex-col gap-2 flex-1">
                       <div>
                         <span className="font-semibold">UPI ID:</span>{" "}
-                        <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">{PAYMENT_UPI_ID}</span>
+                        <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">{YOUR_UPI_ID}</span>
                       </div>
                       <div>
                         <span className="font-semibold">UPI Pay Link:</span>{" "}
                         <a
                           className="bg-saffron/90 hover:bg-maroon/90 hover:text-white transition rounded px-3 py-1 text-maroon font-medium"
-                          href={PAYMENT_UPI_LINK}
+                          href={UPI_LINK}
                           target="_blank"
                           rel="noopener"
                         >
@@ -478,7 +360,7 @@ const ContactSection = () => {
                         <span className="font-semibold">Credit/Debit Card:</span>{" "}
                         <a
                           className="bg-maroon/90 hover:bg-saffron/90 hover:text-maroon transition rounded px-3 py-1 text-white font-medium"
-                          href={PAYMENT_CARD_LINK}
+                          href="https://paytm.me/a-Paylink-Dummy"
                           target="_blank"
                           rel="noopener"
                         >
@@ -493,7 +375,7 @@ const ContactSection = () => {
                       <span className="font-semibold">Scan QR to pay:</span>
                       <div className="mt-1 border border-saffron/30 rounded p-2 bg-white shadow">
                         <img
-                          src={`https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=${encodeURIComponent(PAYMENT_UPI_LINK)}`}
+                          src={QR_URL}
                           alt="Scan to pay UPI QR"
                           className="w-32 h-32 object-contain"
                         />
@@ -647,3 +529,4 @@ const ContactSection = () => {
 
 export default ContactSection;
 
+// NOTE: This file is now much cleaner, but it's still large! Consider refactoring more if your ContactSection grows further.
