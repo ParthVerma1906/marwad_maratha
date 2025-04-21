@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useCart } from "@/hooks/useCart";
@@ -7,6 +8,7 @@ import PaymentOptions from "./PaymentOptions";
 const YOUR_UPI_ID = "88302575741@ybl";
 const UPI_LINK = `upi://pay?pa=${YOUR_UPI_ID}&pn=Durga Gurhudyog&cu=INR`;
 const QR_URL = ""; // Leave blank for now, will update when image is provided.
+const BUSINESS_PHONE = "8830257574"; // Your business phone number
 
 export interface OrderDetailsFormProps {
   onOrderPlaced?: () => void;
@@ -77,17 +79,24 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
     setPaymentDone(false);
     onOrderPlaced?.();
 
-    // WhatsApp confirmation
-    const itemList = cartItems.map(i => `${i.name} x${i.quantity}`).join(", ");
-    const paymentMethodMap: { [key: string]: string } = { upi: "UPI", card: "Card", cod: "COD" };
-    const customerName = formData.name || "Customer";
-    const address = formData.address || "";
-    const waMessage =
-      `Hello ${customerName}, thank you for your order at Marwad Maratha!\n🛒 Items: ${itemList}\n📍 Address: ${address}\n💳 Payment Method: ${paymentMethodMap[paymentMode]}\nWe’ll confirm your order shortly via WhatsApp or call.`;
-    // Open WhatsApp Web to customer's phone with prefilled message, if phone entered
+    // Generate business-to-customer WhatsApp message
     if (formData.phone && formData.phone.length >= 10) {
+      const itemList = cartItems.map(i => `${i.name} x${i.quantity}`).join(", ");
+      const paymentMethodMap: { [key: string]: string } = { upi: "UPI", card: "Card", cod: "COD" };
+      const customerName = formData.name || "Customer";
+      
+      // Instead of customer messaging business, business messages customer
       const phone = formData.phone.replace(/\D/g, "");
-      const waUrl = `https://wa.me/91${phone}?text=${encodeURIComponent(waMessage)}`;
+      const thankYouMessage = 
+        `Dear ${customerName}, thank you for your order at Marwad Maratha! 🙏\n\n` +
+        `We've received your order for:\n🛒 ${itemList}\n\n` +
+        `Payment Method: ${paymentMethodMap[paymentMode]}\n\n` +
+        `We'll process your order shortly and contact you for any additional information. ` +
+        `If you have questions, feel free to reply to this message.\n\n` +
+        `Thank you for choosing Marwad Maratha! 😊`;
+        
+      // Open WhatsApp for the business to send a message to customer
+      const waUrl = `https://wa.me/91${phone}?text=${encodeURIComponent(thankYouMessage)}`;
       window.open(waUrl, "_blank");
     }
 
