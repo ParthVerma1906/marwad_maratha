@@ -6,12 +6,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Replace with Fast2SMS or any real SMS API. This is a DEMO function!
+// Send SMS to customer (this is a mock function, replace with actual SMS provider)
+async function sendCustomerThankYouSms(to: string, message: string) {
+  // Replace this with actual SMS provider integration (Fast2SMS, Twilio, etc)
+  console.log(`[SMS] Sent to customer ${to}: ${message}`);
+  return { status: "mocked", to, message };
+}
+
+// Send SMS notification to business
 async function sendDemoSms(to: string, message: string) {
   // Replace this with actual SMS provider integration (Fast2SMS, Twilio, etc)
-  // For demonstration, we log it.
-  console.log(`[SMS] Sent to ${to}: ${message}`);
-  // For real SMS, you can use fetch to call the SMS provider's API.
+  console.log(`[SMS] Sent to business ${to}: ${message}`);
   return { status: "mocked", to, message };
 }
 
@@ -25,6 +30,8 @@ interface OrderPayload {
   items: Array<{ id: string; name: string; price: number; quantity: number }>;
   amount: number;
   submittedAt: string;
+  paymentMode: string;
+  paymentDone: boolean;
 }
 
 serve(async (req) => {
@@ -43,6 +50,8 @@ serve(async (req) => {
       <p><strong>Email:</strong> ${body.customer.email || "—"}</p>
       <p><strong>Address:</strong> ${body.customer.address}</p>
       <p><strong>Order Placed At:</strong> ${body.submittedAt}</p>
+      <p><strong>Payment Mode:</strong> ${body.paymentMode}</p>
+      <p><strong>Payment Completed:</strong> ${body.paymentDone ? "Yes" : "No"}</p>
       <h3>Order Items:</h3>
       <ul>
         ${body.items
@@ -63,6 +72,7 @@ serve(async (req) => {
     const { Resend } = await import("npm:resend@2.0.0");
     const resend = new Resend(RESEND_API_KEY);
 
+    // Send email to business owner
     const toEmail = "durgagurhudyoggondia@gmail.com";
     const sendRes = await resend.emails.send({
       from: "Order Notifications <onboarding@resend.dev>",
@@ -70,15 +80,69 @@ serve(async (req) => {
       subject: "New Order Received from Website",
       html: emailHtml,
     });
+    console.log("Sent notification to business owner (email):", sendRes);
 
-    // Send SMS notification (demo version)
+    // Send SMS notification to business owner
     const smsMessage = `New order by ${body.customer.name} (Phone: ${body.customer.phone}, ₹${body.amount}) - Check your email for details.`;
-    // Use your real business phone number here
     const BUSINESS_PHONE = "+918830257574";
     const smsRes = await sendDemoSms(BUSINESS_PHONE, smsMessage);
-
-    console.log("Sent notification to business owner (email):", sendRes);
     console.log("Sent SMS notification to business owner:", smsRes);
+
+    // Send thank you email to customer if email provided
+    if (body.customer.email) {
+      try {
+        const customerEmailHtml = `
+          <h2>Thank you for your order, ${body.customer.name}!</h2>
+          <p>We've received your order with the following details:</p>
+          <h3>Order Items:</h3>
+          <ul>
+            ${body.items
+              .map(
+                (item) =>
+                  `<li>${item.name} x${item.quantity} = ₹${item.quantity * item.price}</li>`
+              )
+              .join("")}
+          </ul>
+          <p><strong>Total Amount:</strong> ₹${body.amount}</p>
+          <p><strong>Payment Method:</strong> ${body.paymentMode}</p>
+          <p>We'll process your order shortly and contact you for any additional information.</p>
+          <p>If you have questions, feel free to contact us.</p>
+          <p>Thank you for choosing Marwad Maratha! 😊</p>
+        `;
+
+        const customerEmailRes = await resend.emails.send({
+          from: "Marwad Maratha <onboarding@resend.dev>",
+          to: [body.customer.email],
+          subject: "Thank you for your order!",
+          html: customerEmailHtml,
+        });
+        console.log("Sent thank you email to customer:", customerEmailRes);
+      } catch (emailErr) {
+        console.error("Error sending customer email:", emailErr);
+      }
+    }
+
+    // Send thank you SMS to customer
+    if (body.customer.phone) {
+      const itemList = body.items.map(i => `${i.name} x${i.quantity}`).join(", ");
+      const paymentMethodMap: { [key: string]: string } = { 
+        upi: "UPI / QR Payment", 
+        card: "Card Payment", 
+        cod: "Pay on Delivery"
+      };
+      const customerName = body.customer.name || "Customer";
+      
+      const thankYouMessage = 
+        `Dear ${customerName}, thank you for your order at Marwad Maratha! 🙏\n\n` +
+        `We've received your order for:\n🛒 ${itemList}\n\n` +
+        `Payment Method: ${paymentMethodMap[body.paymentMode]}\n\n` +
+        `We'll process your order shortly and contact you for any additional information. ` +
+        `If you have questions, feel free to contact us at ${BUSINESS_PHONE}.\n\n` +
+        `Thank you for choosing Marwad Maratha! 😊`;
+      
+      // Send thank you SMS to customer (implement with real SMS provider)
+      await sendCustomerThankYouSms(body.customer.phone, thankYouMessage);
+    }
 
     return new Response(
       JSON.stringify({ message: "Order notification sent!" }),

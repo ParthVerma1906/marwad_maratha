@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useCart } from "@/hooks/useCart";
@@ -58,11 +57,18 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
     };
 
     try {
-      await fetch("https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/send-business-order-notification", {
+      // Send notification to business owner via email
+      const response = await fetch("https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/send-business-order-notification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderPayload),
       });
+      
+      const result = await response.json();
+      console.log("Notification result:", result);
+      
+      // Send automated thank you message to customer
+      // Note: This happens in the edge function, not redirecting the customer
     } catch (err) {
       console.error("Failed to notify business owner:", err);
     }
@@ -78,27 +84,6 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
     setFormData({ name: "", phone: "", email: "", address: "" });
     setPaymentDone(false);
     onOrderPlaced?.();
-
-    // Generate business-to-customer WhatsApp message
-    if (formData.phone && formData.phone.length >= 10) {
-      const itemList = cartItems.map(i => `${i.name} x${i.quantity}`).join(", ");
-      const paymentMethodMap: { [key: string]: string } = { upi: "UPI", card: "Card", cod: "COD" };
-      const customerName = formData.name || "Customer";
-      
-      // Instead of customer messaging business, business messages customer
-      const phone = formData.phone.replace(/\D/g, "");
-      const thankYouMessage = 
-        `Dear ${customerName}, thank you for your order at Marwad Maratha! 🙏\n\n` +
-        `We've received your order for:\n🛒 ${itemList}\n\n` +
-        `Payment Method: ${paymentMethodMap[paymentMode]}\n\n` +
-        `We'll process your order shortly and contact you for any additional information. ` +
-        `If you have questions, feel free to reply to this message.\n\n` +
-        `Thank you for choosing Marwad Maratha! 😊`;
-        
-      // Open WhatsApp for the business to send a message to customer
-      const waUrl = `https://wa.me/91${phone}?text=${encodeURIComponent(thankYouMessage)}`;
-      window.open(waUrl, "_blank");
-    }
 
     // Show updated COD confirmation message for COD only
     if (paymentMode === "cod") {
