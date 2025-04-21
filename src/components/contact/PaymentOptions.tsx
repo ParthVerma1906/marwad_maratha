@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -27,19 +28,19 @@ export default function PaymentOptions(props: PaymentOptionsProps) {
   const paymentOptions = [
     {
       id: "upi",
-      label: "UPI / QR Code",
+      label: "✅ UPI / QR Payment",
       description: "Pay via UPI app or scan the QR code. Order is confirmed after payment.",
       value: "upi"
     },
     {
       id: "card",
-      label: "Credit / Debit Card",
+      label: "💳 Card Payment (Credit / Debit)",
       description: "Pay using credit or debit card. Order is confirmed after payment.",
       value: "card"
     },
     {
       id: "cod",
-      label: "Cash on Delivery (COD)",
+      label: "🚚 Pay on Delivery (COD)",
       description: "Pay with cash when you receive your order. Order is confirmed instantly.",
       value: "cod"
     }

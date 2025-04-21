@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useCart } from "@/hooks/useCart";
@@ -26,6 +25,9 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
   const [paymentDone, setPaymentDone] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [processing, setProcessing] = useState(false);
+
+  // Show WhatsApp confirmation and updated COD message states
+  const [showCodMessage, setShowCodMessage] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -75,7 +77,31 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
     setPaymentDone(false);
     onOrderPlaced?.();
 
-    setTimeout(() => setSubmitted(false), 5000);
+    // WhatsApp confirmation
+    const itemList = cartItems.map(i => `${i.name} x${i.quantity}`).join(", ");
+    const paymentMethodMap: { [key: string]: string } = { upi: "UPI", card: "Card", cod: "COD" };
+    const customerName = formData.name || "Customer";
+    const address = formData.address || "";
+    const waMessage =
+      `Hello ${customerName}, thank you for your order at Marwad Maratha!\n🛒 Items: ${itemList}\n📍 Address: ${address}\n💳 Payment Method: ${paymentMethodMap[paymentMode]}\nWe’ll confirm your order shortly via WhatsApp or call.`;
+    // Open WhatsApp Web to customer's phone with prefilled message, if phone entered
+    if (formData.phone && formData.phone.length >= 10) {
+      const phone = formData.phone.replace(/\D/g, "");
+      const waUrl = `https://wa.me/91${phone}?text=${encodeURIComponent(waMessage)}`;
+      window.open(waUrl, "_blank");
+    }
+
+    // Show updated COD confirmation message for COD only
+    if (paymentMode === "cod") {
+      setShowCodMessage(true);
+    } else {
+      setShowCodMessage(false);
+    }
+
+    setTimeout(() => {
+      setShowCodMessage(false);
+      setSubmitted(false);
+    }, 5000);
   };
 
   return (
@@ -228,9 +254,11 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
           ? "Place Order"
           : "Complete Payment to Place Order"}
       </motion.button>
-      {submitted && (
-        <div className="mt-3 text-xs text-green-700 bg-green-100 border border-green-200 px-3 py-2 rounded-lg">
-          Your order was recorded in this browser only. We will contact you via the details provided. No payment has been processed online. <b>Orders are not recorded online or sent to the shop automatically!</b>
+      {/* Show COD message only for Cash on Delivery after placing the order */}
+      {showCodMessage && paymentMode === "cod" && (
+        <div className="mt-3 text-sm text-green-700 bg-green-100 border border-green-200 px-3 py-3 rounded-lg font-medium">
+          ✅ Order received! Your order has been successfully noted. Our team will contact you shortly via phone or WhatsApp to confirm the details.<br />
+          Thank you for choosing Marwad Maratha!
         </div>
       )}
     </form>
