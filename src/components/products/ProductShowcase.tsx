@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import ProductCard from "./ProductCard";
+import ProductCategories from "./ProductCategories";
+import ProductGrid from "./ProductGrid";
+import useProducts from "./useProducts";
 import { getImageUrl } from "@/utils/imageAssets";
 
 const initialProducts = [
@@ -366,74 +368,18 @@ const initialProducts = [
 const ProductShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showAllProducts, setShowAllProducts] = useState(false);
-  const [products, setProducts] = useState(initialProducts);
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
+  const { products, allCategories } = useProducts(initialProducts);
 
-  const { ref, inView } = useInView({
-    triggerOnce: false,
-    threshold: 0.1,
-  });
+  const filtered = activeCategory === "all"
+    ? products
+    : products.filter((p) => p.category === activeCategory);
 
-  useEffect(() => {
-    const storedProducts = localStorage.getItem("adminProducts");
-    if (storedProducts) {
-      try {
-        const parsedProducts = JSON.parse(storedProducts);
-        const productsWithFixedImagePaths = parsedProducts.map((product: any) => ({
-          ...product,
-          image: product.image.startsWith('/src/assets/')
-            ? `/images/${product.image.split('/').pop()}`
-            : product.image
-        }));
-        setProducts(productsWithFixedImagePaths);
-      } catch (error) {
-        console.error("Error parsing stored products", error);
-        setProducts(initialProducts);
-      }
-    } else {
-      setProducts(initialProducts);
-    }
+  const displayedProducts = showAllProducts
+    ? filtered
+    : products.filter((prod) => prod.isPopular);
 
-    const handleProductUpdate = () => {
-      const updatedProducts = localStorage.getItem("adminProducts");
-      if (updatedProducts) {
-        try {
-          const parsedProducts = JSON.parse(updatedProducts);
-          const productsWithFixedImagePaths = parsedProducts.map((product: any) => ({
-            ...product,
-            image: product.image.startsWith('/src/assets/')
-              ? `/images/${product.image.split('/').pop()}`
-              : product.image
-          }));
-          setProducts(productsWithFixedImagePaths);
-        } catch (error) {
-          console.error("Error parsing updated products", error);
-        }
-      }
-    };
-
-    window.addEventListener("productsUpdated", handleProductUpdate);
-
-    return () => {
-      window.removeEventListener("productsUpdated", handleProductUpdate);
-    };
-  }, []);
-
-  const popularProducts = products.filter(product => product.isPopular);
-  const displayedProducts = showAllProducts ?
-    products.filter(product => activeCategory === "all" || product.category === activeCategory) :
-    popularProducts;
-
-  const categories = ["all", "aachar", "papad", "powder", "namkeen", "special"];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  const categories = ["all", ...allCategories.filter(c => c !== "all")];
 
   return (
     <section
@@ -456,47 +402,30 @@ const ProductShowcase = () => {
         </motion.div>
 
         {showAllProducts && (
-          <div className="mb-10">
-            <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Category</p>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setActiveCategory(category)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                        activeCategory === category
-                          ? "bg-maroon text-white"
-                          : "bg-muted hover:bg-muted/80 text-foreground"
-                      }`}
-                    >
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="mb-10 flex flex-col md:flex-row justify-center gap-6">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Category</p>
+              <ProductCategories
+                categories={categories}
+                activeCategory={activeCategory}
+                onSelect={(cat) => setActiveCategory(cat)}
+              />
             </div>
           </div>
         )}
-
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.2 },
+            },
+          }}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
         >
-          {displayedProducts.length > 0 ? (
-            displayedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))
-          ) : (
-            <div className="col-span-full text-center text-muted-foreground font-medium">
-              No products available.
-            </div>
-          )}
+          <ProductGrid products={displayedProducts} />
         </motion.div>
-
         <motion.div 
           className="text-center mt-12"
           initial={{ opacity: 0 }}

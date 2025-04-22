@@ -6,11 +6,22 @@ import PaymentOptions from "./PaymentOptions";
 
 const YOUR_UPI_ID = "88302575741@ybl";
 const UPI_LINK = `upi://pay?pa=${YOUR_UPI_ID}&pn=Durga Gurhudyog&cu=INR`;
-const QR_URL = ""; // Leave blank for now, will update when image is provided.
-const BUSINESS_PHONE = "8830257574"; // Your business phone number
+const QR_URL = "";
+const BUSINESS_PHONE = "8830257574";
 
 export interface OrderDetailsFormProps {
   onOrderPlaced?: () => void;
+}
+
+function createOrderPayload(formData: any, cartItems: any[], paymentMode: string, paymentDone: boolean) {
+  return {
+    customer: { ...formData },
+    items: cartItems,
+    amount: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    submittedAt: new Date().toISOString(),
+    paymentMode,
+    paymentDone: paymentMode === "cod" ? false : paymentDone,
+  };
 }
 
 export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProps) {
@@ -26,8 +37,6 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
   const [paymentDone, setPaymentDone] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [processing, setProcessing] = useState(false);
-
-  // Show WhatsApp confirmation and updated COD message states
   const [showCodMessage, setShowCodMessage] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,28 +56,18 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
     }
 
     setProcessing(true);
-    const orderPayload = {
-      customer: { ...formData },
-      items: cartItems,
-      amount: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      submittedAt: new Date().toISOString(),
-      paymentMode,
-      paymentDone: paymentMode === "cod" ? false : true,
-    };
+    const orderPayload = createOrderPayload(formData, cartItems, paymentMode, paymentDone);
 
     try {
       // Send notification to business owner via email
-      const response = await fetch("https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/send-business-order-notification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderPayload),
-      });
-      
-      const result = await response.json();
-      console.log("Notification result:", result);
-      
-      // Send automated thank you message to customer
-      // Note: This happens in the edge function, not redirecting the customer
+      await fetch(
+        "https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/send-business-order-notification",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload),
+        }
+      );
     } catch (err) {
       console.error("Failed to notify business owner:", err);
     }
@@ -248,7 +247,6 @@ export default function OrderDetailsForm({ onOrderPlaced }: OrderDetailsFormProp
           ? "Place Order"
           : "Complete Payment to Place Order"}
       </motion.button>
-      {/* Show COD message only for Cash on Delivery after placing the order */}
       {showCodMessage && paymentMode === "cod" && (
         <div className="mt-3 text-sm text-green-700 bg-green-100 border border-green-200 px-3 py-3 rounded-lg font-medium">
           ✅ Order received! Your order has been successfully noted. Our team will contact you shortly via phone or WhatsApp to confirm the details.<br />

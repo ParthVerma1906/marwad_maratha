@@ -6,7 +6,7 @@
 
 // Replace `mangoPickle` with a usable placeholder pickles/papadum photo.
 export const productImages = {
-  mangoPickle: "/images/photo-1618160702438-9b02ab6515c9.jpg", // This should be a real photo you upload
+  mangoPickle: "/images/mango-pickle.jpg", // CHANGED: Now references a pickle image
   masalaPapad: "/images/masala-papad.jpg",
   mirchiPickle: "/images/mirchi-pickle.jpg",
   ricePapad: "/images/rice-papad.jpg",
