@@ -367,7 +367,7 @@ const ProductShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [products, setProducts] = useState(initialProducts);
-  
+
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.1,
@@ -380,16 +380,19 @@ const ProductShowcase = () => {
         const parsedProducts = JSON.parse(storedProducts);
         const productsWithFixedImagePaths = parsedProducts.map((product: any) => ({
           ...product,
-          image: product.image.startsWith('/src/assets/') ? 
-            `/images/${product.image.split('/').pop()}` : 
-            product.image
+          image: product.image.startsWith('/src/assets/')
+            ? `/images/${product.image.split('/').pop()}`
+            : product.image
         }));
         setProducts(productsWithFixedImagePaths);
       } catch (error) {
         console.error("Error parsing stored products", error);
+        setProducts(initialProducts);
       }
+    } else {
+      setProducts(initialProducts);
     }
-    
+
     const handleProductUpdate = () => {
       const updatedProducts = localStorage.getItem("adminProducts");
       if (updatedProducts) {
@@ -397,9 +400,9 @@ const ProductShowcase = () => {
           const parsedProducts = JSON.parse(updatedProducts);
           const productsWithFixedImagePaths = parsedProducts.map((product: any) => ({
             ...product,
-            image: product.image.startsWith('/src/assets/') ? 
-              `/images/${product.image.split('/').pop()}` : 
-              product.image
+            image: product.image.startsWith('/src/assets/')
+              ? `/images/${product.image.split('/').pop()}`
+              : product.image
           }));
           setProducts(productsWithFixedImagePaths);
         } catch (error) {
@@ -407,17 +410,17 @@ const ProductShowcase = () => {
         }
       }
     };
-    
+
     window.addEventListener("productsUpdated", handleProductUpdate);
-    
+
     return () => {
       window.removeEventListener("productsUpdated", handleProductUpdate);
     };
   }, []);
 
   const popularProducts = products.filter(product => product.isPopular);
-  const displayedProducts = showAllProducts ? 
-    products.filter(product => activeCategory === "all" || product.category === activeCategory) : 
+  const displayedProducts = showAllProducts ?
+    products.filter(product => activeCategory === "all" || product.category === activeCategory) :
     popularProducts;
 
   const categories = ["all", "aachar", "papad", "powder", "namkeen", "special"];
@@ -433,8 +436,8 @@ const ProductShowcase = () => {
   };
 
   return (
-    <section 
-      id="products" 
+    <section
+      id="products"
       className="py-16 md:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background"
       ref={ref}
     >
@@ -483,9 +486,15 @@ const ProductShowcase = () => {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
         >
-          {displayedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {displayedProducts.length > 0 ? (
+            displayedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <div className="col-span-full text-center text-muted-foreground font-medium">
+              No products available.
+            </div>
+          )}
         </motion.div>
 
         <motion.div 

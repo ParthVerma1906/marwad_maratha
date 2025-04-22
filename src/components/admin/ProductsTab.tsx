@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { syncProductData, initializeProducts } from "@/utils/adminSync";
@@ -15,19 +14,22 @@ const ProductsTab = () => {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    // Initialize with default products or load from storage
-    const storedProducts = localStorage.getItem("adminProducts");
-    if (storedProducts) {
-      try {
-        const parsedProducts = JSON.parse(storedProducts);
-        setAllProducts(parsedProducts);
-        setProducts(parsedProducts);
-      } catch (error) {
-        console.error("Error parsing stored products", error);
+    try {
+      const storedProducts = localStorage.getItem("adminProducts");
+      if (storedProducts) {
+        try {
+          const parsedProducts = JSON.parse(storedProducts);
+          setAllProducts(parsedProducts);
+          setProducts(parsedProducts);
+        } catch (error) {
+          console.error("Error parsing stored products for admin panel", error);
+          initializeProducts(allProducts);
+        }
+      } else {
         initializeProducts(allProducts);
       }
-    } else {
-      initializeProducts(allProducts);
+    } catch (err) {
+      console.error("Failed to initialize admin products:", err);
     }
   }, []);
 
@@ -116,10 +118,8 @@ const ProductsTab = () => {
     <div className="space-y-8">
       <div>
         <h3 className="text-xl font-heritage font-bold mb-4">Manage Products</h3>
-        
         <ProductFilter currentFilter={filter} onFilterChange={handleFilter} />
-        
-        <ProductTable 
+        <ProductTable
           products={products}
           onEdit={setEditingProduct}
           onDelete={handleDelete}
@@ -134,10 +134,7 @@ const ProductsTab = () => {
         />
       )}
 
-      <ProductForm
-        onSave={handleAddProduct}
-        isNew
-      />
+      <ProductForm onSave={handleAddProduct} isNew />
     </div>
   );
 };

@@ -21,7 +21,7 @@ interface ProductProps {
 const ProductCard = ({ product }: ProductProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const { addToCart } = useCart();
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -32,10 +32,18 @@ const ProductCard = ({ product }: ProductProps) => {
     addToCart(product, 1);
   };
 
-  // Handle image paths appropriately
-  const imageUrl = product.image.startsWith('/src/assets/') 
-    ? `/images/${product.image.split('/').pop()}` 
-    : product.image;
+  // Always get correct image url
+  const rawUrl = product.image;
+  let imageUrl = rawUrl;
+  // Use placeholder as last fallback
+  if (!rawUrl || rawUrl === "/placeholder.svg") {
+    imageUrl = "/placeholder.svg";
+  } else if (rawUrl.startsWith("/src/assets/")) {
+    imageUrl = `/images/${rawUrl.split("/").pop()}`;
+  }
+
+  // Add a state so placeholder isn't shown over and over on repeated failures
+  const [imgSrc, setImgSrc] = useState(imageUrl);
 
   return (
     <motion.div
@@ -47,14 +55,12 @@ const ProductCard = ({ product }: ProductProps) => {
         {/* Product Image */}
         <div className="h-48 overflow-hidden relative">
           <img
-            src={imageUrl}
+            src={imgSrc}
             alt={product.name}
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
-            onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-              const target = e.currentTarget;
-              target.onerror = null;
-              target.src = "/placeholder.svg";
-              console.log(`Image failed to load: ${imageUrl}, falling back to placeholder`);
+            onError={() => {
+              setImgSrc("/placeholder.svg");
+              console.log(`Image failed to load: ${imgSrc}, falling back to placeholder`);
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-start p-4">
@@ -62,7 +68,7 @@ const ProductCard = ({ product }: ProductProps) => {
               {product.category}
             </span>
           </div>
-          
+
           {product.isPopular && (
             <div className="absolute top-3 right-3 bg-saffron text-white text-xs font-bold px-2 py-1 rounded">
               Popular
@@ -78,7 +84,7 @@ const ProductCard = ({ product }: ProductProps) => {
             </h3>
             <span className="text-maroon font-bold">₹{product.price}</span>
           </div>
-          
+
           <div className="mt-3 flex justify-between items-center">
             <button
               onClick={(e) => handleAddToCart(e)}
@@ -86,7 +92,7 @@ const ProductCard = ({ product }: ProductProps) => {
             >
               <Plus size={16} />
             </button>
-            
+
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -97,7 +103,7 @@ const ProductCard = ({ product }: ProductProps) => {
               {showDetails ? "Hide details" : "View details"}
             </button>
           </div>
-          
+
           {showDetails && (
             <div className="mt-4 border-t border-dashed border-muted pt-3 space-y-2">
               {product.description && (
@@ -105,7 +111,7 @@ const ProductCard = ({ product }: ProductProps) => {
                   {product.description}
                 </p>
               )}
-              
+
               {product.ingredients && product.ingredients.length > 0 && (
                 <div>
                   <p className="text-xs font-medium text-muted-foreground mb-1">
