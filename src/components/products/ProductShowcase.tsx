@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCategories from "./ProductCategories";
 import ProductGrid from "./ProductGrid";
-import useProducts from "./useProducts";
+import { useAllProducts } from "./useAllProducts";
 import { getImageUrl } from "@/utils/imageAssets";
 
 const initialProducts = [
@@ -369,7 +369,9 @@ const ProductShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showAllProducts, setShowAllProducts] = useState(false);
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
-  const { products, allCategories } = useProducts(initialProducts);
+  const { products, categories: allCategories } = useAllProducts(initialProducts);
+
+  const categories = ["all", ...allCategories.filter(c => c !== "all")];
 
   const filtered = activeCategory === "all"
     ? products
@@ -379,8 +381,6 @@ const ProductShowcase = () => {
     ? filtered
     : products.filter((prod) => prod.isPopular);
 
-  const categories = ["all", ...allCategories.filter(c => c !== "all")];
-
   return (
     <section
       id="products"
@@ -388,7 +388,7 @@ const ProductShowcase = () => {
       ref={ref}
     >
       <div className="container mx-auto px-4">
-        <motion.div 
+        <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -401,19 +401,17 @@ const ProductShowcase = () => {
           </p>
         </motion.div>
 
-        {showAllProducts && (
-          <div className="mb-10 flex flex-col md:flex-row justify-center gap-6">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Category</p>
-              <ProductCategories
-                categories={categories}
-                activeCategory={activeCategory}
-                onSelect={(cat) => setActiveCategory(cat)}
-              />
-            </div>
+        <div className="mb-10 flex flex-col md:flex-row justify-center gap-6">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Category</p>
+            <ProductCategories
+              categories={categories}
+              activeCategory={activeCategory}
+              onSelect={(cat) => setActiveCategory(cat)}
+            />
           </div>
-        )}
-        <motion.div 
+        </div>
+        <motion.div
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -426,7 +424,7 @@ const ProductShowcase = () => {
         >
           <ProductGrid products={displayedProducts} />
         </motion.div>
-        <motion.div 
+        <motion.div
           className="text-center mt-12"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : { opacity: 0 }}

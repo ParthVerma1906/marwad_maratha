@@ -13,18 +13,7 @@ import initialProductsImport from "../products/ProductShowcase";
 // Helper to get full initial product data if needed
 const getInitialProducts = () => {
   // fallback default product if import fails
-  return [
-    {
-      id: 1,
-      name: "Aam Aachar",
-      category: "aachar",
-      price: 299,
-      image: "/images/photo-1618160702438-9b02ab6515c9.jpg",
-      description: "Traditional raw mango pickle with authentic Rajasthani spices.",
-      ingredients: ["Raw Mango", "Mustard Oil", "Spices"],
-      isPopular: true,
-    }
-  ];
+  return initialProductsImport || [];
 };
 
 const ProductsTab = () => {
@@ -35,53 +24,54 @@ const ProductsTab = () => {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    // Get the latest from localStorage or fallback
     try {
       const storedProducts = localStorage.getItem("adminProducts");
-      if (storedProducts) {
-        try {
-          const parsedProducts = JSON.parse(storedProducts);
-          setAllProducts(parsedProducts);
-          setProducts(parsedProducts);
-        } catch (error) {
-          console.error("Error parsing stored products for admin panel", error);
-          // If parsing error, reset with initial products
-          const initialList = getInitialProducts();
-          initializeProducts(initialList);
-          setAllProducts(initialList);
-          setProducts(initialList);
-        }
-      } else {
-        // No stored products, initialize with a full sample product list.
+      let loadedProducts: Product[] =
+        storedProducts && storedProducts !== "[]" ? JSON.parse(storedProducts) : [];
+
+      if (!loadedProducts.length) {
+        // Initialize if missing
         const initialList = getInitialProducts();
         initializeProducts(initialList);
-        setAllProducts(initialList);
-        setProducts(initialList);
+        loadedProducts = initialList;
       }
-    } catch (err) {
-      console.error("Failed to initialize admin products:", err);
+      setAllProducts(loadedProducts);
+      setProducts(loadedProducts);
+    } catch (error) {
+      setAllProducts([]);
+      setProducts([]);
     }
+
+    const listener = () => {
+      const storedProducts = localStorage.getItem("adminProducts");
+      let loadedProducts: Product[] =
+        storedProducts && storedProducts !== "[]" ? JSON.parse(storedProducts) : [];
+      setAllProducts(loadedProducts || []);
+      setProducts(loadedProducts || []);
+    };
+    window.addEventListener("productsUpdated", listener);
+    return () => {
+      window.removeEventListener("productsUpdated", listener);
+    };
   }, []);
 
   const handleFilter = (category: string) => {
     setFilter(category);
-    if (category === 'all') {
+    if (category === "all") {
       setProducts(allProducts);
     } else {
-      setProducts(allProducts.filter(p => p.category === category));
+      setProducts(allProducts.filter((p) => p.category === category));
     }
   };
 
   const handleUpdate = (formData: any) => {
     if (!editingProduct) return;
-    const updatedProducts = allProducts.map(p => 
+    const updatedProducts = allProducts.map((p) =>
       p.id === editingProduct.id ? { ...editingProduct, ...formData } : p
     );
     setAllProducts(updatedProducts);
-    if (filter !== 'all') {
-      setProducts(updatedProducts.filter(p => p.category === filter));
-    } else {
-      setProducts(updatedProducts);
-    }
+    setProducts(filter === "all" ? updatedProducts : updatedProducts.filter((p) => p.category === filter));
     syncProductData(updatedProducts);
     toast({
       title: "Product updated",
@@ -91,13 +81,9 @@ const ProductsTab = () => {
   };
 
   const handleDelete = (id: number) => {
-    const updatedProducts = allProducts.filter(p => p.id !== id);
+    const updatedProducts = allProducts.filter((p) => p.id !== id);
     setAllProducts(updatedProducts);
-    if (filter !== 'all') {
-      setProducts(updatedProducts.filter(p => p.category === filter));
-    } else {
-      setProducts(updatedProducts);
-    }
+    setProducts(filter === "all" ? updatedProducts : updatedProducts.filter((p) => p.category === filter));
     syncProductData(updatedProducts);
     toast({
       title: "Product deleted",
@@ -115,16 +101,11 @@ const ProductsTab = () => {
       return;
     }
 
-    const id = Math.max(...allProducts.map(p => p.id), 0) + 1;
+    const id = Math.max(...allProducts.map((p) => p.id), 0) + 1;
     const productToAdd = { id, ...formData };
     const updatedProducts = [...allProducts, productToAdd];
     setAllProducts(updatedProducts);
-
-    if (filter !== 'all' && formData.category !== filter) {
-      // Don't need to update displayed products if filtered to a different category
-    } else {
-      setProducts(filter === 'all' ? updatedProducts : updatedProducts.filter(p => p.category === filter));
-    }
+    setProducts(filter === "all" ? updatedProducts : updatedProducts.filter((p) => p.category === filter));
     syncProductData(updatedProducts);
     toast({
       title: "Product added",
