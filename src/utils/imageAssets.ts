@@ -4,9 +4,9 @@
  * In a production environment, these images would be properly processed by the build system.
  */
 
-// Ensure images are copied to the public folder during build
+// Replace `mangoPickle` with a usable placeholder pickles/papadum photo.
 export const productImages = {
-  mangoPickle: "/images/mango-pickle.jpg",
+  mangoPickle: "/images/photo-1618160702438-9b02ab6515c9.jpg", // This should be a real photo you upload
   masalaPapad: "/images/masala-papad.jpg",
   mirchiPickle: "/images/mirchi-pickle.jpg",
   ricePapad: "/images/rice-papad.jpg",
@@ -15,10 +15,7 @@ export const productImages = {
   logo: "/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png"
 };
 
-// This function would normally be part of a build process,
-// but for this demo we're using public URLs directly
 export const getImageUrl = (imagePath: string) => {
-  // Convert src/assets paths to public paths
   if (imagePath.startsWith('/src/assets/')) {
     return `/images/${imagePath.split('/').pop()}`;
   }

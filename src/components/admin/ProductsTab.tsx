@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { syncProductData, initializeProducts } from "@/utils/adminSync";
@@ -5,6 +6,26 @@ import ProductFilter from "./ProductFilter";
 import ProductTable from "./ProductTable";
 import ProductForm from "./ProductForm";
 import type { Product } from "./types/product";
+
+// Import the complete product list from ProductShowcase (as initial default list)
+import initialProductsImport from "../products/ProductShowcase";
+
+// Helper to get full initial product data if needed
+const getInitialProducts = () => {
+  // fallback default product if import fails
+  return [
+    {
+      id: 1,
+      name: "Aam Aachar",
+      category: "aachar",
+      price: 299,
+      image: "/images/photo-1618160702438-9b02ab6515c9.jpg",
+      description: "Traditional raw mango pickle with authentic Rajasthani spices.",
+      ingredients: ["Raw Mango", "Mustard Oil", "Spices"],
+      isPopular: true,
+    }
+  ];
+};
 
 const ProductsTab = () => {
   const { toast } = useToast();
@@ -23,10 +44,18 @@ const ProductsTab = () => {
           setProducts(parsedProducts);
         } catch (error) {
           console.error("Error parsing stored products for admin panel", error);
-          initializeProducts(allProducts);
+          // If parsing error, reset with initial products
+          const initialList = getInitialProducts();
+          initializeProducts(initialList);
+          setAllProducts(initialList);
+          setProducts(initialList);
         }
       } else {
-        initializeProducts(allProducts);
+        // No stored products, initialize with a full sample product list.
+        const initialList = getInitialProducts();
+        initializeProducts(initialList);
+        setAllProducts(initialList);
+        setProducts(initialList);
       }
     } catch (err) {
       console.error("Failed to initialize admin products:", err);
@@ -44,40 +73,32 @@ const ProductsTab = () => {
 
   const handleUpdate = (formData: any) => {
     if (!editingProduct) return;
-    
     const updatedProducts = allProducts.map(p => 
       p.id === editingProduct.id ? { ...editingProduct, ...formData } : p
     );
-    
     setAllProducts(updatedProducts);
     if (filter !== 'all') {
       setProducts(updatedProducts.filter(p => p.category === filter));
     } else {
       setProducts(updatedProducts);
     }
-
     syncProductData(updatedProducts);
-    
     toast({
       title: "Product updated",
       description: `${formData.name} has been updated successfully.`,
     });
-    
     setEditingProduct(null);
   };
 
   const handleDelete = (id: number) => {
     const updatedProducts = allProducts.filter(p => p.id !== id);
     setAllProducts(updatedProducts);
-    
     if (filter !== 'all') {
       setProducts(updatedProducts.filter(p => p.category === filter));
     } else {
       setProducts(updatedProducts);
     }
-
     syncProductData(updatedProducts);
-    
     toast({
       title: "Product deleted",
       description: "The product has been removed successfully.",
@@ -97,17 +118,14 @@ const ProductsTab = () => {
     const id = Math.max(...allProducts.map(p => p.id), 0) + 1;
     const productToAdd = { id, ...formData };
     const updatedProducts = [...allProducts, productToAdd];
-    
     setAllProducts(updatedProducts);
-    
+
     if (filter !== 'all' && formData.category !== filter) {
       // Don't need to update displayed products if filtered to a different category
     } else {
       setProducts(filter === 'all' ? updatedProducts : updatedProducts.filter(p => p.category === filter));
     }
-
     syncProductData(updatedProducts);
-    
     toast({
       title: "Product added",
       description: `${formData.name} has been added successfully.`,
@@ -125,7 +143,6 @@ const ProductsTab = () => {
           onDelete={handleDelete}
         />
       </div>
-
       {editingProduct && (
         <ProductForm
           product={editingProduct}
@@ -133,7 +150,6 @@ const ProductsTab = () => {
           onCancel={() => setEditingProduct(null)}
         />
       )}
-
       <ProductForm onSave={handleAddProduct} isNew />
     </div>
   );
