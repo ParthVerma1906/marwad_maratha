@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { syncProductData, initializeProducts } from "@/utils/adminSync";
@@ -8,12 +7,12 @@ import ProductForm from "./ProductForm";
 import type { Product } from "./types/product";
 
 // Import the complete product list from ProductShowcase (as initial default list)
-import initialProductsImport from "../products/ProductShowcase";
+import initialProducts from "../products/productData";
 
 // Helper to get full initial product data if needed
 const getInitialProducts = () => {
   // fallback default product if import fails
-  return initialProductsImport || [];
+  return initialProducts || [];
 };
 
 const ProductsTab = () => {
