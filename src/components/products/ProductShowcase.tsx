@@ -17,13 +17,15 @@ const ProductShowcase = () => {
 
   const categories = ["all", ...allCategories.filter(c => c !== "all")];
 
-  const filtered = activeCategory === "all"
+  // First filter by category
+  const filteredByCategory = activeCategory === "all"
     ? products
     : products.filter((p) => p.category === activeCategory);
 
+  // Then apply the popular filter if needed
   const displayedProducts = showAllProducts
-    ? filtered
-    : products.filter((prod) => prod.isPopular);
+    ? filteredByCategory
+    : filteredByCategory.filter((prod) => prod.isPopular);
 
   return (
     <section
