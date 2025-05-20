@@ -15,17 +15,18 @@ const ProductShowcase = () => {
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
   const { products, categories: allCategories } = useAllProducts(initialProducts);
 
+  // Make sure "all" is the first category and remove any duplicate "all" entries
   const categories = ["all", ...allCategories.filter(c => c !== "all")];
 
-  // First filter by category
+  // Filter products based on the selected category
   const filteredByCategory = activeCategory === "all"
     ? products
-    : products.filter((p) => p.category === activeCategory);
+    : products.filter((product) => product.category === activeCategory);
 
-  // Then apply the popular filter if needed
+  // Then apply the popularity filter if not showing all products
   const displayedProducts = showAllProducts
     ? filteredByCategory
-    : filteredByCategory.filter((prod) => prod.isPopular);
+    : filteredByCategory.filter((product) => product.isPopular);
 
   return (
     <section

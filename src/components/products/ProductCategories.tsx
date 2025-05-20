@@ -22,6 +22,7 @@ const ProductCategories = ({
             ? "bg-maroon text-white"
             : "bg-muted hover:bg-muted/80 text-foreground"
         }`}
+        aria-pressed={activeCategory === category}
       >
         {category.charAt(0).toUpperCase() + category.slice(1)}
       </button>

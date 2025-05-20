@@ -32,7 +32,8 @@ export function useAllProducts(defaultProducts: any[]) {
     // eslint-disable-next-line
   }, []);
 
-  // Compute unique categories
+  // Compute unique categories from the products
   const categories = Array.from(new Set(products.map(p => p.category)));
+  
   return { products, categories };
 }
