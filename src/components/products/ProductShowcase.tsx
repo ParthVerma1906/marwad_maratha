@@ -10,23 +10,23 @@ import { useAllProducts } from "./useAllProducts";
 import initialProducts from "./productData";
 
 const ProductShowcase = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeCategory, setActiveCategory] = useState<string>("popular");
   const [showAllProducts, setShowAllProducts] = useState(false);
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
   const { products, categories: allCategories } = useAllProducts(initialProducts);
 
-  // Make sure "all" is the first category and remove any duplicate "all" entries
-  const categories = ["all", ...allCategories.filter(c => c !== "all")];
+  // Replace "all" with "popular" and ensure no duplicates
+  const categories = ["popular", ...allCategories];
 
-  // Filter products based on the selected category
-  const filteredByCategory = activeCategory === "all"
-    ? products
-    : products.filter((product) => product.category === activeCategory);
+  // Filter products based on selected category
+  const filteredProducts = activeCategory === "popular"
+    ? products.filter(product => product.isPopular)
+    : products.filter(product => product.category === activeCategory);
 
-  // Then apply the popularity filter if not showing all products
-  const displayedProducts = showAllProducts
-    ? filteredByCategory
-    : filteredByCategory.filter((product) => product.isPopular);
+  // Apply the show all or limited view
+  const displayedProducts = showAllProducts 
+    ? filteredProducts 
+    : filteredProducts.slice(0, 6); // Limit to 6 products when not showing all
 
   return (
     <section
@@ -43,7 +43,10 @@ const ProductShowcase = () => {
             <ProductCategories
               categories={categories}
               activeCategory={activeCategory}
-              onSelect={(cat) => setActiveCategory(cat)}
+              onSelect={(cat) => {
+                setActiveCategory(cat);
+                setShowAllProducts(false); // Reset to showing limited products when changing category
+              }}
             />
           </div>
         </div>
@@ -62,11 +65,13 @@ const ProductShowcase = () => {
           <ProductGrid products={displayedProducts} />
         </motion.div>
         
-        <ViewAllButton 
-          showAllProducts={showAllProducts} 
-          onClick={() => setShowAllProducts(!showAllProducts)} 
-          inView={inView} 
-        />
+        {filteredProducts.length > 6 && (
+          <ViewAllButton 
+            showAllProducts={showAllProducts} 
+            onClick={() => setShowAllProducts(!showAllProducts)} 
+            inView={inView} 
+          />
+        )}
       </div>
     </section>
   );

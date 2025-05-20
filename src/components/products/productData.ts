@@ -212,16 +212,6 @@ const initialProducts = [
     description: "Traditional rice papad.",
     ingredients: ["Rice Flour", "Spices"],
   },
-  {
-    id: 24,
-    name: "Potato Chips",
-    category: "papad",
-    price: 149,
-    image: "/images/masala-papad.jpg",
-    description: "Crispy hand-cut potato chips.",
-    ingredients: ["Potato", "Oil", "Salt"],
-    isPopular: true,
-  },
   // Dehydrated Powders
   {
     id: 25,
@@ -333,6 +323,16 @@ const initialProducts = [
     ingredients: ["Mixed Lentils", "Spices", "Oil"],
   },
   // Special Items
+  {
+    id: 24,
+    name: "Potato Chips",
+    category: "special",
+    price: 149,
+    image: "/images/masala-papad.jpg",
+    description: "Crispy hand-cut potato chips.",
+    ingredients: ["Potato", "Oil", "Salt"],
+    isPopular: true,
+  },
   {
     id: 37,
     name: "Wheat Kurodi",

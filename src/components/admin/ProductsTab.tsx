@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { syncProductData, initializeProducts } from "@/utils/adminSync";
@@ -20,7 +21,7 @@ const ProductsTab = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("popular");
 
   useEffect(() => {
     // Get the latest from localStorage or fallback
@@ -57,8 +58,8 @@ const ProductsTab = () => {
 
   const handleFilter = (category: string) => {
     setFilter(category);
-    if (category === "all") {
-      setProducts(allProducts);
+    if (category === "popular") {
+      setProducts(allProducts.filter(p => p.isPopular));
     } else {
       setProducts(allProducts.filter((p) => p.category === category));
     }
