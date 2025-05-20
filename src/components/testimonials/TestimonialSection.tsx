@@ -179,39 +179,6 @@ const TestimonialSection = () => {
               ></button>
             ))}
           </motion.div>
-
-          {/* Customer interview button */}
-          <motion.div
-            className="mt-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
-          >
-            <p className="mb-4 text-muted-foreground">
-              Want to share your experience with our products?
-            </p>
-            <motion.button
-              className="bg-saffron hover:bg-saffron/90 text-white rounded-full py-3 px-8 font-medium inline-flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Schedule a Video Interview
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2Z"></path>
-                <path d="m9 12 2 2 4-4"></path>
-              </svg>
-            </motion.button>
-          </motion.div>
         </div>
       </div>
     </section>
