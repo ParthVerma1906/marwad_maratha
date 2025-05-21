@@ -6,6 +6,8 @@ export interface Product {
   price: number;
   image: string;
   ingredients?: string[];
+  description?: string;
+  isPopular?: boolean;
 }
 
 export interface ProductFormData {
@@ -13,4 +15,6 @@ export interface ProductFormData {
   category: string;
   price: number;
   image: string;
+  description?: string;
+  isPopular?: boolean;
 }
