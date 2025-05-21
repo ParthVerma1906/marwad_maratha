@@ -37,13 +37,20 @@ const ProductCard = ({ product }: ProductProps) => {
     setShowDialog(true);
   };
 
-  // Always get correct image url
+  // Always get correct image url with support for base64 images
   const rawUrl = product.image;
   let imageUrl = rawUrl;
+  
+  // Handle base64 images
+  if (rawUrl.startsWith("data:image/")) {
+    imageUrl = rawUrl;
+  } 
   // Use placeholder as last fallback
-  if (!rawUrl || rawUrl === "/placeholder.svg") {
+  else if (!rawUrl || rawUrl === "/placeholder.svg") {
     imageUrl = "/placeholder.svg";
-  } else if (rawUrl.startsWith("/src/assets/")) {
+  } 
+  // Handle src/assets paths
+  else if (rawUrl.startsWith("/src/assets/")) {
     imageUrl = `/images/${rawUrl.split("/").pop()}`;
   }
 

@@ -1,8 +1,8 @@
-
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Upload } from "lucide-react";
 import { Product, ProductFormData } from "./types/product";
 import { getImageUrl } from "@/utils/imageAssets";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ProductFormProps {
   product?: Product;
@@ -12,6 +12,8 @@ interface ProductFormProps {
 }
 
 const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormProps) => {
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const categories = ["aachar", "papad", "powder", "millets", "namkeen", "special"];
   
   const [formData, setFormData] = React.useState<ProductFormData>({
@@ -23,32 +25,57 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
     isPopular: product?.isPopular || false
   });
 
+  // Track if the image has been changed from its initial value
+  const [imageChanged, setImageChanged] = useState(false);
+
   const triggerFileInput = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        // Store as a blob URL temporarily - in a real app, you'd upload this to a server
-        setFormData({...formData, image: imageUrl});
-      }
-    };
-    input.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Convert to base64 for persistent storage
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const base64String = event.target.result.toString();
+          setFormData({...formData, image: base64String});
+          setImageChanged(true);
+          toast({
+            title: "Image updated",
+            description: "Image will be saved when you update the product"
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Function to handle form submission with proper image processing
   const handleSave = () => {
-    // In a real application, we would upload the image to a server here
-    // For now, we'll just pass the data to the parent component
-    onSave(formData);
+    // Create a copy to avoid modifying the state directly
+    const dataToSave = {...formData};
+    
+    // If image wasn't changed and it's an existing product, keep the original image
+    if (!imageChanged && product && !isNew) {
+      dataToSave.image = product.image;
+    }
+    
+    onSave(dataToSave);
   };
 
-  // Fix image preview URL if it's a src/assets path
-  const imagePreviewUrl = formData.image.startsWith('/src/assets/') 
-    ? `/images/${formData.image.split('/').pop()}` 
-    : formData.image;
+  // Fix image preview URL if it's a src/assets path or base64
+  const getImagePreviewUrl = () => {
+    if (formData.image.startsWith('data:image/')) {
+      return formData.image; // It's already a base64 image
+    } else if (formData.image.startsWith('/src/assets/')) {
+      return `/images/${formData.image.split('/').pop()}`;
+    }
+    return formData.image;
+  };
 
   return (
     <div id="product-edit-form" className={`bg-muted/30 p-4 rounded-lg border ${!isNew ? "border-blue-300 shadow-md" : "border-muted"}`}>
@@ -62,7 +89,7 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
             {formData.image && formData.image !== '/placeholder.svg' ? (
               <div className="relative w-full h-full">
                 <img 
-                  src={imagePreviewUrl} 
+                  src={getImagePreviewUrl()} 
                   alt="Product preview" 
                   className="w-full h-full object-contain p-2"
                   onError={(e) => {
@@ -83,6 +110,15 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
               </>
             )}
           </div>
+          
+          {/* Hidden file input */}
+          <input 
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Name</label>
@@ -157,7 +193,7 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
           </button>
         )}
         <button
-          onClick={() => onSave(formData)}
+          onClick={handleSave}
           className="px-4 py-2 bg-maroon text-white rounded-lg flex items-center gap-2"
         >
           {isNew ? "Add Product" : "Update Product"}

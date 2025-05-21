@@ -21,6 +21,16 @@ const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
     }, 100);
   };
 
+  // Function to properly handle image display including base64 images
+  const getImageSrc = (image: string) => {
+    if (image.startsWith('data:image/')) {
+      return image;
+    } else if (image.startsWith('/src/assets/')) {
+      return `/images/${image.split('/').pop()}`;
+    }
+    return image;
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -42,7 +52,7 @@ const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
                 <div className="w-12 h-12 bg-muted/30 rounded overflow-hidden flex items-center justify-center">
                   {product.image ? (
                     <img 
-                      src={product.image} 
+                      src={getImageSrc(product.image)} 
                       alt={product.name} 
                       className="w-full h-full object-cover"
                       onError={(e: React.SyntheticEvent<HTMLImageElement>) => {

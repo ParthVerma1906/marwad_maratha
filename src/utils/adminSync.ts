@@ -1,19 +1,27 @@
+
 // This is a simple utility to help synchronize data between the admin panel and the frontend
 
 // Product synchronization
 export const syncProductData = (products) => {
-  // Process products to ensure they have all required fields
-  const processedProducts = products.map(product => ({
-    ...product,
-    ingredients: product.ingredients || []
-  }));
-  
-  // Save products to localStorage
-  localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
-  
-  // Create and dispatch a custom event that components can listen for
-  const event = new CustomEvent("productsUpdated", { detail: processedProducts });
-  window.dispatchEvent(event);
+  try {
+    // Process products to ensure they have all required fields
+    const processedProducts = products.map(product => ({
+      ...product,
+      ingredients: product.ingredients || []
+    }));
+    
+    // Save products to localStorage with proper encoding to handle base64 images
+    localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
+    
+    // Create and dispatch a custom event that components can listen for
+    const event = new CustomEvent("productsUpdated", { detail: processedProducts });
+    window.dispatchEvent(event);
+    
+    return true;
+  } catch (error) {
+    console.error("Error syncing product data:", error);
+    return false;
+  }
 };
 
 // Business information synchronization

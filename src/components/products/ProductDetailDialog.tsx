@@ -20,11 +20,14 @@ interface ProductDetailDialogProps {
 const ProductDetailDialog = ({ product, isOpen, onClose }: ProductDetailDialogProps) => {
   if (!product) return null;
 
-  // Image handling
+  // Image handling with support for base64 images
   const rawUrl = product.image;
   let imageUrl = rawUrl;
   
-  if (!rawUrl || rawUrl === "/placeholder.svg") {
+  // Base64 images start with data:image/
+  if (rawUrl.startsWith("data:image/")) {
+    imageUrl = rawUrl;
+  } else if (!rawUrl || rawUrl === "/placeholder.svg") {
     imageUrl = "/placeholder.svg";
   } else if (rawUrl.startsWith("/src/assets/")) {
     imageUrl = `/images/${rawUrl.split("/").pop()}`;
