@@ -7,14 +7,8 @@ import ProductTable from "./ProductTable";
 import ProductForm from "./ProductForm";
 import type { Product } from "./types/product";
 
-// Import the complete product list from ProductShowcase (as initial default list)
+// Import the initial product list if needed
 import initialProducts from "../products/productData";
-
-// Helper to get full initial product data if needed
-const getInitialProducts = () => {
-  // fallback default product if import fails
-  return initialProducts || [];
-};
 
 const ProductsTab = () => {
   const { toast } = useToast();
@@ -22,40 +16,69 @@ const ProductsTab = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [filter, setFilter] = useState("popular");
+  const [loading, setLoading] = useState(true);
 
+  // Load products from localStorage or initialize with defaults
   useEffect(() => {
-    // Get the latest from localStorage or fallback
     try {
+      // Get stored products or initialize if missing
       const storedProducts = localStorage.getItem("adminProducts");
-      let loadedProducts: Product[] =
-        storedProducts && storedProducts !== "[]" ? JSON.parse(storedProducts) : [];
-
-      if (!loadedProducts.length) {
-        // Initialize if missing
-        const initialList = getInitialProducts();
-        initializeProducts(initialList);
-        loadedProducts = initialList;
+      
+      let loadedProducts: Product[];
+      if (storedProducts && storedProducts !== "[]") {
+        loadedProducts = JSON.parse(storedProducts);
+        console.log("Loaded products from localStorage:", loadedProducts.length);
+      } else {
+        // Initialize with defaults if no products found
+        loadedProducts = initializeProducts(initialProducts);
+        console.log("Initialized products:", loadedProducts.length);
       }
+      
       setAllProducts(loadedProducts);
-      setProducts(loadedProducts);
+      
+      // Apply initial filter
+      if (filter === "popular") {
+        setProducts(loadedProducts.filter(p => p.isPopular));
+      } else {
+        setProducts(loadedProducts);
+      }
     } catch (error) {
+      console.error("Error loading products:", error);
       setAllProducts([]);
       setProducts([]);
+      
+      // Try to recover by initializing with defaults
+      const recoveryProducts = initializeProducts(initialProducts);
+      setAllProducts(recoveryProducts);
+      setProducts(recoveryProducts);
+    } finally {
+      setLoading(false);
     }
 
-    const listener = () => {
-      const storedProducts = localStorage.getItem("adminProducts");
-      let loadedProducts: Product[] =
-        storedProducts && storedProducts !== "[]" ? JSON.parse(storedProducts) : [];
-      setAllProducts(loadedProducts || []);
-      setProducts(loadedProducts || []);
+    // Listen for product updates from other components
+    const handleProductsUpdated = () => {
+      try {
+        const updatedProducts = JSON.parse(localStorage.getItem("adminProducts") || "[]");
+        setAllProducts(updatedProducts);
+        
+        // Maintain current filter
+        if (filter === "popular") {
+          setProducts(updatedProducts.filter(p => p.isPopular));
+        } else {
+          setProducts(updatedProducts.filter(p => p.category === filter));
+        }
+      } catch (error) {
+        console.error("Error handling product update event:", error);
+      }
     };
-    window.addEventListener("productsUpdated", listener);
+    
+    window.addEventListener("productsUpdated", handleProductsUpdated);
     return () => {
-      window.removeEventListener("productsUpdated", listener);
+      window.removeEventListener("productsUpdated", handleProductsUpdated);
     };
   }, []);
 
+  // Handle filter changes
   const handleFilter = (category: string) => {
     setFilter(category);
     if (category === "popular") {
@@ -65,38 +88,55 @@ const ProductsTab = () => {
     }
   };
 
+  // Update an existing product
   const handleUpdate = (formData: any) => {
     if (!editingProduct) return;
-    const updatedProducts = allProducts.map((p) =>
-      p.id === editingProduct.id ? { ...editingProduct, ...formData } : p
-    );
-    setAllProducts(updatedProducts);
-    setProducts(filter === "popular" 
-      ? updatedProducts.filter(p => p.isPopular) 
-      : updatedProducts.filter((p) => p.category === filter));
     
+    const updatedProducts = allProducts.map((p) =>
+      p.id === editingProduct.id ? { ...p, ...formData } : p
+    );
+    
+    // Update state and persist to localStorage
+    setAllProducts(updatedProducts);
+    if (filter === "popular") {
+      setProducts(updatedProducts.filter(p => p.isPopular));
+    } else {
+      setProducts(updatedProducts.filter((p) => p.category === filter));
+    }
+    
+    // Sync to localStorage and notify other components
     syncProductData(updatedProducts);
+    
     toast({
       title: "Product updated",
       description: `${formData.name} has been updated successfully.`,
     });
+    
     setEditingProduct(null);
   };
 
+  // Delete a product
   const handleDelete = (id: number) => {
     const updatedProducts = allProducts.filter((p) => p.id !== id);
-    setAllProducts(updatedProducts);
-    setProducts(filter === "popular" 
-      ? updatedProducts.filter(p => p.isPopular) 
-      : updatedProducts.filter((p) => p.category === filter));
     
+    // Update state and persist
+    setAllProducts(updatedProducts);
+    if (filter === "popular") {
+      setProducts(updatedProducts.filter(p => p.isPopular));
+    } else {
+      setProducts(updatedProducts.filter((p) => p.category === filter));
+    }
+    
+    // Sync to localStorage
     syncProductData(updatedProducts);
+    
     toast({
       title: "Product deleted",
       description: "The product has been removed successfully.",
     });
   };
 
+  // Add a new product
   const handleAddProduct = (formData: any) => {
     if (!formData.name || formData.price <= 0) {
       toast({
@@ -110,17 +150,27 @@ const ProductsTab = () => {
     const id = Math.max(...allProducts.map((p) => p.id), 0) + 1;
     const productToAdd = { id, ...formData };
     const updatedProducts = [...allProducts, productToAdd];
-    setAllProducts(updatedProducts);
-    setProducts(filter === "popular" 
-      ? updatedProducts.filter(p => p.isPopular) 
-      : updatedProducts.filter((p) => p.category === filter));
     
+    // Update state
+    setAllProducts(updatedProducts);
+    if (filter === "popular") {
+      setProducts(updatedProducts.filter(p => p.isPopular));
+    } else {
+      setProducts(updatedProducts.filter((p) => p.category === filter));
+    }
+    
+    // Sync to localStorage
     syncProductData(updatedProducts);
+    
     toast({
       title: "Product added",
       description: `${formData.name} has been added successfully.`,
     });
   };
+
+  if (loading) {
+    return <div className="p-4">Loading products...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -133,6 +183,7 @@ const ProductsTab = () => {
           onDelete={handleDelete}
         />
       </div>
+      
       {editingProduct && (
         <ProductForm
           product={editingProduct}
@@ -140,6 +191,7 @@ const ProductsTab = () => {
           onCancel={() => setEditingProduct(null)}
         />
       )}
+      
       <ProductForm onSave={handleAddProduct} isNew />
     </div>
   );

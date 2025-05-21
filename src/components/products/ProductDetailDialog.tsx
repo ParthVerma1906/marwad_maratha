@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Image } from "lucide-react";
 
 interface ProductDetailDialogProps {
@@ -20,18 +20,19 @@ interface ProductDetailDialogProps {
 const ProductDetailDialog = ({ product, isOpen, onClose }: ProductDetailDialogProps) => {
   if (!product) return null;
 
-  // Image handling with support for base64 images
-  const rawUrl = product.image;
-  let imageUrl = rawUrl;
-  
-  // Base64 images start with data:image/
-  if (rawUrl.startsWith("data:image/")) {
-    imageUrl = rawUrl;
-  } else if (!rawUrl || rawUrl === "/placeholder.svg") {
-    imageUrl = "/placeholder.svg";
-  } else if (rawUrl.startsWith("/src/assets/")) {
-    imageUrl = `/images/${rawUrl.split("/").pop()}`;
-  }
+  // Consistent image handling logic
+  const getImageUrl = (rawUrl: string) => {
+    if (!rawUrl || rawUrl === "/placeholder.svg") {
+      return "/placeholder.svg";
+    } else if (rawUrl.startsWith("data:image/")) {
+      return rawUrl; // Base64 image
+    } else if (rawUrl.startsWith("/src/assets/")) {
+      return `/images/${rawUrl.split("/").pop()}`;
+    }
+    return rawUrl;
+  };
+
+  const imageUrl = getImageUrl(product.image);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -40,7 +41,7 @@ const ProductDetailDialog = ({ product, isOpen, onClose }: ProductDetailDialogPr
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div className="bg-muted/30 rounded-lg overflow-hidden flex items-center justify-center h-[250px] md:h-[300px]">
-            {imageUrl ? (
+            {imageUrl && imageUrl !== "/placeholder.svg" ? (
               <img 
                 src={imageUrl} 
                 alt={product.name} 

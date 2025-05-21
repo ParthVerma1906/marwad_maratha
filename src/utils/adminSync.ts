@@ -1,22 +1,26 @@
 
-// This is a simple utility to help synchronize data between the admin panel and the frontend
+// This is a utility to synchronize data between the admin panel and the frontend
 
 // Product synchronization
 export const syncProductData = (products) => {
   try {
-    // Process products to ensure they have all required fields
+    // Process products to ensure all required fields are preserved
     const processedProducts = products.map(product => ({
       ...product,
-      ingredients: product.ingredients || []
+      ingredients: product.ingredients || [],
+      // Ensure these fields are always included even if undefined
+      description: product.description || "",
+      isPopular: Boolean(product.isPopular)
     }));
     
-    // Save products to localStorage with proper encoding to handle base64 images
+    // Save products to localStorage with proper handling for base64 images
     localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
     
     // Create and dispatch a custom event that components can listen for
     const event = new CustomEvent("productsUpdated", { detail: processedProducts });
     window.dispatchEvent(event);
     
+    console.log("Products successfully synced to localStorage:", processedProducts.length);
     return true;
   } catch (error) {
     console.error("Error syncing product data:", error);
@@ -35,17 +39,28 @@ export const syncBusinessInfo = (info) => {
 
 // Initialize with default products if not already set
 export const initializeProducts = (defaultProducts) => {
-  // Ensure all products have the required fields, including empty ingredients array if missing
+  // Process default products to ensure consistent structure
   const processedProducts = defaultProducts.map(product => ({
     ...product,
-    // Add empty array for ingredients if it doesn't exist
-    ingredients: product.ingredients || []
+    ingredients: product.ingredients || [],
+    description: product.description || "",
+    isPopular: Boolean(product.isPopular)
   }));
   
+  // Only initialize if no products exist in localStorage
   if (!localStorage.getItem("adminProducts")) {
     localStorage.setItem("adminProducts", JSON.stringify(processedProducts));
+    console.log("Initialized products in localStorage:", processedProducts.length);
   }
-  return JSON.parse(localStorage.getItem("adminProducts") || "[]");
+  
+  // Return the current products from localStorage
+  try {
+    const storedProducts = JSON.parse(localStorage.getItem("adminProducts") || "[]");
+    return storedProducts;
+  } catch (error) {
+    console.error("Error parsing stored products, returning defaults:", error);
+    return processedProducts;
+  }
 };
 
 // Get business information
@@ -69,12 +84,14 @@ export const getBusinessInfo = () => {
   return defaultInfo;
 };
 
-// Get all products or filter by categories
+// Get all products or filter by categories with consistent structure
 export const getProducts = (category = null) => {
   try {
     const products = JSON.parse(localStorage.getItem("adminProducts") || "[]").map(product => ({
       ...product,
-      ingredients: product.ingredients || [] // Ensure ingredients is never undefined
+      ingredients: product.ingredients || [],
+      description: product.description || "",
+      isPopular: Boolean(product.isPopular)
     }));
     
     if (category) {
@@ -87,12 +104,14 @@ export const getProducts = (category = null) => {
   }
 };
 
-// Get popular products (those marked as isPopular or a sampling of each category)
+// Get popular products with consistent structure
 export const getPopularProducts = (limit = 8) => {
   try {
     const products = JSON.parse(localStorage.getItem("adminProducts") || "[]").map(product => ({
       ...product,
-      ingredients: product.ingredients || [] // Ensure ingredients is never undefined
+      ingredients: product.ingredients || [],
+      description: product.description || "",
+      isPopular: Boolean(product.isPopular)
     }));
     
     // First try to get products specifically marked as popular

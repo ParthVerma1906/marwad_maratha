@@ -17,13 +17,20 @@ const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
       const editForm = document.getElementById('product-edit-form');
       if (editForm) {
         editForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Add highlight effect
+        editForm.classList.add('bg-blue-100');
+        setTimeout(() => {
+          editForm.classList.remove('bg-blue-100');
+        }, 1500);
       }
     }, 100);
   };
 
   // Function to properly handle image display including base64 images
   const getImageSrc = (image: string) => {
-    if (image.startsWith('data:image/')) {
+    if (!image || image === "/placeholder.svg") {
+      return "/placeholder.svg";
+    } else if (image.startsWith('data:image/')) {
       return image;
     } else if (image.startsWith('/src/assets/')) {
       return `/images/${image.split('/').pop()}`;

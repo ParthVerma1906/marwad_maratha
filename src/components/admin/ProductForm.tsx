@@ -1,7 +1,7 @@
+
 import React, { useState, useRef } from 'react';
 import { Upload } from "lucide-react";
 import { Product, ProductFormData } from "./types/product";
-import { getImageUrl } from "@/utils/imageAssets";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ProductFormProps {
@@ -22,7 +22,7 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
     price: product?.price || 0,
     image: product?.image || "/placeholder.svg",
     description: product?.description || "",
-    isPopular: product?.isPopular || false
+    isPopular: product?.isPopular || false,
   });
 
   // Track if the image has been changed from its initial value
@@ -37,6 +37,16 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (2MB limit)
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "File too large",
+          description: "Image must be less than 2MB"
+        });
+        return;
+      }
+      
       // Convert to base64 for persistent storage
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -54,7 +64,7 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
     }
   };
 
-  // Function to handle form submission with proper image processing
+  // Handle form submission with proper image processing
   const handleSave = () => {
     // Create a copy to avoid modifying the state directly
     const dataToSave = {...formData};
@@ -65,20 +75,40 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
     }
     
     onSave(dataToSave);
+    
+    // Reset form if it's a new product
+    if (isNew) {
+      setFormData({
+        name: "",
+        category: "aachar",
+        price: 0,
+        image: "/placeholder.svg",
+        description: "",
+        isPopular: false
+      });
+      setImageChanged(false);
+    }
   };
 
-  // Fix image preview URL if it's a src/assets path or base64
+  // Get image preview URL with consistent handling
   const getImagePreviewUrl = () => {
-    if (formData.image.startsWith('data:image/')) {
-      return formData.image; // It's already a base64 image
-    } else if (formData.image.startsWith('/src/assets/')) {
-      return `/images/${formData.image.split('/').pop()}`;
+    const imageUrl = formData.image;
+    
+    if (!imageUrl || imageUrl === "/placeholder.svg") {
+      return "/placeholder.svg";
+    } else if (imageUrl.startsWith('data:image/')) {
+      return imageUrl; // It's already a base64 image
+    } else if (imageUrl.startsWith('/src/assets/')) {
+      return `/images/${imageUrl.split('/').pop()}`;
     }
-    return formData.image;
+    return imageUrl;
   };
 
   return (
-    <div id="product-edit-form" className={`bg-muted/30 p-4 rounded-lg border ${!isNew ? "border-blue-300 shadow-md" : "border-muted"}`}>
+    <div 
+      id="product-edit-form" 
+      className={`bg-muted/30 p-4 rounded-lg border transition-all duration-300 ${!isNew ? "border-blue-300 shadow-md" : "border-muted"}`}
+    >
       <h4 className="font-medium mb-3">{isNew ? "Add New Product" : `Edit Product: ${product?.name}`}</h4>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
@@ -188,13 +218,15 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
           <button
             onClick={onCancel}
             className="px-4 py-2 border border-muted rounded-lg"
+            type="button"
           >
             Cancel
           </button>
         )}
         <button
           onClick={handleSave}
-          className="px-4 py-2 bg-maroon text-white rounded-lg flex items-center gap-2"
+          className="px-4 py-2 bg-maroon text-white rounded-lg"
+          type="button"
         >
           {isNew ? "Add Product" : "Update Product"}
         </button>
