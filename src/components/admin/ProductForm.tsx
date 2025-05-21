@@ -18,7 +18,9 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
     name: product?.name || "",
     category: product?.category || "aachar",
     price: product?.price || 0,
-    image: product?.image || "/placeholder.svg"
+    image: product?.image || "/placeholder.svg",
+    description: product?.description || "",
+    isPopular: product?.isPopular || false
   });
 
   const triggerFileInput = () => {
@@ -49,8 +51,8 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
     : formData.image;
 
   return (
-    <div className="bg-muted/30 p-4 rounded-lg border border-muted">
-      <h4 className="font-medium mb-3">{isNew ? "Add New Product" : "Edit Product"}</h4>
+    <div id="product-edit-form" className={`bg-muted/30 p-4 rounded-lg border ${!isNew ? "border-blue-300 shadow-md" : "border-muted"}`}>
+      <h4 className="font-medium mb-3">{isNew ? "Add New Product" : `Edit Product: ${product?.name}`}</h4>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <div 
@@ -118,6 +120,33 @@ const ProductForm = ({ product, onSave, onCancel, isNew = false }: ProductFormPr
           />
         </div>
       </div>
+      
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Description</label>
+          <textarea
+            value={formData.description || ""}
+            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            className="w-full px-3 py-2 border border-muted rounded-lg"
+            placeholder="Product description"
+            rows={3}
+          />
+        </div>
+        
+        <div className="flex items-center">
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.isPopular || false}
+              onChange={(e) => setFormData({...formData, isPopular: e.target.checked})}
+              className="sr-only peer"
+            />
+            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-saffron/50 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-saffron"></div>
+            <span className="ml-3 text-sm font-medium">Mark as Popular</span>
+          </label>
+        </div>
+      </div>
+      
       <div className="mt-4 flex justify-end gap-2">
         {onCancel && (
           <button

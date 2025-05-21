@@ -71,7 +71,10 @@ const ProductsTab = () => {
       p.id === editingProduct.id ? { ...editingProduct, ...formData } : p
     );
     setAllProducts(updatedProducts);
-    setProducts(filter === "all" ? updatedProducts : updatedProducts.filter((p) => p.category === filter));
+    setProducts(filter === "popular" 
+      ? updatedProducts.filter(p => p.isPopular) 
+      : updatedProducts.filter((p) => p.category === filter));
+    
     syncProductData(updatedProducts);
     toast({
       title: "Product updated",
@@ -83,7 +86,10 @@ const ProductsTab = () => {
   const handleDelete = (id: number) => {
     const updatedProducts = allProducts.filter((p) => p.id !== id);
     setAllProducts(updatedProducts);
-    setProducts(filter === "all" ? updatedProducts : updatedProducts.filter((p) => p.category === filter));
+    setProducts(filter === "popular" 
+      ? updatedProducts.filter(p => p.isPopular) 
+      : updatedProducts.filter((p) => p.category === filter));
+    
     syncProductData(updatedProducts);
     toast({
       title: "Product deleted",
@@ -105,7 +111,10 @@ const ProductsTab = () => {
     const productToAdd = { id, ...formData };
     const updatedProducts = [...allProducts, productToAdd];
     setAllProducts(updatedProducts);
-    setProducts(filter === "all" ? updatedProducts : updatedProducts.filter((p) => p.category === filter));
+    setProducts(filter === "popular" 
+      ? updatedProducts.filter(p => p.isPopular) 
+      : updatedProducts.filter((p) => p.category === filter));
+    
     syncProductData(updatedProducts);
     toast({
       title: "Product added",

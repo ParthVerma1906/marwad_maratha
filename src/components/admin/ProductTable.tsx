@@ -9,6 +9,18 @@ interface ProductTableProps {
 }
 
 const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
+  const handleEdit = (product: Product) => {
+    onEdit(product);
+    
+    // Scroll to the edit form with a small delay to ensure it's rendered
+    setTimeout(() => {
+      const editForm = document.getElementById('product-edit-form');
+      if (editForm) {
+        editForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -50,7 +62,7 @@ const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
               <td className="p-3">
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => onEdit(product)}
+                    onClick={() => handleEdit(product)}
                     className="p-1 text-blue-600 hover:text-blue-800"
                     title="Edit product"
                   >
