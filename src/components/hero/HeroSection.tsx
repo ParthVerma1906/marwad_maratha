@@ -1,6 +1,8 @@
 
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { useState } from "react";
+import { getImageUrl } from "@/utils/imageAssets";
 
 const HeroSection = () => {
   const images = [
@@ -11,6 +13,17 @@ const HeroSection = () => {
     "/images/garlic-pickle.jpg",
     "/images/lemon-pickle.jpg"
   ];
+
+  // Track which images have loaded successfully
+  const [imageLoadError, setImageLoadError] = useState<Record<string, boolean>>({});
+
+  const handleImageError = (index: number) => {
+    setImageLoadError(prev => ({
+      ...prev,
+      [index]: true
+    }));
+    console.log(`Image failed to load: ${images[index]}, falling back to placeholder`);
+  };
 
   return (
     <section
@@ -120,9 +133,11 @@ const HeroSection = () => {
                         transition={{ duration: 0.2 }}
                       >
                         <img
-                          src={image}
+                          src={imageLoadError[index] ? "/placeholder.svg" : image}
                           alt={`Product ${index + 1}`}
                           className="w-full h-full object-cover"
+                          onError={() => handleImageError(index)}
+                          loading="eager"
                         />
                       </motion.div>
                     </div>
