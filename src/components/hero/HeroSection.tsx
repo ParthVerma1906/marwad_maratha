@@ -1,28 +1,54 @@
 
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
-import { useState } from "react";
-import { getImageUrl } from "@/utils/imageAssets";
+import { useState, useEffect } from "react";
+import { productImages } from "@/utils/imageAssets";
 
 const HeroSection = () => {
+  // Use the product images from our utilities
   const images = [
-    "/images/mango-pickle.jpg",
-    "/images/masala-papad.jpg",
-    "/images/mirchi-pickle.jpg",
-    "/images/rice-papad.jpg",
-    "/images/garlic-pickle.jpg",
-    "/images/lemon-pickle.jpg"
+    productImages.mangoPickle,
+    productImages.masalaPapad,
+    productImages.mirchiPickle,
+    productImages.ricePapad,
+    productImages.garlicPickle,
+    productImages.lemonPickle
   ];
 
-  // Track which images have loaded successfully
-  const [imageLoadError, setImageLoadError] = useState<Record<string, boolean>>({});
+  // Track loading state for each image
+  const [imageStatus, setImageStatus] = useState<Record<number, 'loading' | 'error' | 'loaded'>>({});
+  
+  // Preload images
+  useEffect(() => {
+    const preloadImages = () => {
+      images.forEach((src, index) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          setImageStatus(prev => ({
+            ...prev,
+            [index]: 'loaded'
+          }));
+        };
+        img.onerror = () => {
+          console.log(`Failed to preload image: ${src}`);
+          setImageStatus(prev => ({
+            ...prev,
+            [index]: 'error'
+          }));
+        };
+      });
+    };
+    
+    preloadImages();
+  }, []);
 
-  const handleImageError = (index: number) => {
-    setImageLoadError(prev => ({
-      ...prev,
-      [index]: true
-    }));
-    console.log(`Image failed to load: ${images[index]}, falling back to placeholder`);
+  // Get appropriate image source based on loading status
+  const getImageSrc = (index: number) => {
+    if (imageStatus[index] === 'error') {
+      return "/placeholder.svg";
+    }
+    return images[index];
   };
 
   return (
@@ -133,10 +159,16 @@ const HeroSection = () => {
                         transition={{ duration: 0.2 }}
                       >
                         <img
-                          src={imageLoadError[index] ? "/placeholder.svg" : image}
+                          src={getImageSrc(index)}
                           alt={`Product ${index + 1}`}
                           className="w-full h-full object-cover"
-                          onError={() => handleImageError(index)}
+                          onError={() => {
+                            setImageStatus(prev => ({
+                              ...prev,
+                              [index]: 'error'
+                            }));
+                            console.log(`Image failed to load: ${images[index]}, falling back to placeholder`);
+                          }}
                           loading="eager"
                         />
                       </motion.div>
