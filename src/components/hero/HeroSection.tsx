@@ -1,82 +1,41 @@
 
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { productImages } from "@/utils/imageAssets";
 
 const HeroSection = () => {
-  // Use the new uploaded product images with proper paths
+  // Use reliable images for hero carousel
   const heroImages = [
     {
       src: productImages.mangoPickle,
-      alt: "Traditional Mango Pickle with Fresh Papads",
+      alt: "Traditional Indian Spices and Authentic Flavors",
       title: "Authentic Mango Pickle"
     },
     {
       src: productImages.masalaPapad,
-      alt: "Handcrafted Pickles and Traditional Preparation",
+      alt: "Traditional Indian Cooking and Handmade Preparation",
       title: "Handmade with Love"
     },
     {
       src: productImages.mirchiPickle,
-      alt: "Royal Heritage Pickles and Papads Collection",
+      alt: "Traditional Indian Spices and Heritage Recipes",
       title: "Heritage Recipes"
     }
   ];
 
-  // Track loading state for each image
-  const [imageStatus, setImageStatus] = useState<Record<number, 'loading' | 'error' | 'loaded'>>({});
-  
-  // Debug image loading
-  useEffect(() => {
-    console.log('Hero images array:', heroImages);
-    heroImages.forEach((img, index) => {
-      console.log(`Image ${index}: ${img.src}`);
-    });
-  }, []);
-  
-  // Preload images with better error handling
-  useEffect(() => {
-    const preloadImages = () => {
-      heroImages.forEach((image, index) => {
-        console.log(`Attempting to preload image ${index}: ${image.src}`);
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = image.src;
-        
-        img.onload = () => {
-          console.log(`Successfully loaded image ${index}: ${image.src}`);
-          setImageStatus(prev => ({
-            ...prev,
-            [index]: 'loaded'
-          }));
-        };
-        
-        img.onerror = (error) => {
-          console.error(`Failed to preload image ${index}: ${image.src}`, error);
-          setImageStatus(prev => ({
-            ...prev,
-            [index]: 'error'
-          }));
-        };
-      });
-    };
-    
-    preloadImages();
-  }, []);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
-  // Get appropriate image source based on loading status
+  const handleImageError = (index: number) => {
+    console.log(`Image ${index} failed to load, using placeholder`);
+    setImageErrors(prev => new Set([...prev, index]));
+  };
+
   const getImageSrc = (index: number) => {
-    const status = imageStatus[index];
-    const originalSrc = heroImages[index].src;
-    
-    console.log(`Getting image src for index ${index}: status=${status}, originalSrc=${originalSrc}`);
-    
-    if (status === 'error') {
-      console.log(`Using placeholder for index ${index} due to error`);
+    if (imageErrors.has(index)) {
       return "/placeholder.svg";
     }
-    return originalSrc;
+    return heroImages[index].src;
   };
 
   return (
@@ -191,15 +150,9 @@ const HeroSection = () => {
                           alt={image.alt}
                           className="w-full h-full object-cover"
                           onLoad={() => {
-                            console.log(`Image ${index} loaded successfully in DOM`);
+                            console.log(`Image ${index} loaded successfully`);
                           }}
-                          onError={(e) => {
-                            console.error(`Image ${index} failed to load in DOM:`, e);
-                            setImageStatus(prev => ({
-                              ...prev,
-                              [index]: 'error'
-                            }));
-                          }}
+                          onError={() => handleImageError(index)}
                           loading="eager"
                         />
                         <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-md backdrop-blur-sm">
