@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { productImages } from "@/utils/imageAssets";
 
 const HeroSection = () => {
-  // Use the new uploaded product images
+  // Use the new uploaded product images with proper paths
   const heroImages = [
     {
       src: productImages.mangoPickle,
@@ -27,20 +27,33 @@ const HeroSection = () => {
   // Track loading state for each image
   const [imageStatus, setImageStatus] = useState<Record<number, 'loading' | 'error' | 'loaded'>>({});
   
-  // Preload images
+  // Debug image loading
+  useEffect(() => {
+    console.log('Hero images array:', heroImages);
+    heroImages.forEach((img, index) => {
+      console.log(`Image ${index}: ${img.src}`);
+    });
+  }, []);
+  
+  // Preload images with better error handling
   useEffect(() => {
     const preloadImages = () => {
       heroImages.forEach((image, index) => {
+        console.log(`Attempting to preload image ${index}: ${image.src}`);
         const img = new Image();
+        img.crossOrigin = "anonymous";
         img.src = image.src;
+        
         img.onload = () => {
+          console.log(`Successfully loaded image ${index}: ${image.src}`);
           setImageStatus(prev => ({
             ...prev,
             [index]: 'loaded'
           }));
         };
-        img.onerror = () => {
-          console.log(`Failed to preload image: ${image.src}`);
+        
+        img.onerror = (error) => {
+          console.error(`Failed to preload image ${index}: ${image.src}`, error);
           setImageStatus(prev => ({
             ...prev,
             [index]: 'error'
@@ -54,10 +67,16 @@ const HeroSection = () => {
 
   // Get appropriate image source based on loading status
   const getImageSrc = (index: number) => {
-    if (imageStatus[index] === 'error') {
+    const status = imageStatus[index];
+    const originalSrc = heroImages[index].src;
+    
+    console.log(`Getting image src for index ${index}: status=${status}, originalSrc=${originalSrc}`);
+    
+    if (status === 'error') {
+      console.log(`Using placeholder for index ${index} due to error`);
       return "/placeholder.svg";
     }
-    return heroImages[index].src;
+    return originalSrc;
   };
 
   return (
@@ -171,12 +190,15 @@ const HeroSection = () => {
                           src={getImageSrc(index)}
                           alt={image.alt}
                           className="w-full h-full object-cover"
-                          onError={() => {
+                          onLoad={() => {
+                            console.log(`Image ${index} loaded successfully in DOM`);
+                          }}
+                          onError={(e) => {
+                            console.error(`Image ${index} failed to load in DOM:`, e);
                             setImageStatus(prev => ({
                               ...prev,
                               [index]: 'error'
                             }));
-                            console.log(`Image failed to load: ${heroImages[index].src}, falling back to placeholder`);
                           }}
                           loading="eager"
                         />

@@ -4,7 +4,7 @@
  * In a production environment, these images would be properly processed by the build system.
  */
 
-// Updated with actual uploaded images for hero carousel
+// Updated with actual uploaded images for hero carousel - using correct public paths
 export const productImages = {
   mangoPickle: "/lovable-uploads/aea4bde8-31cc-4d62-a906-6b79f9900eeb.png", // Beautiful mango pickle with papads
   masalaPapad: "/lovable-uploads/0a90b903-0fbf-493c-afbf-529d351c55c3.png", // Traditional hands with pickle jars
@@ -16,6 +16,11 @@ export const productImages = {
 };
 
 export const getImageUrl = (imagePath: string) => {
+  // Handle lovable uploads
+  if (imagePath.startsWith('/lovable-uploads/')) {
+    return imagePath;
+  }
+  // Handle legacy src/assets paths
   if (imagePath.startsWith('/src/assets/')) {
     return `/images/${imagePath.split('/').pop()}`;
   }
