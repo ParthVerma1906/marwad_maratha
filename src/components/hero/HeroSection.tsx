@@ -5,14 +5,23 @@ import { useState, useEffect } from "react";
 import { productImages } from "@/utils/imageAssets";
 
 const HeroSection = () => {
-  // Use the product images from our utilities
-  const images = [
-    productImages.mangoPickle,
-    productImages.masalaPapad,
-    productImages.mirchiPickle,
-    productImages.ricePapad,
-    productImages.garlicPickle,
-    productImages.lemonPickle
+  // Use the new uploaded product images
+  const heroImages = [
+    {
+      src: productImages.mangoPickle,
+      alt: "Traditional Mango Pickle with Fresh Papads",
+      title: "Authentic Mango Pickle"
+    },
+    {
+      src: productImages.masalaPapad,
+      alt: "Handcrafted Pickles and Traditional Preparation",
+      title: "Handmade with Love"
+    },
+    {
+      src: productImages.mirchiPickle,
+      alt: "Royal Heritage Pickles and Papads Collection",
+      title: "Heritage Recipes"
+    }
   ];
 
   // Track loading state for each image
@@ -21,9 +30,9 @@ const HeroSection = () => {
   // Preload images
   useEffect(() => {
     const preloadImages = () => {
-      images.forEach((src, index) => {
+      heroImages.forEach((image, index) => {
         const img = new Image();
-        img.src = src;
+        img.src = image.src;
         img.onload = () => {
           setImageStatus(prev => ({
             ...prev,
@@ -31,7 +40,7 @@ const HeroSection = () => {
           }));
         };
         img.onerror = () => {
-          console.log(`Failed to preload image: ${src}`);
+          console.log(`Failed to preload image: ${image.src}`);
           setImageStatus(prev => ({
             ...prev,
             [index]: 'error'
@@ -48,7 +57,7 @@ const HeroSection = () => {
     if (imageStatus[index] === 'error') {
       return "/placeholder.svg";
     }
-    return images[index];
+    return heroImages[index].src;
   };
 
   return (
@@ -150,7 +159,7 @@ const HeroSection = () => {
           >
             <Carousel className="w-full h-full">
               <CarouselContent>
-                {images.map((image, index) => (
+                {heroImages.map((image, index) => (
                   <CarouselItem key={index}>
                     <div className="w-full h-full p-1">
                       <motion.div
@@ -160,17 +169,20 @@ const HeroSection = () => {
                       >
                         <img
                           src={getImageSrc(index)}
-                          alt={`Product ${index + 1}`}
+                          alt={image.alt}
                           className="w-full h-full object-cover"
                           onError={() => {
                             setImageStatus(prev => ({
                               ...prev,
                               [index]: 'error'
                             }));
-                            console.log(`Image failed to load: ${images[index]}, falling back to placeholder`);
+                            console.log(`Image failed to load: ${heroImages[index].src}, falling back to placeholder`);
                           }}
                           loading="eager"
                         />
+                        <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-md backdrop-blur-sm">
+                          <p className="text-sm font-medium">{image.title}</p>
+                        </div>
                       </motion.div>
                     </div>
                   </CarouselItem>
