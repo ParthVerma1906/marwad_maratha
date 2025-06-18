@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
@@ -77,153 +78,144 @@ const HeroSection = () => {
   return (
     <section
       id="home"
-      className="min-h-screen pt-16 relative overflow-hidden bg-gradient-to-br from-spiceYellow/30 via-background to-background"
+      className="relative h-screen w-full overflow-hidden"
     >
-      <div className="absolute top-20 right-20 w-32 h-32 rounded-full bg-turmeric/20 blur-3xl"></div>
-      <div className="absolute bottom-10 left-10 w-64 h-64 rounded-full bg-maroon/10 blur-3xl"></div>
-      <div className="absolute inset-0 bg-spice-pattern opacity-5"></div>
+      {/* Background Image Carousel */}
+      <div className="absolute inset-0 w-full h-full">
+        <Carousel 
+          className="w-full h-full"
+          setApi={setApi}
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
+          <CarouselContent className="h-full">
+            {heroImages.map((image, index) => (
+              <CarouselItem key={index} className="h-full">
+                <div className="relative w-full h-full">
+                  <img
+                    src={getImageSrc(index)}
+                    alt={image.alt}
+                    className="w-full h-full object-cover"
+                    onLoad={() => handleImageLoad(index)}
+                    onError={() => handleImageError(index)}
+                    loading="eager"
+                  />
+                  
+                  {/* Loading indicator */}
+                  {!loadedImages.has(index) && !imageErrors.has(index) && (
+                    <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-saffron"></div>
+                    </div>
+                  )}
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4 z-20" />
+          <CarouselNext className="right-4 z-20" />
+        </Carousel>
+      </div>
 
-      <div className="container mx-auto grid md:grid-cols-2 gap-8 items-center min-h-[calc(100vh-4rem)] py-12">
-        <div className="order-2 md:order-1">
+      {/* Dark Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#5d1f1f]/80 via-[#5d1f1f]/40 to-transparent z-10"></div>
+
+      {/* Hero Content */}
+      <div className="relative z-20 h-full flex items-center justify-center">
+        <div className="container mx-auto px-4 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6"
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="space-y-6 max-w-4xl mx-auto"
           >
-            <span className="inline-block font-display text-saffron tracking-wider">
-              Est. 2017
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heritage font-bold leading-tight">
-              <span className="text-maroon">Flavours of Tradition.</span>
-              <br />
-              <span className="text-saffron">Taste of Home.</span>
+            {/* Headline */}
+            <h1 
+              className="font-display text-white text-[28px] md:text-[42px] lg:text-[48px] font-bold leading-tight"
+              style={{ 
+                textShadow: '2px 2px 5px rgba(0,0,0,0.4)',
+                fontFamily: 'Playfair Display, serif'
+              }}
+            >
+              <span className="block">Flavours of Tradition.</span>
+              <span className="block">Taste of Home.</span>
             </h1>
-            <p className="text-lg md:text-xl text-foreground/80 max-w-lg">
+
+            {/* Subtitle */}
+            <motion.p 
+              className="text-[#f9f1e7] text-[16px] md:text-[20px] max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6, ease: "easeInOut" }}
+              style={{ 
+                textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
+              }}
+            >
               Discover authentic homemade pickles and papads, crafted with
               time-honored recipes from Rajasthan and Maharashtra's culinary heritage.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-wrap gap-4">
+            {/* CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6, ease: "easeInOut" }}
+              className="pt-4"
+            >
               <motion.button
                 onClick={() => {
                   const element = document.getElementById('products');
                   if (element) element.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="bg-maroon hover:bg-maroon/90 text-white rounded-full py-3 px-8 font-medium flex items-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="bg-[#ff9933] hover:bg-[#cc7a29] text-white font-medium text-lg px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '600'
+                }}
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+                }}
+                whileTap={{ scale: 0.98 }}
               >
                 Explore Products
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M6 12h12m-6-6 6 6-6 6"></path>
-                </svg>
               </motion.button>
-              <motion.button
-                onClick={() => {
-                  const element = document.getElementById('story');
-                  if (element) element.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="border-2 border-saffron text-saffron hover:bg-saffron/10 rounded-full py-3 px-8 font-medium"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Our Story
-              </motion.button>
-            </div>
+            </motion.div>
 
-            <div className="flex items-center gap-4 pt-4">
-              <motion.div
-                className="flex -space-x-3"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-              >
+            {/* Social Proof */}
+            <motion.div
+              className="flex items-center justify-center gap-4 pt-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.6, ease: "easeInOut" }}
+            >
+              <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
                     className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-saffron/80 to-maroon/80"
                   ></div>
                 ))}
-              </motion.div>
-              <div className="text-sm">
-                <p className="font-semibold">2000+ Happy Customers</p>
-                <p className="text-muted-foreground">Across India</p>
               </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="order-1 md:order-2 flex items-center justify-center">
-          <motion.div
-            className="w-full max-w-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <Carousel 
-              className="w-full"
-              setApi={setApi}
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-            >
-              <CarouselContent>
-                {heroImages.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <div className="w-full p-1">
-                      <motion.div
-                        className="relative w-full bg-white rounded-lg overflow-hidden shadow-2xl"
-                        whileHover={{ scale: 1.02 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <img
-                          src={getImageSrc(index)}
-                          alt={image.alt}
-                          className="w-full h-auto object-contain max-h-[500px]"
-                          onLoad={() => handleImageLoad(index)}
-                          onError={() => handleImageError(index)}
-                          loading="eager"
-                          style={{ 
-                            display: 'block',
-                            maxWidth: '100%'
-                          }}
-                        />
-                        <div className="absolute bottom-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg backdrop-blur-sm">
-                          <p className="text-sm font-medium">{image.title}</p>
-                        </div>
-                        
-                        {/* Loading indicator */}
-                        {!loadedImages.has(index) && !imageErrors.has(index) && (
-                          <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-saffron"></div>
-                          </div>
-                        )}
-                      </motion.div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+              <div className="text-sm text-[#f9f1e7]" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
+                <p className="font-semibold">2000+ Happy Customers</p>
+                <p className="opacity-90">Across India</p>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
 
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-        <p className="text-sm text-muted-foreground mb-2">Scroll to explore</p>
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
+        <motion.p 
+          className="text-sm text-[#f9f1e7] mb-2"
+          style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}
+        >
+          Scroll to explore
+        </motion.p>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
@@ -238,6 +230,8 @@ const HeroSection = () => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className="text-[#f9f1e7]"
+            style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.3))' }}
           >
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
