@@ -1,38 +1,55 @@
-
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { productImages } from "@/utils/imageAssets";
 
 const HeroSection = () => {
-  // Use reliable images for hero carousel
+  // Use the uploaded images in the exact sequence provided
   const heroImages = [
     {
       src: productImages.mangoPickle,
-      alt: "Traditional Indian Spices and Authentic Flavors",
-      title: "Authentic Mango Pickle"
+      alt: "Authentic Mango Pickle in Traditional Glass Jar",
+      title: "Premium Mango Pickle"
     },
     {
-      src: productImages.masalaPapad,
-      alt: "Traditional Indian Cooking and Handmade Preparation",
-      title: "Handmade with Love"
-    },
-    {
-      src: productImages.mirchiPickle,
-      alt: "Traditional Indian Spices and Heritage Recipes",
-      title: "Heritage Recipes"
+      src: productImages.traditionalSetup,
+      alt: "Traditional Indian Heritage - Royal Culinary Setup",
+      title: "Royal Heritage Recipes"
     }
   ];
 
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
+  // Preload images to ensure they're available
+  useEffect(() => {
+    heroImages.forEach((image, index) => {
+      const img = new Image();
+      img.onload = () => {
+        console.log(`Hero image ${index + 1} loaded successfully: ${image.src}`);
+        setLoadedImages(prev => new Set([...prev, index]));
+      };
+      img.onerror = () => {
+        console.error(`Hero image ${index + 1} failed to load: ${image.src}`);
+        setImageErrors(prev => new Set([...prev, index]));
+      };
+      img.src = image.src;
+    });
+  }, []);
+
+  const handleImageLoad = (index: number) => {
+    console.log(`Image ${index + 1} displayed successfully`);
+    setLoadedImages(prev => new Set([...prev, index]));
+  };
+
   const handleImageError = (index: number) => {
-    console.log(`Image ${index} failed to load, using placeholder`);
+    console.error(`Image ${index + 1} display failed, marking as error`);
     setImageErrors(prev => new Set([...prev, index]));
   };
 
   const getImageSrc = (index: number) => {
     if (imageErrors.has(index)) {
+      console.log(`Using placeholder for image ${index + 1} due to error`);
       return "/placeholder.svg";
     }
     return heroImages[index].src;
@@ -141,7 +158,7 @@ const HeroSection = () => {
                   <CarouselItem key={index}>
                     <div className="w-full h-full p-1">
                       <motion.div
-                        className="relative w-full h-[400px] rounded-lg overflow-hidden"
+                        className="relative w-full h-[400px] rounded-lg overflow-hidden shadow-2xl"
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                       >
@@ -149,15 +166,25 @@ const HeroSection = () => {
                           src={getImageSrc(index)}
                           alt={image.alt}
                           className="w-full h-full object-cover"
-                          onLoad={() => {
-                            console.log(`Image ${index} loaded successfully`);
-                          }}
+                          onLoad={() => handleImageLoad(index)}
                           onError={() => handleImageError(index)}
                           loading="eager"
+                          style={{ 
+                            display: 'block',
+                            maxWidth: '100%',
+                            height: '100%'
+                          }}
                         />
-                        <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-md backdrop-blur-sm">
+                        <div className="absolute bottom-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg backdrop-blur-sm">
                           <p className="text-sm font-medium">{image.title}</p>
                         </div>
+                        
+                        {/* Loading indicator */}
+                        {!loadedImages.has(index) && !imageErrors.has(index) && (
+                          <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-saffron"></div>
+                          </div>
+                        )}
                       </motion.div>
                     </div>
                   </CarouselItem>
