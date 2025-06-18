@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
@@ -145,34 +146,33 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        <div className="order-1 md:order-2 h-[400px] md:h-[500px]">
+        <div className="order-1 md:order-2 flex items-center justify-center">
           <motion.div
-            className="w-full h-full"
+            className="w-full max-w-lg"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <Carousel className="w-full h-full">
+            <Carousel className="w-full">
               <CarouselContent>
                 {heroImages.map((image, index) => (
                   <CarouselItem key={index}>
-                    <div className="w-full h-full p-1">
+                    <div className="w-full p-1">
                       <motion.div
-                        className="relative w-full h-[400px] rounded-lg overflow-hidden shadow-2xl"
+                        className="relative w-full bg-white rounded-lg overflow-hidden shadow-2xl"
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                       >
                         <img
                           src={getImageSrc(index)}
                           alt={image.alt}
-                          className="w-full h-full object-cover"
+                          className="w-full h-auto object-contain max-h-[500px]"
                           onLoad={() => handleImageLoad(index)}
                           onError={() => handleImageError(index)}
                           loading="eager"
                           style={{ 
                             display: 'block',
-                            maxWidth: '100%',
-                            height: '100%'
+                            maxWidth: '100%'
                           }}
                         />
                         <div className="absolute bottom-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg backdrop-blur-sm">
