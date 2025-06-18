@@ -1,8 +1,8 @@
-
 import { motion } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
 import { productImages } from "@/utils/imageAssets";
+import type { CarouselApi } from "@/components/ui/carousel";
 
 const HeroSection = () => {
   // Use the uploaded images in the exact sequence provided
@@ -21,6 +21,24 @@ const HeroSection = () => {
 
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+  const [api, setApi] = useState<CarouselApi>();
+
+  // Auto-rotate carousel
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (api.canScrollNext()) {
+        api.scrollNext();
+      } else {
+        api.scrollTo(0);
+      }
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [api]);
 
   // Preload images to ensure they're available
   useEffect(() => {
@@ -153,7 +171,14 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <Carousel className="w-full">
+            <Carousel 
+              className="w-full"
+              setApi={setApi}
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+            >
               <CarouselContent>
                 {heroImages.map((image, index) => (
                   <CarouselItem key={index}>
