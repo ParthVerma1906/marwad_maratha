@@ -69,14 +69,16 @@ const Navbar = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center justify-between w-full md:w-auto">
             <motion.div
-              className="flex flex-col items-center gap-1"
+              className="flex flex-col items-center gap-2"
               whileHover={{ scale: 1.05 }}
             >
               <img 
                 src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
                 alt="Marwad Maratha Logo"
-                className="h-16 w-auto object-contain"
-                style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.3))' }}
+                className="h-20 w-auto object-contain"
+                style={{ 
+                  filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))'
+                }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   console.error("Logo failed to load:", target.src);
@@ -85,16 +87,20 @@ const Navbar = () => {
                 }}
               />
               <div className="text-center">
-                <div className="text-[#7B1E1E] font-semibold text-[16px] leading-tight" style={{ fontFamily: 'Noto Serif, serif' }}>
-                  Marwad
-                </div>
-                <div className="text-[#7B1E1E] font-semibold text-[16px] leading-tight" style={{ fontFamily: 'Noto Serif, serif' }}>
-                  Maratha
+                <div 
+                  className="text-[#B22222] font-semibold text-[18px] leading-tight"
+                  style={{ 
+                    fontFamily: 'Inter, Poppins, sans-serif',
+                    fontWeight: '600',
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                  }}
+                >
+                  Marwad Maratha
                 </div>
               </div>
             </motion.div>
 
-            <button className="md:hidden text-foreground">
+            <button className="md:hidden text-white">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -123,11 +129,12 @@ const Navbar = () => {
               <motion.a
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className="font-medium relative group cursor-pointer"
+                className="font-medium relative group cursor-pointer text-white"
+                style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)' }}
                 whileHover={{ scale: 1.05 }}
               >
                 {item.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-maroon transition-all group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full"></span>
               </motion.a>
             ))}
           </nav>
@@ -135,7 +142,8 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             <motion.button
               onClick={handleAdminLogin}
-              className="text-gray-700 hover:text-maroon p-2 rounded-full"
+              className="text-white hover:text-gray-200 p-2 rounded-full"
+              style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -157,7 +165,8 @@ const Navbar = () => {
 
             <motion.button
               onClick={toggleCart}
-              className="text-gray-700 hover:text-maroon p-2 rounded-full relative"
+              className="text-white hover:text-gray-200 p-2 rounded-full relative"
+              style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -185,8 +194,13 @@ const Navbar = () => {
             
             <motion.button
               onClick={() => scrollToSection('contact')}
-              className="bg-maroon hover:bg-maroon/90 text-white rounded-full py-2 px-4 md:px-6 flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
+              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white rounded-lg py-2 px-4 md:px-6 flex items-center gap-2 font-semibold"
+              style={{ 
+                borderRadius: '8px',
+                fontSize: '16px',
+                padding: '12px 24px'
+              }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
             >
               <span>Order Now</span>

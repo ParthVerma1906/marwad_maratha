@@ -13,7 +13,7 @@ const HeroContent = () => {
         >
           {/* Headline */}
           <h1 
-            className="font-display text-white text-[32px] md:text-[48px] lg:text-[56px] font-bold leading-tight"
+            className="font-display text-white text-[36px] md:text-[52px] lg:text-[60px] font-bold leading-tight"
             style={{ 
               textShadow: '2px 2px 5px rgba(0,0,0,0.4)',
               fontFamily: 'Playfair Display, serif'
@@ -25,7 +25,7 @@ const HeroContent = () => {
 
           {/* Subtitle */}
           <motion.h2 
-            className="text-[#f9f1e7] text-[18px] md:text-[22px] max-w-3xl mx-auto leading-relaxed font-medium"
+            className="text-[#f9f1e7] text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6, ease: "easeInOut" }}
@@ -49,14 +49,14 @@ const HeroContent = () => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-semibold text-lg px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl min-h-[48px]"
+              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-bold text-[16px] rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
               style={{
                 padding: '12px 24px',
-                borderRadius: '12px',
-                fontWeight: '600'
+                borderRadius: '8px',
+                fontWeight: 'bold'
               }}
               whileHover={{ 
-                scale: 1.05,
+                scale: 1.02,
                 boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
               }}
               whileTap={{ scale: 0.98 }}
@@ -80,7 +80,7 @@ const HeroContent = () => {
                 ></div>
               ))}
             </div>
-            <div className="text-sm text-[#f9f1e7]" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
+            <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
               <p className="font-semibold">Over 2,000 happy customers across India</p>
               <p className="opacity-90">— and growing.</p>
             </div>
