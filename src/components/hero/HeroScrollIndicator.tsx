@@ -11,23 +11,26 @@ const HeroScrollIndicator = () => {
   };
 
   return (
-    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
+    <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
       <motion.p 
-        className="text-sm text-[#f9f1e7] mb-2"
-        style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}
+        className="text-sm text-[#f9f1e7] mb-3 font-medium"
+        style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
       >
         Scroll to explore
       </motion.p>
       <motion.button
         onClick={handleScrollDown}
         animate={{ y: [0, 8, 0] }}
-        transition={{ repeat: Infinity, duration: 1.5 }}
-        className="text-[#f9f1e7] hover:text-white transition-colors cursor-pointer"
-        style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.3))' }}
-        whileHover={{ scale: 1.1 }}
+        transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+        className="text-[#f9f1e7] hover:text-white transition-all duration-300 cursor-pointer p-2 rounded-full hover:bg-white/10"
+        style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.4))' }}
+        whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.95 }}
       >
-        <ArrowDown size={24} />
+        <ArrowDown size={24} strokeWidth={2.5} />
       </motion.button>
     </div>
   );

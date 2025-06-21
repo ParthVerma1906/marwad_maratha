@@ -46,7 +46,6 @@ const Navbar = () => {
 
   const handleCloseAdminPanel = () => {
     setShowAdminPanel(false);
-    // Explicitly set adminLoggedIn to false in localStorage to prevent auto-open
     localStorage.setItem("adminLoggedIn", "false");
   };
 
@@ -57,27 +56,29 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-6 transition-all duration-500 ease-in-out ${
           scrolled
-            ? "bg-background/90 backdrop-blur-md shadow-md"
+            ? "bg-background/95 backdrop-blur-lg shadow-lg"
             : "bg-transparent"
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <motion.div
-              className="flex flex-col items-center gap-2"
-              whileHover={{ scale: 1.05 }}
+              className="flex flex-col items-center gap-3"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
             >
               <img 
                 src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
                 alt="Marwad Maratha Logo"
-                className="h-20 w-auto object-contain"
+                className="h-16 w-auto object-contain"
                 style={{ 
-                  filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))'
+                  filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
+                  background: 'transparent'
                 }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -88,11 +89,14 @@ const Navbar = () => {
               />
               <div className="text-center">
                 <div 
-                  className="text-[#B22222] font-semibold text-[18px] leading-tight"
+                  className={`font-semibold text-[18px] leading-tight transition-colors duration-500 ${
+                    scrolled ? 'text-[#8B0000]' : 'text-[#5D1F1F]'
+                  }`}
                   style={{ 
-                    fontFamily: 'Inter, Poppins, sans-serif',
-                    fontWeight: '600',
-                    textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                    fontFamily: 'Playfair Display, serif',
+                    fontWeight: '700',
+                    textShadow: scrolled ? 'none' : '2px 2px 4px rgba(0,0,0,0.5)',
+                    letterSpacing: '0.5px'
                   }}
                 >
                   Marwad Maratha
@@ -119,7 +123,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-8">
             {[
               { name: "Home", id: "home" },
               { name: "Products", id: "products" },
@@ -129,21 +133,36 @@ const Navbar = () => {
               <motion.a
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className="font-medium relative group cursor-pointer text-white"
-                style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)' }}
+                className={`font-medium relative group cursor-pointer transition-all duration-500 ${
+                  scrolled 
+                    ? 'text-[#8B0000] hover:text-[#B22222]' 
+                    : 'text-white hover:text-gray-200'
+                }`}
+                style={{ 
+                  textShadow: scrolled ? 'none' : '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                  fontSize: '16px',
+                  fontWeight: '500'
+                }}
                 whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
                 {item.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full"></span>
+                <span className={`absolute bottom-0 left-0 w-0 h-0.5 transition-all group-hover:w-full ${
+                  scrolled ? 'bg-[#8B0000]' : 'bg-white'
+                }`}></span>
               </motion.a>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <motion.button
               onClick={handleAdminLogin}
-              className="text-white hover:text-gray-200 p-2 rounded-full"
-              style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
+              className={`p-2 rounded-full transition-all duration-500 ${
+                scrolled 
+                  ? 'text-[#8B0000] hover:text-[#B22222]' 
+                  : 'text-white hover:text-gray-200'
+              }`}
+              style={{ filter: scrolled ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -165,8 +184,12 @@ const Navbar = () => {
 
             <motion.button
               onClick={toggleCart}
-              className="text-white hover:text-gray-200 p-2 rounded-full relative"
-              style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
+              className={`p-2 rounded-full relative transition-all duration-500 ${
+                scrolled 
+                  ? 'text-[#8B0000] hover:text-[#B22222]' 
+                  : 'text-white hover:text-gray-200'
+              }`}
+              style={{ filter: scrolled ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -194,14 +217,16 @@ const Navbar = () => {
             
             <motion.button
               onClick={() => scrollToSection('contact')}
-              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white rounded-lg py-2 px-4 md:px-6 flex items-center gap-2 font-semibold"
+              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white rounded-lg py-3 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
               style={{ 
-                borderRadius: '8px',
-                fontSize: '16px',
-                padding: '12px 24px'
+                borderRadius: '10px',
+                fontSize: '16px'
               }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ 
+                scale: 1.02,
+                boxShadow: '0 8px 25px rgba(255, 140, 66, 0.3)'
+              }}
+              whileTap={{ scale: 0.98 }}
             >
               <span>Order Now</span>
               <svg

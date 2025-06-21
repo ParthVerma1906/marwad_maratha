@@ -9,14 +9,15 @@ const HeroContent = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="space-y-6 max-w-4xl mx-auto"
+          className="space-y-8 max-w-4xl mx-auto"
         >
           {/* Headline */}
           <h1 
-            className="font-display text-white text-[36px] md:text-[52px] lg:text-[60px] font-bold leading-tight"
+            className="font-display text-white text-[32px] sm:text-[42px] md:text-[52px] lg:text-[60px] font-bold leading-tight"
             style={{ 
-              textShadow: '2px 2px 5px rgba(0,0,0,0.4)',
-              fontFamily: 'Playfair Display, serif'
+              textShadow: '3px 3px 8px rgba(0,0,0,0.6)',
+              fontFamily: 'Playfair Display, serif',
+              letterSpacing: '1px'
             }}
           >
             <span className="block">Flavours of Tradition.</span>
@@ -24,40 +25,46 @@ const HeroContent = () => {
           </h1>
 
           {/* Subtitle */}
-          <motion.h2 
-            className="text-[#f9f1e7] text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
+          <motion.div
+            className="space-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6, ease: "easeInOut" }}
-            style={{ 
-              textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
-            }}
           >
-            Taste the richness of handmade pickles and papads,<br className="hidden md:block" />
-            prepared with heirloom recipes from the heart of Rajasthan and Maharashtra.
-          </motion.h2>
+            <h2 
+              className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
+              style={{ 
+                textShadow: '2px 2px 5px rgba(0,0,0,0.5)',
+                lineHeight: '1.6'
+              }}
+            >
+              Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
+              prepared with heirloom recipes from the heart of Rajasthan and Maharashtra.
+            </h2>
+          </motion.div>
 
           {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6, ease: "easeInOut" }}
-            className="pt-6"
+            className="pt-4 pb-6"
           >
             <motion.button
               onClick={() => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-bold text-[16px] rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-bold text-[16px] rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
               style={{
-                padding: '12px 24px',
-                borderRadius: '8px',
+                padding: '14px 28px',
+                borderRadius: '12px',
                 fontWeight: 'bold'
               }}
               whileHover={{ 
-                scale: 1.02,
-                boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+                scale: 1.05,
+                boxShadow: '0 12px 30px rgba(255, 140, 66, 0.4)',
+                y: -2
               }}
               whileTap={{ scale: 0.98 }}
             >
@@ -67,7 +74,7 @@ const HeroContent = () => {
 
           {/* Trust Badge */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-8"
+            className="flex flex-col items-center justify-center gap-4 pt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.6, ease: "easeInOut" }}
@@ -80,8 +87,8 @@ const HeroContent = () => {
                 ></div>
               ))}
             </div>
-            <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
-              <p className="font-semibold">Over 2,000 happy customers across India</p>
+            <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
+              <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
               <p className="opacity-90">— and growing.</p>
             </div>
           </motion.div>
