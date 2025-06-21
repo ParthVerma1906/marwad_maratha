@@ -13,20 +13,20 @@ const HeroContent = () => {
         >
           {/* Headline */}
           <h1 
-            className="font-display text-white text-[32px] sm:text-[42px] md:text-[52px] lg:text-[60px] font-bold leading-tight"
+            className="font-display text-white text-[28px] sm:text-[38px] md:text-[48px] lg:text-[56px] font-bold leading-tight"
             style={{ 
-              textShadow: '3px 3px 8px rgba(0,0,0,0.6)',
+              textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}
           >
             <span className="block">Flavours of Tradition.</span>
             <span className="block">Taste of Home.</span>
           </h1>
 
-          {/* Subtitle */}
+          {/* Subtitle with better spacing */}
           <motion.div
-            className="space-y-4"
+            className="space-y-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6, ease: "easeInOut" }}
@@ -34,7 +34,7 @@ const HeroContent = () => {
             <h2 
               className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
               style={{ 
-                textShadow: '2px 2px 5px rgba(0,0,0,0.5)',
+                textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
                 lineHeight: '1.6'
               }}
             >
@@ -43,12 +43,12 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA Button with gentle animation */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6, ease: "easeInOut" }}
-            className="pt-4 pb-6"
+            className="pt-6 pb-8"
           >
             <motion.button
               onClick={() => {
@@ -57,9 +57,18 @@ const HeroContent = () => {
               }}
               className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-bold text-[16px] rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
               style={{
-                padding: '14px 28px',
+                padding: '12px 24px',
                 borderRadius: '12px',
                 fontWeight: 'bold'
+              }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ 
+                delay: 0.8, 
+                duration: 0.4, 
+                ease: "easeOut",
+                type: "spring",
+                stiffness: 100
               }}
               whileHover={{ 
                 scale: 1.05,
@@ -72,9 +81,9 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge */}
+          {/* Trust Badge with better spacing */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-4"
+            className="flex flex-col items-center justify-center gap-4 pt-6 pb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.6, ease: "easeInOut" }}

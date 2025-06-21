@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -68,17 +67,19 @@ const Navbar = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <motion.div
-              className="flex flex-col items-center gap-3"
+              className="flex flex-col items-center gap-2"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
               <img 
                 src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
                 alt="Marwad Maratha Logo"
-                className="h-16 w-auto object-contain"
+                className="h-12 w-auto object-contain"
                 style={{ 
                   filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
-                  background: 'transparent'
+                  background: 'transparent',
+                  padding: '0',
+                  margin: '0'
                 }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -89,13 +90,13 @@ const Navbar = () => {
               />
               <div className="text-center">
                 <div 
-                  className={`font-semibold text-[18px] leading-tight transition-colors duration-500 ${
-                    scrolled ? 'text-[#8B0000]' : 'text-[#5D1F1F]'
+                  className={`font-bold text-[20px] leading-tight transition-colors duration-500 ${
+                    scrolled ? 'text-[#800000]' : 'text-[#800000]'
                   }`}
                   style={{ 
                     fontFamily: 'Playfair Display, serif',
                     fontWeight: '700',
-                    textShadow: scrolled ? 'none' : '2px 2px 4px rgba(0,0,0,0.5)',
+                    textShadow: '2px 2px 4px rgba(255,255,255,0.3), 1px 1px 2px rgba(0,0,0,0.5)',
                     letterSpacing: '0.5px'
                   }}
                 >
