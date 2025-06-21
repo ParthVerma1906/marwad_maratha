@@ -13,7 +13,7 @@ const HeroContent = () => {
         >
           {/* Headline */}
           <h1 
-            className="font-display text-white text-[28px] md:text-[42px] lg:text-[48px] font-bold leading-tight"
+            className="font-display text-white text-[32px] md:text-[48px] lg:text-[56px] font-bold leading-tight"
             style={{ 
               textShadow: '2px 2px 5px rgba(0,0,0,0.4)',
               fontFamily: 'Playfair Display, serif'
@@ -24,8 +24,8 @@ const HeroContent = () => {
           </h1>
 
           {/* Subtitle */}
-          <motion.p 
-            className="text-[#f9f1e7] text-[16px] md:text-[20px] max-w-2xl mx-auto leading-relaxed"
+          <motion.h2 
+            className="text-[#f9f1e7] text-[18px] md:text-[22px] max-w-3xl mx-auto leading-relaxed font-medium"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6, ease: "easeInOut" }}
@@ -33,23 +33,23 @@ const HeroContent = () => {
               textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
             }}
           >
-            Discover authentic homemade pickles and papads, crafted with
-            time-honored recipes from Rajasthan and Maharashtra's culinary heritage.
-          </motion.p>
+            Taste the richness of handmade pickles and papads,<br className="hidden md:block" />
+            prepared with heirloom recipes from the heart of Rajasthan and Maharashtra.
+          </motion.h2>
 
           {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6, ease: "easeInOut" }}
-            className="pt-4"
+            className="pt-6"
           >
             <motion.button
               onClick={() => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#ff9933] hover:bg-[#cc7a29] text-white font-medium text-lg px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-semibold text-lg px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl min-h-[48px]"
               style={{
                 padding: '12px 24px',
                 borderRadius: '12px',
@@ -65,9 +65,9 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Social Proof */}
+          {/* Trust Badge */}
           <motion.div
-            className="flex items-center justify-center gap-4 pt-8"
+            className="flex flex-col items-center justify-center gap-4 pt-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.6, ease: "easeInOut" }}
@@ -81,8 +81,8 @@ const HeroContent = () => {
               ))}
             </div>
             <div className="text-sm text-[#f9f1e7]" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
-              <p className="font-semibold">2000+ Happy Customers</p>
-              <p className="opacity-90">Across India</p>
+              <p className="font-semibold">Over 2,000 happy customers across India</p>
+              <p className="opacity-90">— and growing.</p>
             </div>
           </motion.div>
         </motion.div>

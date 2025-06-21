@@ -1,7 +1,15 @@
 
 import { motion } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 
 const HeroScrollIndicator = () => {
+  const handleScrollDown = () => {
+    const element = document.getElementById('products');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
       <motion.p 
@@ -10,26 +18,17 @@ const HeroScrollIndicator = () => {
       >
         Scroll to explore
       </motion.p>
-      <motion.div
+      <motion.button
+        onClick={handleScrollDown}
         animate={{ y: [0, 8, 0] }}
         transition={{ repeat: Infinity, duration: 1.5 }}
+        className="text-[#f9f1e7] hover:text-white transition-colors cursor-pointer"
+        style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.3))' }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-[#f9f1e7]"
-          style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.3))' }}
-        >
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
-      </motion.div>
+        <ArrowDown size={24} />
+      </motion.button>
     </div>
   );
 };

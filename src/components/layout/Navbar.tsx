@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -56,7 +57,7 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-3 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 transition-all duration-300 ${
           scrolled
             ? "bg-background/90 backdrop-blur-md shadow-md"
             : "bg-transparent"
@@ -65,16 +66,17 @@ const Navbar = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center justify-between w-full md:w-auto">
             <motion.div
-              className="flex items-center gap-2"
+              className="flex flex-col items-center gap-1"
               whileHover={{ scale: 1.05 }}
             >
               <img 
                 src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
                 alt="Marwad Maratha Logo"
-                className="h-12 w-auto object-contain"
+                className="h-16 w-auto object-contain"
+                style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.3))' }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   console.error("Logo failed to load:", target.src);
@@ -82,10 +84,14 @@ const Navbar = () => {
                   target.src = '/placeholder.svg';
                 }}
               />
-              <span className="font-heritage text-xl font-bold">
-                <span className="text-maroon">Marwad</span>{" "}
-                <span className="text-saffron">Maratha</span>
-              </span>
+              <div className="text-center">
+                <div className="text-[#7B1E1E] font-semibold text-[16px] leading-tight" style={{ fontFamily: 'Noto Serif, serif' }}>
+                  Marwad
+                </div>
+                <div className="text-[#7B1E1E] font-semibold text-[16px] leading-tight" style={{ fontFamily: 'Noto Serif, serif' }}>
+                  Maratha
+                </div>
+              </div>
             </motion.div>
 
             <button className="md:hidden text-foreground">
