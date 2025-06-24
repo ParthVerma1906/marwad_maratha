@@ -10,7 +10,7 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-8 max-w-4xl mx-auto"
-          style={{ marginTop: '50px' }} // Lower the entire headline block by 50px
+          style={{ marginTop: '80px' }} // Moved down by additional 30px (50+30)
         >
           {/* Headline */}
           <motion.h1 
@@ -47,12 +47,12 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with enhanced animation and adjusted spacing */}
+          {/* CTA Button with adjusted spacing */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-12 pb-6" // More space above, less below
+            className="pt-12 pb-4" // Reduced bottom padding
           >
             <motion.button
               onClick={() => {
@@ -87,7 +87,7 @@ const HeroContent = () => {
 
           {/* Trust Badge with improved spacing */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-4"
+            className="flex flex-col items-center justify-center gap-4 pt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
@@ -102,7 +102,7 @@ const HeroContent = () => {
             </div>
             <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
               <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
-              <p className="opacity-90 mb-3">— and growing.</p> {/* Added proper spacing */}
+              <p className="opacity-90 mb-12">— and growing.</p> {/* Increased bottom margin for proper spacing */}
             </div>
           </motion.div>
         </motion.div>

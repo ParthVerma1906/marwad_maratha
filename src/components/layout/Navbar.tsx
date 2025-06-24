@@ -72,7 +72,7 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-6 transition-all duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 transition-all duration-500 ease-in-out ${
           scrolled
             ? "bg-background/95 backdrop-blur-lg shadow-lg"
             : "bg-transparent"
@@ -91,7 +91,7 @@ const Navbar = () => {
               <img 
                 src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-10 w-auto object-contain"
+                className="h-12 w-auto object-contain"
                 style={{ 
                   filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
                   background: 'transparent',
