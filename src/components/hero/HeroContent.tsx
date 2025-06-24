@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const HeroContent = () => {
   return (
     <div className="relative z-20 h-full flex items-center justify-center">
-      <div className="container mx-auto px-4 text-center">
+      <div className="container mx-auto px-4 text-center" style={{ marginTop: '50px' }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -17,7 +17,7 @@ const HeroContent = () => {
             style={{ 
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
-              letterSpacing: '2px'
+              letterSpacing: '3px'
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ const HeroContent = () => {
 
           {/* Trust Badge with improved spacing */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-4 pb-12"
+            className="flex flex-col items-center justify-center gap-4 pt-8 pb-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
@@ -99,7 +99,7 @@ const HeroContent = () => {
                 ></div>
               ))}
             </div>
-            <div className="text-sm text-[#f9f1e7] text-center mb-6" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
+            <div className="text-sm text-[#f9f1e7] text-center mb-8" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
               <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
               <p className="opacity-90">— and growing.</p>
             </div>

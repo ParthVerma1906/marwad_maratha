@@ -5,6 +5,7 @@ import AdminLogin from "../admin/AdminLogin";
 import AdminPanel from "../admin/AdminPanel";
 import ShoppingCart from "../cart/ShoppingCart";
 import { useCart } from "@/hooks/useCart";
+import { productImages } from "@/utils/imageAssets";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -89,9 +90,9 @@ const Navbar = () => {
               transition={{ duration: 0.2 }}
             >
               <img 
-                src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
+                src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-10 w-auto object-contain"
+                className="h-9 w-auto object-contain"
                 style={{ 
                   filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
                   background: 'transparent',
@@ -107,7 +108,7 @@ const Navbar = () => {
               />
               <div className="text-center">
                 <div 
-                  className={`font-bold text-[20px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
+                  className={`font-bold text-[19px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
                   style={{ 
                     fontFamily: 'Playfair Display, serif',
                     fontWeight: '700',
@@ -242,14 +243,16 @@ const Navbar = () => {
             
             <motion.button
               onClick={() => scrollToSection('contact')}
-              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white rounded-lg py-3 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-3 px-7 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
               style={{ 
-                borderRadius: '10px',
-                fontSize: '16px'
+                borderRadius: '25px',
+                fontSize: '16px',
+                fontWeight: '700',
+                height: '44px'
               }}
               whileHover={{ 
                 scale: 1.02,
-                boxShadow: '0 8px 25px rgba(255, 140, 66, 0.3)'
+                boxShadow: '0 8px 25px rgba(139, 28, 68, 0.4)'
               }}
               whileTap={{ scale: 0.98 }}
             >
@@ -261,7 +264,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
