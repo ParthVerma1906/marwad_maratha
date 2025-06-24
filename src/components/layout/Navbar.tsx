@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -10,11 +11,27 @@ const Navbar = () => {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { cartItemsCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      
+      // Determine active section based on scroll position
+      const sections = ['home', 'products', 'story', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+      
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
     };
 
     // Check if admin is already logged in from previous session
@@ -67,14 +84,14 @@ const Navbar = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <motion.div
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-1"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
               <img 
                 src="/lovable-uploads/6d7f352c-0c0a-4cae-bf02-fffd05703c31.png" 
                 alt="Marwad Maratha Logo"
-                className="h-12 w-auto object-contain"
+                className="h-10 w-auto object-contain"
                 style={{ 
                   filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
                   background: 'transparent',
@@ -90,14 +107,13 @@ const Navbar = () => {
               />
               <div className="text-center">
                 <div 
-                  className={`font-bold text-[20px] leading-tight transition-colors duration-500 ${
-                    scrolled ? 'text-[#800000]' : 'text-[#800000]'
-                  }`}
+                  className={`font-bold text-[20px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
                   style={{ 
                     fontFamily: 'Playfair Display, serif',
                     fontWeight: '700',
-                    textShadow: '2px 2px 4px rgba(255,255,255,0.3), 1px 1px 2px rgba(0,0,0,0.5)',
-                    letterSpacing: '0.5px'
+                    textShadow: '2px 2px 4px rgba(255,255,255,0.6), 1px 1px 3px rgba(0,0,0,0.8)',
+                    letterSpacing: '0.5px',
+                    filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.3))'
                   }}
                 >
                   Marwad Maratha
@@ -136,20 +152,28 @@ const Navbar = () => {
                 onClick={() => scrollToSection(item.id)}
                 className={`font-medium relative group cursor-pointer transition-all duration-500 ${
                   scrolled 
-                    ? 'text-[#8B0000] hover:text-[#B22222]' 
-                    : 'text-white hover:text-gray-200'
+                    ? activeSection === item.id 
+                      ? 'text-[#D2691E]' 
+                      : 'text-[#8B0000] hover:text-[#B22222]'
+                    : activeSection === item.id 
+                      ? 'text-[#FFD700]' 
+                      : 'text-white hover:text-gray-200'
                 }`}
                 style={{ 
                   textShadow: scrolled ? 'none' : '1px 1px 2px rgba(0, 0, 0, 0.5)',
                   fontSize: '16px',
-                  fontWeight: '500'
+                  fontWeight: activeSection === item.id ? '600' : '500'
                 }}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
                 {item.name}
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 transition-all group-hover:w-full ${
-                  scrolled ? 'bg-[#8B0000]' : 'bg-white'
+                <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
+                  activeSection === item.id 
+                    ? 'w-full' 
+                    : 'w-0 group-hover:w-full'
+                } ${
+                  scrolled ? 'bg-[#D2691E]' : 'bg-[#FFD700]'
                 }`}></span>
               </motion.a>
             ))}

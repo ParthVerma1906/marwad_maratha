@@ -11,13 +11,13 @@ const HeroScrollIndicator = () => {
   };
 
   return (
-    <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
+    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
       <motion.p 
-        className="text-sm text-[#f9f1e7] mb-3 font-medium"
+        className="text-sm text-[#f9f1e7] mb-4 font-medium"
         style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
       >
         Scroll to explore
       </motion.p>

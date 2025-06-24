@@ -12,24 +12,27 @@ const HeroContent = () => {
           className="space-y-8 max-w-4xl mx-auto"
         >
           {/* Headline */}
-          <h1 
+          <motion.h1 
             className="font-display text-white text-[28px] sm:text-[38px] md:text-[48px] lg:text-[56px] font-bold leading-tight"
             style={{ 
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
-              letterSpacing: '1.5px'
+              letterSpacing: '2px'
             }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
             <span className="block">Flavours of Tradition.</span>
             <span className="block">Taste of Home.</span>
-          </h1>
+          </motion.h1>
 
           {/* Subtitle with better spacing */}
           <motion.div
             className="space-y-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: "easeInOut" }}
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
               className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
@@ -43,11 +46,11 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with gentle animation */}
+          {/* CTA Button with enhanced animation */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6, ease: "easeInOut" }}
+            transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
             className="pt-6 pb-8"
           >
             <motion.button
@@ -65,7 +68,7 @@ const HeroContent = () => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ 
                 delay: 0.8, 
-                duration: 0.4, 
+                duration: 0.6, 
                 ease: "easeOut",
                 type: "spring",
                 stiffness: 100
@@ -81,12 +84,12 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge with better spacing */}
+          {/* Trust Badge with improved spacing */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-6 pb-8"
+            className="flex flex-col items-center justify-center gap-4 pt-4 pb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.6, ease: "easeInOut" }}
+            transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
           >
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map((i) => (
@@ -96,7 +99,7 @@ const HeroContent = () => {
                 ></div>
               ))}
             </div>
-            <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
+            <div className="text-sm text-[#f9f1e7] text-center mb-6" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
               <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
               <p className="opacity-90">— and growing.</p>
             </div>
