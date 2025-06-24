@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -92,7 +91,7 @@ const Navbar = () => {
               <img 
                 src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-9 w-auto object-contain"
+                className="h-8 w-auto object-contain"
                 style={{ 
                   filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
                   background: 'transparent',
@@ -108,7 +107,7 @@ const Navbar = () => {
               />
               <div className="text-center">
                 <div 
-                  className={`font-bold text-[19px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
+                  className={`font-bold text-[18px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
                   style={{ 
                     fontFamily: 'Playfair Display, serif',
                     fontWeight: '700',
@@ -183,13 +182,13 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <motion.button
               onClick={handleAdminLogin}
-              className={`p-2 rounded-full transition-all duration-500 ${
+              className={`p-2 rounded-full transition-all duration-300 ${
                 scrolled 
                   ? 'text-[#8B0000] hover:text-[#B22222]' 
                   : 'text-white hover:text-gray-200'
               }`}
               style={{ filter: scrolled ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(139, 0, 0, 0.2)' }}
               whileTap={{ scale: 0.95 }}
             >
               <svg
@@ -210,13 +209,13 @@ const Navbar = () => {
 
             <motion.button
               onClick={toggleCart}
-              className={`p-2 rounded-full relative transition-all duration-500 ${
+              className={`p-2 rounded-full relative transition-all duration-300 ${
                 scrolled 
                   ? 'text-[#8B0000] hover:text-[#B22222]' 
                   : 'text-white hover:text-gray-200'
               }`}
               style={{ filter: scrolled ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(139, 0, 0, 0.2)' }}
               whileTap={{ scale: 0.95 }}
             >
               <svg
@@ -251,8 +250,9 @@ const Navbar = () => {
                 height: '44px'
               }}
               whileHover={{ 
-                scale: 1.02,
-                boxShadow: '0 8px 25px rgba(139, 28, 68, 0.4)'
+                scale: 1.05,
+                boxShadow: '0 8px 25px rgba(139, 28, 68, 0.4)',
+                y: -2
               }}
               whileTap={{ scale: 0.98 }}
             >
