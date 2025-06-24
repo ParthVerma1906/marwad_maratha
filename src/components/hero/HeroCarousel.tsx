@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { productImages } from "@/utils/imageAssets";
@@ -109,8 +108,6 @@ const HeroCarousel = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-4 z-20" />
-          <CarouselNext className="right-4 z-20" />
         </Carousel>
       </div>
 

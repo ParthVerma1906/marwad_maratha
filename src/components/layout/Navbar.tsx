@@ -84,14 +84,14 @@ const Navbar = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <motion.div
-              className="flex flex-col items-center gap-1"
+              className="flex flex-col items-center gap-0.5"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
               <img 
                 src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-8 w-auto object-contain"
+                className="h-10 w-auto object-contain"
                 style={{ 
                   filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
                   background: 'transparent',
