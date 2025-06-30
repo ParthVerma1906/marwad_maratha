@@ -16,7 +16,7 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-8 max-w-4xl mx-auto"
-          style={{ marginTop: '160px' }} // Moved down by additional 40px (120+40)
+          style={{ marginTop: '190px' }} // Moved down by additional 30px (160+30)
         >
           {/* Headline */}
           <motion.h1 
@@ -98,7 +98,7 @@ const HeroContent = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
           >
-            <div className="flex -space-x-3">
+            <div className="flex -space-x-3" style={{ marginBottom: '30px' }}>
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
@@ -108,7 +108,7 @@ const HeroContent = () => {
             </div>
             <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
               <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
-              <p className="opacity-90" style={{ marginTop: '6px', marginBottom: '20px' }}>— and growing.</p>
+              <p className="opacity-90" style={{ marginTop: '6px' }}>— and growing.</p>
             </div>
           </motion.div>
         </motion.div>

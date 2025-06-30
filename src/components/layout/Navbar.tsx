@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -91,9 +92,9 @@ const Navbar = () => {
               <img 
                 src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-16 w-auto object-contain"
+                className="h-18 w-auto object-contain"
                 style={{ 
-                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.2))',
+                  filter: 'drop-shadow(0.5px 0.5px 1px rgba(0,0,0,0.1))',
                   background: 'transparent',
                   padding: '0',
                   margin: '0'
@@ -111,7 +112,7 @@ const Navbar = () => {
                   style={{ 
                     fontFamily: 'Playfair Display, serif',
                     fontWeight: '700',
-                    textShadow: '1px 1px 2px rgba(255,255,255,0.4)',
+                    textShadow: '0.5px 0.5px 1px rgba(255,255,255,0.3)',
                     letterSpacing: '0.5px'
                   }}
                 >
