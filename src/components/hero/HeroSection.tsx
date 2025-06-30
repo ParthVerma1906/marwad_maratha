@@ -8,6 +8,7 @@ const HeroSection = () => {
     <section
       id="home"
       className="relative h-screen w-full overflow-hidden"
+      style={{ zIndex: 1 }}
     >
       <HeroCarousel />
       <HeroContent />

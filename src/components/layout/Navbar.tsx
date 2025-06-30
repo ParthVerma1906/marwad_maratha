@@ -73,74 +73,67 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-3 transition-all duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 px-4 md:px-6 py-3 transition-all duration-500 ease-in-out ${
           scrolled
             ? "bg-background/95 backdrop-blur-lg shadow-lg"
             : "bg-transparent"
         }`}
+        style={{ 
+          position: 'relative',
+          zIndex: 1000
+        }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center justify-between w-full md:w-auto">
-            <motion.div
-              className="flex flex-col items-center gap-0.5"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
-              <img 
-                src={productImages.logo}
-                alt="Marwad Maratha Logo"
-                className="h-18 w-auto object-contain"
+        <div className="container mx-auto flex items-center justify-between">
+          {/* Logo Section */}
+          <motion.a
+            href="/"
+            className="flex flex-col items-start"
+            style={{ 
+              marginLeft: '20px',
+              marginTop: '10px',
+              zIndex: 10
+            }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
+          >
+            <img 
+              src={productImages.logo}
+              alt="Marwad Maratha Logo"
+              style={{ 
+                maxWidth: '160px',
+                height: 'auto',
+                filter: 'drop-shadow(0.5px 0.5px 1px rgba(0,0,0,0.1))',
+                background: 'transparent',
+                padding: '0',
+                margin: '0'
+              }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                console.error("Logo failed to load:", target.src);
+                target.onerror = null;
+                target.src = '/placeholder.svg';
+              }}
+            />
+            <div className="text-center">
+              <div 
+                className={`font-bold text-[18px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
                 style={{ 
-                  filter: 'drop-shadow(0.5px 0.5px 1px rgba(0,0,0,0.1))',
-                  background: 'transparent',
-                  padding: '0',
-                  margin: '0'
+                  fontFamily: 'Playfair Display, serif',
+                  fontWeight: '700',
+                  textShadow: '0.5px 0.5px 1px rgba(255,255,255,0.2)',
+                  letterSpacing: '0.5px'
                 }}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  console.error("Logo failed to load:", target.src);
-                  target.onerror = null;
-                  target.src = '/placeholder.svg';
-                }}
-              />
-              <div className="text-center">
-                <div 
-                  className={`font-bold text-[18px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
-                  style={{ 
-                    fontFamily: 'Playfair Display, serif',
-                    fontWeight: '700',
-                    textShadow: '0.5px 0.5px 1px rgba(255,255,255,0.3)',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  Marwad Maratha
-                </div>
-              </div>
-            </motion.div>
-
-            <button className="md:hidden text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
               >
-                <line x1="4" x2="20" y1="12" y2="12"></line>
-                <line x1="4" x2="20" y1="6" y2="6"></line>
-                <line x1="4" x2="20" y1="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
+                Marwad Maratha
+              </div>
+            </div>
+          </motion.a>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center" style={{ gap: '20px' }}>
             {[
               { name: "Home", id: "home" },
               { name: "Products", id: "products" },
@@ -162,7 +155,9 @@ const Navbar = () => {
                 style={{ 
                   textShadow: scrolled ? 'none' : '1px 1px 2px rgba(0, 0, 0, 0.5)',
                   fontSize: '16px',
-                  fontWeight: activeSection === item.id ? '600' : '500'
+                  fontWeight: activeSection === item.id ? '600' : '500',
+                  margin: 0,
+                  position: 'relative'
                 }}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
@@ -177,6 +172,7 @@ const Navbar = () => {
             ))}
           </nav>
 
+          {/* Action Buttons */}
           <div className="flex items-center gap-4">
             <motion.button
               onClick={handleAdminLogin}
