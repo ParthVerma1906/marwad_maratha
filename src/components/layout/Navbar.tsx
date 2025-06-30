@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -73,7 +72,7 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 transition-all duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-3 transition-all duration-500 ease-in-out ${
           scrolled
             ? "bg-background/95 backdrop-blur-lg shadow-lg"
             : "bg-transparent"
@@ -92,9 +91,9 @@ const Navbar = () => {
               <img 
                 src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-14 w-auto object-contain"
+                className="h-16 w-auto object-contain"
                 style={{ 
-                  filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.3))',
+                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.2))',
                   background: 'transparent',
                   padding: '0',
                   margin: '0'
@@ -112,9 +111,8 @@ const Navbar = () => {
                   style={{ 
                     fontFamily: 'Playfair Display, serif',
                     fontWeight: '700',
-                    textShadow: '2px 2px 4px rgba(255,255,255,0.6), 1px 1px 3px rgba(0,0,0,0.8)',
-                    letterSpacing: '0.5px',
-                    filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.3))'
+                    textShadow: '1px 1px 2px rgba(255,255,255,0.4)',
+                    letterSpacing: '0.5px'
                   }}
                 >
                   Marwad Maratha

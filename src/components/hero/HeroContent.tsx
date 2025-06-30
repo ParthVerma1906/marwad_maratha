@@ -7,13 +7,16 @@ const HeroContent = () => {
       {/* Light gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent z-10"></div>
       
+      {/* Subtle dark overlay behind text area for better readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent z-15"></div>
+      
       <div className="container mx-auto px-4 text-center h-full flex items-center justify-center relative z-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-8 max-w-4xl mx-auto"
-          style={{ marginTop: '120px' }} // Moved down by additional 40px (80+40)
+          style={{ marginTop: '160px' }} // Moved down by additional 40px (120+40)
         >
           {/* Headline */}
           <motion.h1 
@@ -31,7 +34,7 @@ const HeroContent = () => {
             <span className="block">Taste of Home.</span>
           </motion.h1>
 
-          {/* Subtitle with better spacing */}
+          {/* Subtitle with improved readability */}
           <motion.div
             className="space-y-6"
             initial={{ opacity: 0 }}
@@ -41,7 +44,7 @@ const HeroContent = () => {
             <h2 
               className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
               style={{ 
-                textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                textShadow: '1px 1px 2px rgba(0,0,0,0.4)',
                 lineHeight: '1.6'
               }}
             >
@@ -105,7 +108,7 @@ const HeroContent = () => {
             </div>
             <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
               <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
-              <p className="opacity-90" style={{ marginTop: '12px', marginBottom: '12px' }}>— and growing.</p>
+              <p className="opacity-90" style={{ marginTop: '6px', marginBottom: '20px' }}>— and growing.</p>
             </div>
           </motion.div>
         </motion.div>
