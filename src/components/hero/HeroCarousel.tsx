@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { productImages } from "@/utils/imageAssets";
 import type { CarouselApi } from "@/components/ui/carousel";
 
@@ -75,7 +76,7 @@ const HeroCarousel = () => {
 
   return (
     <>
-      {/* Background Image Carousel */}
+      {/* Background Image Carousel - removed arrow controls */}
       <div className="absolute inset-0 w-full h-full">
         <Carousel 
           className="w-full h-full"

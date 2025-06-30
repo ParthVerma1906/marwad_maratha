@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -91,9 +92,9 @@ const Navbar = () => {
               <img 
                 src={productImages.logo}
                 alt="Marwad Maratha Logo"
-                className="h-12 w-auto object-contain"
+                className="h-14 w-auto object-contain"
                 style={{ 
-                  filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.4))',
+                  filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.3))',
                   background: 'transparent',
                   padding: '0',
                   margin: '0'
@@ -168,13 +169,11 @@ const Navbar = () => {
                 transition={{ duration: 0.2 }}
               >
                 {item.name}
-                <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
+                <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-200 ${
                   activeSection === item.id 
                     ? 'w-full' 
                     : 'w-0 group-hover:w-full'
-                } ${
-                  scrolled ? 'bg-[#D2691E]' : 'bg-[#FFD700]'
-                }`}></span>
+                } bg-[#8A1538]`}></span>
               </motion.a>
             ))}
           </nav>

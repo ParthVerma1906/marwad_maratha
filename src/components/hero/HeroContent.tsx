@@ -4,13 +4,16 @@ import { motion } from "framer-motion";
 const HeroContent = () => {
   return (
     <div className="relative z-20 h-full flex items-center justify-center">
-      <div className="container mx-auto px-4 text-center h-full flex items-center justify-center">
+      {/* Light gradient overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent z-10"></div>
+      
+      <div className="container mx-auto px-4 text-center h-full flex items-center justify-center relative z-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-8 max-w-4xl mx-auto"
-          style={{ marginTop: '80px' }} // Moved down by additional 30px (50+30)
+          style={{ marginTop: '120px' }} // Moved down by additional 40px (80+40)
         >
           {/* Headline */}
           <motion.h1 
@@ -47,19 +50,19 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with adjusted spacing */}
+          {/* CTA Button with maroon color matching Order Now */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-12 pb-4" // Reduced bottom padding
+            className="pt-12 pb-4"
           >
             <motion.button
               onClick={() => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#FF8C42] hover:bg-[#E07A36] text-white font-bold text-[16px] rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
+              className="bg-[#8A1538] hover:bg-[#A62052] text-white font-bold text-[16px] rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
               style={{
                 padding: '12px 24px',
                 borderRadius: '12px',
@@ -76,7 +79,7 @@ const HeroContent = () => {
               }}
               whileHover={{ 
                 scale: 1.05,
-                boxShadow: '0 12px 30px rgba(255, 140, 66, 0.4)',
+                boxShadow: '0 12px 30px rgba(138, 21, 56, 0.4)',
                 y: -2
               }}
               whileTap={{ scale: 0.98 }}
@@ -102,7 +105,7 @@ const HeroContent = () => {
             </div>
             <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
               <p className="font-semibold">Trusted by 2,000+ delighted customers across India</p>
-              <p className="opacity-90 mb-12">— and growing.</p> {/* Increased bottom margin for proper spacing */}
+              <p className="opacity-90" style={{ marginTop: '12px', marginBottom: '12px' }}>— and growing.</p>
             </div>
           </motion.div>
         </motion.div>
