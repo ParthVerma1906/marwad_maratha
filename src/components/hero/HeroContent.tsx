@@ -24,7 +24,8 @@ const HeroContent = () => {
             style={{ 
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
-              letterSpacing: '3px'
+              letterSpacing: '3px',
+              marginTop: '40px' // Move headline down by 40px
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
