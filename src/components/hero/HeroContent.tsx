@@ -15,8 +15,7 @@ const HeroContent = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="space-y-8 max-w-4xl mx-auto"
-          style={{ marginTop: '190px' }} // Moved down by additional 30px (160+30)
+          className="space-y-12 max-w-4xl mx-auto"
         >
           {/* Headline */}
           <motion.h1 
@@ -34,15 +33,15 @@ const HeroContent = () => {
             <span className="block">Taste of Home.</span>
           </motion.h1>
 
-          {/* Subtitle with improved readability */}
+          {/* Subtitle with improved spacing */}
           <motion.div
-            className="space-y-6"
+            className="space-y-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[20px] max-w-[600px] mx-auto leading-relaxed font-medium"
+              className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[22px] max-w-[650px] mx-auto leading-relaxed font-medium"
               style={{ 
                 textShadow: '1px 1px 2px rgba(0,0,0,0.4)',
                 lineHeight: '1.6'
@@ -53,12 +52,12 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with maroon color matching Order Now */}
+          {/* CTA Button with increased spacing */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-12 pb-4"
+            className="pt-8 pb-12"
           >
             <motion.button
               onClick={() => {
@@ -67,7 +66,7 @@ const HeroContent = () => {
               }}
               className="bg-[#8A1538] hover:bg-[#A62052] text-white font-bold text-[16px] rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
               style={{
-                padding: '12px 24px',
+                padding: '14px 28px',
                 borderRadius: '12px',
                 fontWeight: 'bold'
               }}
@@ -91,14 +90,14 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge with improved spacing */}
+          {/* Trust Badge with restored spacing */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-2"
+            className="flex flex-col items-center justify-center gap-6 pt-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
           >
-            <div className="flex -space-x-3" style={{ marginBottom: '45px' }}>
+            <div className="flex -space-x-3 mb-4">
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}

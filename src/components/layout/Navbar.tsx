@@ -6,6 +6,7 @@ import AdminPanel from "../admin/AdminPanel";
 import ShoppingCart from "../cart/ShoppingCart";
 import { useCart } from "@/hooks/useCart";
 import { productImages } from "@/utils/imageAssets";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +15,9 @@ const Navbar = () => {
   const [showCart, setShowCart] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { cartItemsCount } = useCart();
+  const location = useLocation();
+  
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,13 +74,25 @@ const Navbar = () => {
     setShowCart(prev => !prev);
   };
 
+  // Determine if header should be transparent (homepage only)
+  const isTransparent = isHomePage && !scrolled;
+  
+  // Text colors based on background
+  const textColorClass = isTransparent 
+    ? 'text-white' 
+    : 'text-[#222]';
+  
+  const hoverTextColorClass = isTransparent 
+    ? 'hover:text-gray-200' 
+    : 'hover:text-[#8B0000]';
+
   return (
     <>
       <motion.header
         className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
-          scrolled
-            ? "bg-white/95 backdrop-blur-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]"
-            : "bg-transparent"
+          isTransparent
+            ? "bg-transparent"
+            : "bg-white/95 backdrop-blur-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]"
         }`}
         style={{ 
           position: 'fixed',
@@ -95,7 +111,9 @@ const Navbar = () => {
             style={{ 
               marginLeft: '20px',
               marginTop: '10px',
-              zIndex: 10
+              zIndex: 10,
+              maxWidth: '140px', // Reduced from 160px for better responsiveness
+              flexShrink: 0
             }}
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
@@ -104,7 +122,7 @@ const Navbar = () => {
               src={productImages.logo}
               alt="Marwad Maratha Logo"
               style={{ 
-                maxWidth: '160px',
+                maxWidth: '100%',
                 height: 'auto',
                 filter: 'drop-shadow(0.5px 0.5px 1px rgba(0,0,0,0.1))',
                 background: 'transparent',
@@ -118,13 +136,15 @@ const Navbar = () => {
                 target.src = '/placeholder.svg';
               }}
             />
-            <div className="text-center">
+            <div className="text-center w-full">
               <div 
-                className={`font-bold text-[18px] leading-tight transition-colors duration-500 text-[#5A0A0A]`}
+                className={`font-bold text-[16px] leading-tight transition-colors duration-300 ${
+                  isTransparent ? 'text-white' : 'text-[#5A0A0A]'
+                }`}
                 style={{ 
                   fontFamily: 'Playfair Display, serif',
                   fontWeight: '700',
-                  textShadow: '0.5px 0.5px 1px rgba(255,255,255,0.2)',
+                  textShadow: isTransparent ? '0.5px 0.5px 1px rgba(0,0,0,0.5)' : 'none',
                   letterSpacing: '0.5px'
                 }}
               >
@@ -144,17 +164,13 @@ const Navbar = () => {
               <motion.a
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className={`font-medium relative group cursor-pointer transition-all duration-500 ${
-                  scrolled 
-                    ? activeSection === item.id 
-                      ? 'text-[#D2691E]' 
-                      : 'text-[#8B0000] hover:text-[#B22222]'
-                    : activeSection === item.id 
-                      ? 'text-[#FFD700]' 
-                      : 'text-white hover:text-gray-200'
+                className={`font-medium relative group cursor-pointer transition-all duration-300 ${
+                  activeSection === item.id 
+                    ? (isTransparent ? 'text-[#FFD700]' : 'text-[#D2691E]')
+                    : `${textColorClass} ${hoverTextColorClass}`
                 }`}
                 style={{ 
-                  textShadow: scrolled ? 'none' : '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                  textShadow: isTransparent ? '1px 1px 2px rgba(0, 0, 0, 0.5)' : 'none',
                   fontSize: '16px',
                   fontWeight: activeSection === item.id ? '600' : '500',
                   margin: 0,
@@ -177,12 +193,8 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <motion.button
               onClick={handleAdminLogin}
-              className={`p-2 rounded-full transition-all duration-300 ${
-                scrolled 
-                  ? 'text-[#8B0000] hover:text-[#B22222]' 
-                  : 'text-white hover:text-gray-200'
-              }`}
-              style={{ filter: scrolled ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
+              className={`p-2 rounded-full transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
+              style={{ filter: isTransparent ? 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' : 'none' }}
               whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(139, 0, 0, 0.2)' }}
               whileTap={{ scale: 0.95 }}
             >
@@ -204,12 +216,8 @@ const Navbar = () => {
 
             <motion.button
               onClick={toggleCart}
-              className={`p-2 rounded-full relative transition-all duration-300 ${
-                scrolled 
-                  ? 'text-[#8B0000] hover:text-[#B22222]' 
-                  : 'text-white hover:text-gray-200'
-              }`}
-              style={{ filter: scrolled ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' }}
+              className={`p-2 rounded-full relative transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
+              style={{ filter: isTransparent ? 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' : 'none' }}
               whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(139, 0, 0, 0.2)' }}
               whileTap={{ scale: 0.95 }}
             >
