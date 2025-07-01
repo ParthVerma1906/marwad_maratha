@@ -16,7 +16,7 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-12 max-w-4xl mx-auto"
-          style={{ marginTop: '65px' }} // Increased from 25px to 65px (additional 40px down)
+          style={{ marginTop: '25px' }} // Move content down by 25px to center after header reduction
         >
           {/* Headline */}
           <motion.h1 
@@ -53,13 +53,13 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with increased spacing and moved down by additional 25px */}
+          {/* CTA Button with increased spacing and moved down by 20px */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
             className="pt-8 pb-12"
-            style={{ marginTop: '45px' }} // Increased from 20px to 45px (additional 25px down)
+            style={{ marginTop: '20px' }} // Additional 20px spacing for button
           >
             <motion.button
               onClick={() => {
