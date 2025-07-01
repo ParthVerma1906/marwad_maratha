@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -18,7 +17,7 @@ const Navbar = () => {
   const location = useLocation();
   
   const isHomePage = location.pathname === '/';
-
+  
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -97,7 +96,7 @@ const Navbar = () => {
         style={{ 
           position: 'fixed',
           zIndex: 1000,
-          padding: '20px 40px'
+          padding: '15px 40px' // Reduced from 20px to 15px for more compact header
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -110,9 +109,9 @@ const Navbar = () => {
             className="flex flex-col items-start"
             style={{ 
               marginLeft: '20px',
-              marginTop: '10px',
+              marginTop: '8px', // Reduced from 10px
               zIndex: 10,
-              maxWidth: '140px', // Reduced from 160px for better responsiveness
+              maxWidth: '120px', // Reduced from 140px for more compact header
               flexShrink: 0
             }}
             whileHover={{ scale: 1.02 }}
@@ -138,7 +137,7 @@ const Navbar = () => {
             />
             <div className="text-center w-full">
               <div 
-                className={`font-bold text-[16px] leading-tight transition-colors duration-300 ${
+                className={`font-bold text-[14px] leading-tight transition-colors duration-300 ${
                   isTransparent ? 'text-white' : 'text-[#5A0A0A]'
                 }`}
                 style={{ 
@@ -245,12 +244,12 @@ const Navbar = () => {
             
             <motion.button
               onClick={() => scrollToSection('contact')}
-              className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-3 px-7 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-2 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
               style={{ 
                 borderRadius: '25px',
-                fontSize: '16px',
+                fontSize: '15px', // Reduced from 16px
                 fontWeight: '700',
-                height: '44px'
+                height: '38px' // Reduced from 44px
               }}
               whileHover={{ 
                 scale: 1.05,

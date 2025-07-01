@@ -12,7 +12,7 @@ export const productImages = {
   ricePapad: "/lovable-uploads/aea4bde8-31cc-4d62-a906-6b79f9900eeb.png",
   garlicPickle: "/lovable-uploads/0a90b903-0fbf-493c-afbf-529d351c55c3.png",
   lemonPickle: "/lovable-uploads/12e66f00-6879-4cb0-b527-7e1d813a2663.png",
-  logo: "/lovable-uploads/d3c9784b-3766-40e3-9bea-84376faf3426.png" // Updated logo
+  logo: "/lovable-uploads/010cf85d-1380-42f9-9e85-bbad9333219c.png" // New logo
 };
 
 export const getImageUrl = (imagePath: string) => {

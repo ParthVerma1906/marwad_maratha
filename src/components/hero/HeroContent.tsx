@@ -16,6 +16,7 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-12 max-w-4xl mx-auto"
+          style={{ marginTop: '25px' }} // Move content down by 25px to center after header reduction
         >
           {/* Headline */}
           <motion.h1 
@@ -52,12 +53,13 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with increased spacing */}
+          {/* CTA Button with increased spacing and moved down by 20px */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
             className="pt-8 pb-12"
+            style={{ marginTop: '20px' }} // Additional 20px spacing for button
           >
             <motion.button
               onClick={() => {
@@ -90,7 +92,7 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge with restored spacing */}
+          {/* Trust Badge with restored spacing - NOT MOVED as per instructions */}
           <motion.div
             className="flex flex-col items-center justify-center gap-6 pt-8"
             initial={{ opacity: 0 }}
