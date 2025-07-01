@@ -73,14 +73,15 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 px-4 md:px-6 py-3 transition-all duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
           scrolled
-            ? "bg-background/95 backdrop-blur-lg shadow-lg"
+            ? "bg-white/95 backdrop-blur-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]"
             : "bg-transparent"
         }`}
         style={{ 
-          position: 'relative',
-          zIndex: 1000
+          position: 'fixed',
+          zIndex: 1000,
+          padding: '20px 40px'
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
