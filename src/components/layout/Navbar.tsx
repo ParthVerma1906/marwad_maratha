@@ -96,7 +96,7 @@ const Navbar = () => {
         style={{ 
           position: 'fixed',
           zIndex: 1000,
-          padding: '15px 40px' // Reduced from 20px to 15px for more compact header
+          padding: '12px 40px' // Further reduced for more compact and modern header
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
