@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 
 const HeroContent = () => {
@@ -15,7 +16,6 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-12 max-w-4xl mx-auto"
-          style={{ marginTop: '25px' }} // Move content down by 25px to center after header reduction
         >
           {/* Headline */}
           <motion.h1 
@@ -23,8 +23,7 @@ const HeroContent = () => {
             style={{ 
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
-              letterSpacing: '3px',
-              marginTop: '240px' // Move headline down by 240px total (40px more than previous 200px)
+              letterSpacing: '3px'
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -37,7 +36,6 @@ const HeroContent = () => {
           {/* Subtitle with improved spacing */}
           <motion.div
             className="space-y-8"
-            style={{ marginTop: '120px' }} // Keep subheadline at same position relative to its container
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
@@ -54,13 +52,12 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with increased spacing and moved down by 40px more */}
+          {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
             className="pt-8 pb-12"
-            style={{ marginTop: '100px' }} // Keep button at same position relative to its container
           >
             <motion.button
               onClick={() => {
@@ -93,7 +90,7 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge with restored spacing - NOT MOVED as per instructions */}
+          {/* Trust Badge - kept exactly as it was */}
           <motion.div
             className="flex flex-col items-center justify-center gap-6 pt-8"
             initial={{ opacity: 0 }}
