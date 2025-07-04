@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
@@ -96,7 +97,7 @@ const Navbar = () => {
         style={{ 
           position: 'fixed',
           zIndex: 1000,
-          padding: '12px 40px' // Further reduced for more compact and modern header
+          padding: '8px 40px' // Reduced from 12px to 8px for more compact navbar
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -109,9 +110,9 @@ const Navbar = () => {
             className="flex flex-col items-start"
             style={{ 
               marginLeft: '20px',
-              marginTop: '8px', // Reduced from 10px
+              marginTop: '6px', // Reduced from 8px for more compact header
               zIndex: 10,
-              maxWidth: '120px', // Reduced from 140px for more compact header
+              maxWidth: '110px', // Reduced from 120px for more compact header
               flexShrink: 0
             }}
             whileHover={{ scale: 1.02 }}
@@ -137,7 +138,7 @@ const Navbar = () => {
             />
             <div className="text-center w-full">
               <div 
-                className={`font-bold text-[14px] leading-tight transition-colors duration-300 ${
+                className={`font-bold text-[13px] leading-tight transition-colors duration-300 ${
                   isTransparent ? 'text-white' : 'text-[#5A0A0A]'
                 }`}
                 style={{ 
@@ -170,7 +171,7 @@ const Navbar = () => {
                 }`}
                 style={{ 
                   textShadow: isTransparent ? '1px 1px 2px rgba(0, 0, 0, 0.5)' : 'none',
-                  fontSize: '16px',
+                  fontSize: '15px', // Reduced from 16px for more compact navbar
                   fontWeight: activeSection === item.id ? '600' : '500',
                   margin: 0,
                   position: 'relative'
@@ -199,8 +200,8 @@ const Navbar = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -222,8 +223,8 @@ const Navbar = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -247,9 +248,9 @@ const Navbar = () => {
               className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-2 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
               style={{ 
                 borderRadius: '25px',
-                fontSize: '15px', // Reduced from 16px
+                fontSize: '14px', // Reduced from 15px for more compact navbar
                 fontWeight: '700',
-                height: '38px' // Reduced from 44px
+                height: '36px' // Reduced from 38px
               }}
               whileHover={{ 
                 scale: 1.05,
@@ -261,8 +262,8 @@ const Navbar = () => {
               <span>Order Now</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

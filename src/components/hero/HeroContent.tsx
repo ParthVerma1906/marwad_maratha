@@ -25,7 +25,7 @@ const HeroContent = () => {
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
               letterSpacing: '3px',
-              marginTop: '100px' // Move headline down by 100px total (60px more than before)
+              marginTop: '160px' // Move headline down by 160px total (60px more than previous 100px)
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ const HeroContent = () => {
           {/* Subtitle with improved spacing */}
           <motion.div
             className="space-y-8"
-            style={{ marginTop: '60px' }} // Move subheadline down by 60px
+            style={{ marginTop: '120px' }} // Move subheadline down by 120px total (60px more than previous 60px)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
@@ -55,13 +55,13 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button with increased spacing and moved down by 20px */}
+          {/* CTA Button with increased spacing and moved down by 40px more */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
             className="pt-8 pb-12"
-            style={{ marginTop: '60px' }} // Move button down by 60px total (40px more than before)
+            style={{ marginTop: '100px' }} // Move button down by 100px total (40px more than previous 60px)
           >
             <motion.button
               onClick={() => {
