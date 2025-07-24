@@ -77,6 +77,9 @@ const Navbar = () => {
   // Determine if header should be transparent (homepage only)
   const isTransparent = isHomePage && !scrolled;
   
+  // Determine header height based on section - reduced height when not on hero
+  const isCompactHeader = activeSection !== 'home' || scrolled;
+  
   // Text colors based on background
   const textColorClass = isTransparent 
     ? 'text-white' 
@@ -97,7 +100,8 @@ const Navbar = () => {
         style={{ 
           position: 'fixed',
           zIndex: 1000,
-          padding: '8px 40px' // Reduced from 12px to 8px for more compact navbar
+          padding: isCompactHeader ? '4px 40px' : '8px 40px', // Even more compact when not on hero
+          transition: 'padding 0.3s ease-in-out'
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -110,10 +114,11 @@ const Navbar = () => {
             className="flex flex-col items-start"
             style={{ 
               marginLeft: '20px',
-              marginTop: '6px', // Reduced from 8px for more compact header
+              marginTop: isCompactHeader ? '2px' : '6px', // Even less margin when compact
               zIndex: 10,
-              maxWidth: '110px', // Reduced from 120px for more compact header
-              flexShrink: 0
+              maxWidth: isCompactHeader ? '100px' : '110px', // Smaller logo when compact
+              flexShrink: 0,
+              transition: 'all 0.3s ease-in-out'
             }}
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
@@ -248,9 +253,10 @@ const Navbar = () => {
               className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-2 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
               style={{ 
                 borderRadius: '25px',
-                fontSize: '14px', // Reduced from 15px for more compact navbar
+                fontSize: isCompactHeader ? '13px' : '14px', // Even smaller when compact
                 fontWeight: '700',
-                height: '36px' // Reduced from 38px
+                height: isCompactHeader ? '32px' : '36px', // Reduced height when compact
+                transition: 'all 0.3s ease-in-out'
               }}
               whileHover={{ 
                 scale: 1.05,
