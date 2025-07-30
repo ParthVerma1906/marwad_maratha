@@ -87,9 +87,7 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
-          scrolled ? "bg-black/40 backdrop-blur-sm" : "bg-transparent"
-        }`}
+        className="fixed top-0 left-0 right-0 w-full bg-transparent"
         style={{ 
           position: 'fixed',
           zIndex: 1000,

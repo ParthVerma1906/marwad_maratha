@@ -15,7 +15,7 @@ const HeroContent = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="space-y-12 max-w-4xl mx-auto"
+          className="space-y-6 max-w-4xl mx-auto"
           style={{ marginTop: '90px' }} // Increased from 60px to 90px for better spacing
         >
           {/* Headline */}
@@ -30,25 +30,25 @@ const HeroContent = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
-            <span className="block text-[32px] sm:text-[42px] md:text-[52px] lg:text-[60px] font-bold">
+            <span className="block text-[3.5rem] font-bold mb-1" style={{ textShadow: '4px 4px 10px rgba(0,0,0,0.8)' }}>
               Flavours of Tradition.
             </span>
-            <span className="block text-[26px] sm:text-[36px] md:text-[46px] lg:text-[52px] font-normal mt-2">
+            <span className="block text-[2rem] font-semibold italic">
               Taste of Home.
             </span>
           </motion.h1>
 
           {/* Subtitle with improved spacing */}
           <motion.div
-            className="space-y-8"
+            className="space-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[22px] max-w-[650px] mx-auto font-medium"
+              className="text-[#f9f1e7] text-[1.25rem] max-w-[650px] mx-auto font-medium text-center"
               style={{ 
-                textShadow: '1px 1px 2px rgba(0,0,0,0.4)',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
                 lineHeight: '1.8'
               }}
             >
@@ -62,17 +62,18 @@ const HeroContent = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-8 pb-12"
+            className="pt-6 pb-12"
           >
             <motion.button
               onClick={() => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#8A1538] hover:bg-[#A62052] text-white font-bold text-[16px] rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
+              className="text-white font-bold text-[18px] rounded-full transition-all duration-300 shadow-lg"
               style={{
-                padding: '14px 28px',
-                borderRadius: '12px',
+                padding: '16px 36px',
+                background: 'linear-gradient(135deg, #850E35, #FF671F)',
+                borderRadius: '50px',
                 fontWeight: 'bold'
               }}
               initial={{ scale: 0.9, opacity: 0 }}
@@ -85,11 +86,11 @@ const HeroContent = () => {
                 stiffness: 100
               }}
               whileHover={{ 
-                scale: 1.08,
-                boxShadow: '0 15px 35px rgba(138, 21, 56, 0.5), 0 0 30px rgba(138, 21, 56, 0.3)',
+                scale: 1.1,
+                boxShadow: '0 20px 40px rgba(133, 14, 53, 0.4), 0 0 40px rgba(255, 103, 31, 0.6)',
                 y: -3
               }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.95 }}
             >
               Shop Now
             </motion.button>

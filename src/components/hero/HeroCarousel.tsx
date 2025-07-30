@@ -112,10 +112,8 @@ const HeroCarousel = () => {
         </Carousel>
       </div>
 
-      {/* Enhanced Gradient Overlays for Better Contrast and Warmth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FF8C42]/10 to-[#5d1f1f]/70 z-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#5d1f1f]/80 via-[#5d1f1f]/50 to-transparent z-10"></div>
-      <div className="absolute inset-0 bg-black/40 z-10"></div>
+      {/* Reduced overlay for brighter background */}
+      <div className="absolute inset-0 bg-black/30 z-10"></div>
     </>
   );
 };
