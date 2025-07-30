@@ -16,21 +16,26 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-12 max-w-4xl mx-auto"
+          style={{ marginTop: '60px' }} // Added margin to avoid navbar overlap
         >
           {/* Headline */}
           <motion.h1 
-            className="font-display text-white text-[28px] sm:text-[38px] md:text-[48px] lg:text-[56px] font-bold leading-tight"
+            className="font-display text-white leading-tight"
             style={{ 
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
               fontFamily: 'Playfair Display, serif',
-              letterSpacing: '3px'
+              letterSpacing: '2px'
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
-            <span className="block">Flavours of Tradition.</span>
-            <span className="block">Taste of Home.</span>
+            <span className="block text-[32px] sm:text-[42px] md:text-[52px] lg:text-[60px] font-bold">
+              Flavours of Tradition.
+            </span>
+            <span className="block text-[26px] sm:text-[36px] md:text-[46px] lg:text-[52px] font-normal mt-2">
+              Taste of Home.
+            </span>
           </motion.h1>
 
           {/* Subtitle with improved spacing */}
@@ -41,10 +46,10 @@ const HeroContent = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[22px] max-w-[650px] mx-auto leading-relaxed font-medium"
+              className="text-[#f9f1e7] text-[18px] sm:text-[20px] md:text-[22px] max-w-[650px] mx-auto font-medium"
               style={{ 
                 textShadow: '1px 1px 2px rgba(0,0,0,0.4)',
-                lineHeight: '1.6'
+                lineHeight: '1.8'
               }}
             >
               Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
@@ -80,13 +85,13 @@ const HeroContent = () => {
                 stiffness: 100
               }}
               whileHover={{ 
-                scale: 1.05,
-                boxShadow: '0 12px 30px rgba(138, 21, 56, 0.4)',
-                y: -2
+                scale: 1.08,
+                boxShadow: '0 15px 35px rgba(138, 21, 56, 0.5), 0 0 30px rgba(138, 21, 56, 0.3)',
+                y: -3
               }}
               whileTap={{ scale: 0.98 }}
             >
-              Explore Products
+              Shop Now
             </motion.button>
           </motion.div>
 

@@ -94,7 +94,7 @@ const Navbar = () => {
       <motion.header
         className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
           isTransparent
-            ? "bg-transparent"
+            ? "bg-black/30 backdrop-blur-sm"
             : "bg-white/95 backdrop-blur-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]"
         }`}
         style={{ 
