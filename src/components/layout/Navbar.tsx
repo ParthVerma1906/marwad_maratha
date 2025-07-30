@@ -88,7 +88,7 @@ const Navbar = () => {
     <>
       <motion.header
         className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
-          scrolled ? "bg-black/20 backdrop-blur-sm" : "bg-transparent"
+          scrolled ? "bg-black/40 backdrop-blur-sm" : "bg-transparent"
         }`}
         style={{ 
           position: 'fixed',
@@ -162,13 +162,13 @@ const Navbar = () => {
                 onClick={() => scrollToSection(item.id)}
                 className={`font-medium relative group cursor-pointer transition-all duration-300 ${
                   activeSection === item.id 
-                    ? 'text-white font-bold'
+                    ? 'text-white font-semibold'
                     : `${textColorClass} ${hoverTextColorClass}`
                 }`}
                 style={{ 
                   textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
                   fontSize: '15px',
-                  fontWeight: activeSection === item.id ? '700' : '500',
+                  fontWeight: activeSection === item.id ? '600' : '500',
                   margin: 0,
                   position: 'relative'
                 }}
@@ -176,7 +176,7 @@ const Navbar = () => {
                 transition={{ duration: 0.2 }}
               >
                 {item.name}
-                <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-200 ${
+                <span className={`absolute bottom-0 left-0 h-px transition-all duration-200 ${
                   activeSection === item.id 
                     ? 'w-full' 
                     : 'w-0 group-hover:w-full'

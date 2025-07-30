@@ -16,7 +16,7 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-12 max-w-4xl mx-auto"
-          style={{ marginTop: '60px' }} // Added margin to avoid navbar overlap
+          style={{ marginTop: '90px' }} // Increased from 60px to 90px for better spacing
         >
           {/* Headline */}
           <motion.h1 
