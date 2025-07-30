@@ -80,22 +80,15 @@ const Navbar = () => {
   // Determine header height based on section - reduced height when not on hero
   const isCompactHeader = activeSection !== 'home' || scrolled;
   
-  // Text colors based on background
-  const textColorClass = isTransparent 
-    ? 'text-white' 
-    : 'text-[#222]';
-  
-  const hoverTextColorClass = isTransparent 
-    ? 'hover:text-gray-200' 
-    : 'hover:text-[#8B0000]';
+  // Always use white text for transparent design
+  const textColorClass = 'text-white';
+  const hoverTextColorClass = 'hover:text-gray-200';
 
   return (
     <>
       <motion.header
         className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
-          isTransparent
-            ? "bg-black/30 backdrop-blur-sm"
-            : "bg-white/95 backdrop-blur-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]"
+          scrolled ? "bg-black/20 backdrop-blur-sm" : "bg-transparent"
         }`}
         style={{ 
           position: 'fixed',
@@ -143,13 +136,11 @@ const Navbar = () => {
             />
             <div className="text-center w-full">
               <div 
-                className={`font-bold text-[13px] leading-tight transition-colors duration-300 ${
-                  isTransparent ? 'text-white' : 'text-[#5A0A0A]'
-                }`}
+                className="font-bold text-[13px] leading-tight transition-colors duration-300 text-white"
                 style={{ 
                   fontFamily: 'Playfair Display, serif',
                   fontWeight: '700',
-                  textShadow: isTransparent ? '0.5px 0.5px 1px rgba(0,0,0,0.5)' : 'none',
+                  textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                   letterSpacing: '0.5px'
                 }}
               >
@@ -171,13 +162,13 @@ const Navbar = () => {
                 onClick={() => scrollToSection(item.id)}
                 className={`font-medium relative group cursor-pointer transition-all duration-300 ${
                   activeSection === item.id 
-                    ? (isTransparent ? 'text-[#FFD700]' : 'text-[#D2691E]')
+                    ? 'text-white font-bold'
                     : `${textColorClass} ${hoverTextColorClass}`
                 }`}
                 style={{ 
-                  textShadow: isTransparent ? '1px 1px 2px rgba(0, 0, 0, 0.5)' : 'none',
-                  fontSize: '15px', // Reduced from 16px for more compact navbar
-                  fontWeight: activeSection === item.id ? '600' : '500',
+                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+                  fontSize: '15px',
+                  fontWeight: activeSection === item.id ? '700' : '500',
                   margin: 0,
                   position: 'relative'
                 }}
@@ -189,7 +180,7 @@ const Navbar = () => {
                   activeSection === item.id 
                     ? 'w-full' 
                     : 'w-0 group-hover:w-full'
-                } bg-[#8A1538]`}></span>
+                } bg-white`}></span>
               </motion.a>
             ))}
           </nav>
@@ -199,8 +190,8 @@ const Navbar = () => {
             <motion.button
               onClick={handleAdminLogin}
               className={`p-2 rounded-full transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
-              style={{ filter: isTransparent ? 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' : 'none' }}
-              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(139, 0, 0, 0.2)' }}
+              style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
+              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)' }}
               whileTap={{ scale: 0.95 }}
             >
               <svg
@@ -222,8 +213,8 @@ const Navbar = () => {
             <motion.button
               onClick={toggleCart}
               className={`p-2 rounded-full relative transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
-              style={{ filter: isTransparent ? 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))' : 'none' }}
-              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(139, 0, 0, 0.2)' }}
+              style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
+              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)' }}
               whileTap={{ scale: 0.95 }}
             >
               <svg
