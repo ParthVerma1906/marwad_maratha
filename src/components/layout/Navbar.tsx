@@ -110,9 +110,9 @@ const Navbar = () => {
             className="flex flex-col items-start"
             style={{ 
               marginLeft: '20px',
-              marginTop: isCompactHeader ? '2px' : '6px', // Even less margin when compact
+              marginTop: isCompactHeader ? '2px' : '6px',
               zIndex: 10,
-              maxWidth: isCompactHeader ? '100px' : '110px', // Smaller logo when compact
+              maxWidth: isCompactHeader ? '120px' : '130px', // Increased logo size
               flexShrink: 0,
               transition: 'all 0.3s ease-in-out'
             }}
@@ -125,7 +125,7 @@ const Navbar = () => {
               style={{ 
                 maxWidth: '100%',
                 height: 'auto',
-                filter: 'drop-shadow(0.5px 0.5px 1px rgba(0,0,0,0.1))',
+                filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))', // Enhanced drop shadow
                 background: 'transparent',
                 padding: '0',
                 margin: '0'
@@ -175,7 +175,10 @@ const Navbar = () => {
                   margin: 0,
                   position: 'relative'
                 }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  color: '#FFD700' // Yellow color on hover
+                }}
                 transition={{ duration: 0.2 }}
               >
                 {item.name}

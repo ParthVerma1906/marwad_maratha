@@ -52,10 +52,11 @@ const HeroContent = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="text-[#f9f1e7] text-[1rem] sm:text-[1.125rem] md:text-[1.25rem] max-w-[650px] mx-auto font-medium text-center"
+              className="text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[650px] mx-auto font-medium text-center"
               style={{ 
-                textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-                lineHeight: '1.7'
+                textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                lineHeight: '1.8',
+                fontWeight: '500'
               }}
             >
               Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
@@ -63,12 +64,12 @@ const HeroContent = () => {
             </h2>
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-6 pb-12"
+            className="pt-6 pb-12 flex flex-col sm:flex-row gap-4 items-center justify-center"
           >
             <motion.button
               onClick={() => {
@@ -101,6 +102,40 @@ const HeroContent = () => {
               whileTap={{ scale: 0.95 }}
             >
               Shop Now
+            </motion.button>
+
+            <motion.button
+              onClick={() => {
+                const element = document.getElementById('products');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-white font-bold text-[16px] rounded-full transition-all duration-300 border-2 border-white/30"
+              style={{
+                padding: '16px 32px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                borderRadius: '50px',
+                fontWeight: 'bold',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 15px rgba(255, 255, 255, 0.1)'
+              }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ 
+                delay: 1.0, 
+                duration: 0.6, 
+                ease: "easeOut",
+                type: "spring",
+                stiffness: 100
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                background: 'rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 8px 30px rgba(255, 255, 255, 0.3)',
+                y: -2
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Explore Products
             </motion.button>
           </motion.div>
 
