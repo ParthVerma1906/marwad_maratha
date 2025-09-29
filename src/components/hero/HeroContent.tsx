@@ -15,7 +15,7 @@ const HeroContent = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="space-y-6 max-w-4xl mx-auto"
+          className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6"
           style={{ marginTop: '90px' }} // Increased from 60px to 90px for better spacing
         >
           {/* Headline */}
@@ -30,10 +30,16 @@ const HeroContent = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
-            <span className="block text-[3.5rem] font-bold mb-1" style={{ textShadow: '4px 4px 10px rgba(0,0,0,0.8)' }}>
+            <span className="block text-[2.5rem] sm:text-[3rem] md:text-[3.5rem] font-bold mb-1" style={{ 
+              textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
+              WebkitTextStroke: '1px rgba(255,255,255,0.1)'
+            }}>
               Flavours of Tradition.
             </span>
-            <span className="block text-[2rem] font-semibold italic">
+            <span className="block text-[1.5rem] sm:text-[1.75rem] md:text-[2rem] font-semibold italic" style={{ 
+              color: '#fffef7',
+              textShadow: '3px 3px 8px rgba(0,0,0,0.7)'
+            }}>
               Taste of Home.
             </span>
           </motion.h1>
@@ -46,10 +52,10 @@ const HeroContent = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="text-[#f9f1e7] text-[1.25rem] max-w-[650px] mx-auto font-medium text-center"
+              className="text-[#f9f1e7] text-[1rem] sm:text-[1.125rem] md:text-[1.25rem] max-w-[650px] mx-auto font-medium text-center"
               style={{ 
                 textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-                lineHeight: '1.8'
+                lineHeight: '1.7'
               }}
             >
               Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
@@ -69,12 +75,13 @@ const HeroContent = () => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-white font-bold text-[18px] rounded-full transition-all duration-300 shadow-lg"
+              className="text-white font-bold text-[18px] rounded-full transition-all duration-300"
               style={{
-                padding: '16px 36px',
+                padding: '18px 40px',
                 background: 'linear-gradient(135deg, #850E35, #FF671F)',
                 borderRadius: '50px',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                boxShadow: '0 8px 25px rgba(133, 14, 53, 0.3), 0 4px 12px rgba(255, 103, 31, 0.2)'
               }}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -86,9 +93,10 @@ const HeroContent = () => {
                 stiffness: 100
               }}
               whileHover={{ 
-                scale: 1.1,
-                boxShadow: '0 20px 40px rgba(133, 14, 53, 0.4), 0 0 40px rgba(255, 103, 31, 0.6)',
-                y: -3
+                scale: 1.05,
+                boxShadow: '0 25px 50px rgba(133, 14, 53, 0.5), 0 0 50px rgba(255, 103, 31, 0.7)',
+                y: -3,
+                background: 'linear-gradient(135deg, #A62052, #FFB347)'
               }}
               whileTap={{ scale: 0.95 }}
             >
@@ -96,23 +104,20 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge - kept exactly as it was */}
+          {/* Trust Badge - simplified */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-6 pt-8"
+            className="flex flex-col items-center justify-center gap-4 pt-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
           >
-            <div className="flex -space-x-3 mb-4">
+            <div className="flex -space-x-3 mb-2">
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
                   className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-saffron/80 to-maroon/80"
                 ></div>
               ))}
-            </div>
-            <div className="text-sm text-[#f9f1e7] text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.4)' }}>
-              <p className="font-semibold">Trusted by 2,000+ delighted customers across India — and growing.</p>
             </div>
           </motion.div>
         </motion.div>

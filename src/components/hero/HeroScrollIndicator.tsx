@@ -23,8 +23,8 @@ const HeroScrollIndicator = () => {
       </motion.p>
       <motion.button
         onClick={handleScrollDown}
-        animate={{ y: [0, 8, 0] }}
-        transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+        animate={{ y: [0, 10, 0] }}
+        transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
         className="text-[#f9f1e7] hover:text-white transition-all duration-300 cursor-pointer p-2 rounded-full hover:bg-white/10"
         style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.4))' }}
         whileHover={{ scale: 1.2 }}
@@ -32,6 +32,20 @@ const HeroScrollIndicator = () => {
       >
         <ArrowDown size={24} strokeWidth={2.5} />
       </motion.button>
+      
+      {/* Trust text */}
+      <motion.div
+        className="text-center mt-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4, duration: 0.8 }}
+      >
+        <p className="text-white text-[1rem] font-medium" style={{ 
+          textShadow: '2px 2px 4px rgba(0,0,0,0.6)' 
+        }}>
+          Trusted by 2,000+ delighted customers across India — and growing.
+        </p>
+      </motion.div>
     </div>
   );
 };

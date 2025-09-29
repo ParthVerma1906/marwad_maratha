@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import AdminLogin from "../admin/AdminLogin";
 import AdminPanel from "../admin/AdminPanel";
 import ShoppingCart from "../cart/ShoppingCart";
+import MobileMenu from "./MobileMenu";
 import { useCart } from "@/hooks/useCart";
 import { productImages } from "@/utils/imageAssets";
 import { useLocation } from "react-router-dom";
@@ -21,7 +22,9 @@ const Navbar = () => {
   
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      // Check if scrolled past hero section (roughly 80vh)
+      const heroHeight = window.innerHeight * 0.8;
+      setScrolled(window.scrollY > heroHeight);
       
       // Determine active section based on scroll position
       const sections = ['home', 'products', 'story', 'contact'];
@@ -87,12 +90,14 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        className="fixed top-0 left-0 right-0 w-full bg-transparent"
+        className={`fixed top-0 left-0 right-0 w-full transition-all duration-500 ease-in-out ${
+          scrolled ? "bg-black/60 backdrop-blur-sm" : "bg-transparent"
+        }`}
         style={{ 
           position: 'fixed',
           zIndex: 1000,
-          padding: isCompactHeader ? '4px 40px' : '8px 40px', // Even more compact when not on hero
-          transition: 'padding 0.3s ease-in-out'
+          padding: isCompactHeader ? '4px 40px' : '8px 40px',
+          transition: 'all 0.5s ease-in-out'
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -174,17 +179,20 @@ const Navbar = () => {
                 transition={{ duration: 0.2 }}
               >
                 {item.name}
-                <span className={`absolute bottom-0 left-0 h-px transition-all duration-200 ${
+                <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
                   activeSection === item.id 
-                    ? 'w-full' 
-                    : 'w-0 group-hover:w-full'
-                } bg-white`}></span>
+                    ? 'w-full bg-yellow-400' 
+                    : 'w-0 group-hover:w-full group-hover:bg-yellow-400'
+                }`}></span>
               </motion.a>
             ))}
           </nav>
 
+          {/* Mobile Menu */}
+          <MobileMenu activeSection={activeSection} scrollToSection={scrollToSection} />
+
           {/* Action Buttons */}
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             <motion.button
               onClick={handleAdminLogin}
               className={`p-2 rounded-full transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
