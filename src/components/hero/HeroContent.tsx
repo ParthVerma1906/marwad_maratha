@@ -37,8 +37,11 @@ const HeroContent = () => {
               Flavours of Tradition.
             </span>
             <span className="block text-[1.5rem] sm:text-[1.75rem] md:text-[2rem] font-semibold italic" style={{ 
-              color: '#fffef7',
-              textShadow: '3px 3px 8px rgba(0,0,0,0.7)'
+              color: '#FFE5B4',
+              textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
+              fontStyle: 'italic',
+              fontWeight: '600',
+              letterSpacing: '0.5px'
             }}>
               Taste of Home.
             </span>
@@ -94,9 +97,9 @@ const HeroContent = () => {
                 stiffness: 100
               }}
               whileHover={{ 
-                scale: 1.05,
-                boxShadow: '0 25px 50px rgba(133, 14, 53, 0.5), 0 0 50px rgba(255, 103, 31, 0.7)',
-                y: -3,
+                scale: 1.08,
+                boxShadow: '0 25px 50px rgba(133, 14, 53, 0.6), 0 0 50px rgba(255, 103, 31, 0.8)',
+                y: -4,
                 background: 'linear-gradient(135deg, #A62052, #FFB347)'
               }}
               whileTap={{ scale: 0.95 }}
@@ -109,14 +112,14 @@ const HeroContent = () => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-white font-bold text-[16px] rounded-full transition-all duration-300 border-2 border-white/30"
+              className="text-white font-bold text-[16px] rounded-full transition-all duration-300"
               style={{
                 padding: '16px 32px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'linear-gradient(135deg, #D2B48C, #F5DEB3)',
                 borderRadius: '50px',
                 fontWeight: 'bold',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 4px 15px rgba(255, 255, 255, 0.1)'
+                color: '#5D4037',
+                boxShadow: '0 4px 15px rgba(210, 180, 140, 0.3)'
               }}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -128,10 +131,10 @@ const HeroContent = () => {
                 stiffness: 100
               }}
               whileHover={{ 
-                scale: 1.05,
-                background: 'rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 8px 30px rgba(255, 255, 255, 0.3)',
-                y: -2
+                scale: 1.08,
+                background: 'linear-gradient(135deg, #DEB887, #FFEBCD)',
+                boxShadow: '0 8px 30px rgba(210, 180, 140, 0.5), 0 0 25px rgba(245, 222, 179, 0.4)',
+                y: -3
               }}
               whileTap={{ scale: 0.95 }}
             >
