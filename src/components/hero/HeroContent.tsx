@@ -141,22 +141,6 @@ const HeroContent = () => {
             </motion.button>
           </motion.div>
 
-          {/* Trust Badge - simplified */}
-          <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-6 w-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
-          >
-            <div className="flex -space-x-3 mb-2 justify-center items-center mx-auto">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-saffron/80 to-maroon/80"
-                ></div>
-              ))}
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </div>

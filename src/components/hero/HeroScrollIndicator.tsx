@@ -50,18 +50,34 @@ const HeroScrollIndicator = () => {
         </motion.button>
       </motion.div>
 
-      <motion.p 
-        className="text-base font-light mt-6 max-w-md mx-auto px-4"
-        style={{ 
-          textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-          lineHeight: '1.6'
-        }}
+      <motion.div
+        className="flex flex-col items-center justify-center gap-3 mt-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.0, duration: 1.0 }}
+        transition={{ delay: 1.8, duration: 0.8 }}
       >
-        Trusted by 2,000+ delighted customers across India — and growing.
-      </motion.p>
+        <div className="flex -space-x-3 mb-1">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-saffron/80 to-maroon/80"
+            ></div>
+          ))}
+        </div>
+        
+        <motion.p 
+          className="text-base font-light max-w-md mx-auto px-4"
+          style={{ 
+            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+            lineHeight: '1.6'
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.0, duration: 1.0 }}
+        >
+          Trusted by 2,000+ delighted customers across India — and growing.
+        </motion.p>
+      </motion.div>
     </motion.div>
   );
 };
