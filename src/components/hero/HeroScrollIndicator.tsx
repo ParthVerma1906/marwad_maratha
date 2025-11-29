@@ -51,7 +51,7 @@ const HeroScrollIndicator = () => {
       </motion.div>
 
       <motion.p 
-        className="text-sm font-light mt-6 max-w-md mx-auto px-4"
+        className="text-base font-light mt-6 max-w-md mx-auto px-4"
         style={{ 
           textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
           lineHeight: '1.6'

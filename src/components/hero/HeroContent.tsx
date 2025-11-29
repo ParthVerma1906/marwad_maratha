@@ -36,11 +36,10 @@ const HeroContent = () => {
             }}>
               Flavours of Tradition.
             </span>
-            <span className="block text-[1.5rem] sm:text-[1.75rem] md:text-[2rem] font-semibold italic" style={{ 
+            <span className="block text-[1.5rem] sm:text-[1.75rem] md:text-[2rem] font-handwritten" style={{ 
               color: '#FFE5B4',
               textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
-              fontStyle: 'italic',
-              fontWeight: '600',
+              fontWeight: '400',
               letterSpacing: '0.5px'
             }}>
               Taste of Home.
@@ -115,11 +114,11 @@ const HeroContent = () => {
               className="text-white font-bold text-[16px] rounded-full transition-all duration-300"
               style={{
                 padding: '16px 32px',
-                background: 'linear-gradient(135deg, #D2B48C, #F5DEB3)',
+                background: 'linear-gradient(135deg, #E6C28B, #F5DEB3)',
                 borderRadius: '50px',
                 fontWeight: 'bold',
                 color: '#5D4037',
-                boxShadow: '0 4px 15px rgba(210, 180, 140, 0.3)'
+                boxShadow: '0 4px 15px rgba(230, 194, 139, 0.4)'
               }}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -132,8 +131,8 @@ const HeroContent = () => {
               }}
               whileHover={{ 
                 scale: 1.08,
-                background: 'linear-gradient(135deg, #DEB887, #FFEBCD)',
-                boxShadow: '0 8px 30px rgba(210, 180, 140, 0.5), 0 0 25px rgba(245, 222, 179, 0.4)',
+                background: 'linear-gradient(135deg, #F4D29E, #FFE4B5)',
+                boxShadow: '0 8px 30px rgba(244, 210, 158, 0.6), 0 0 25px rgba(255, 228, 181, 0.5)',
                 y: -3
               }}
               whileTap={{ scale: 0.95 }}
