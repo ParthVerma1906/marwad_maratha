@@ -1,10 +1,20 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { productImages } from "@/utils/imageAssets";
 import type { CarouselApi } from "@/components/ui/carousel";
 
 const HeroCarousel = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.5]);
+
   // Use the uploaded images in the exact sequence provided
   const heroImages = [
     {
@@ -76,9 +86,13 @@ const HeroCarousel = () => {
 
   return (
     <>
-      {/* Background Image Carousel - removed arrow controls */}
-      <div className="absolute inset-0 w-full h-full">
-        <Carousel 
+      {/* Background Image Carousel with Parallax Effect */}
+      <motion.div 
+        ref={ref}
+        className="absolute inset-0 w-full h-full"
+        style={{ y, opacity }}
+      >
+        <Carousel
           className="w-full h-full"
           setApi={setApi}
           opts={{
@@ -110,7 +124,7 @@ const HeroCarousel = () => {
             ))}
           </CarouselContent>
         </Carousel>
-      </div>
+      </motion.div>
 
       {/* Reduced overlay for brighter background */}
       <div className="absolute inset-0 bg-black/30 z-10"></div>

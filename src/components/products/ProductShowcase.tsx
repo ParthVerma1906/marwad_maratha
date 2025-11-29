@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCategories from "./ProductCategories";
 import ProductGrid from "./ProductGrid";
@@ -10,6 +10,14 @@ import { useAllProducts } from "./useAllProducts";
 import initialProducts from "./productData";
 
 const ProductShowcase = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  
   const [activeCategory, setActiveCategory] = useState<string>("popular");
   const [showAllProducts, setShowAllProducts] = useState(false);
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
@@ -31,10 +39,18 @@ const ProductShowcase = () => {
   return (
     <section
       id="products"
-      className="py-16 md:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background"
-      ref={ref}
+      ref={sectionRef}
+      className="py-16 md:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
     >
-      <div className="container mx-auto px-4">
+      <motion.div 
+        className="absolute inset-0 pointer-events-none"
+        style={{ y }}
+      >
+        <div className="absolute top-10 left-10 w-32 h-32 bg-saffron/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 right-20 w-48 h-48 bg-maroon/10 rounded-full blur-3xl"></div>
+      </motion.div>
+      
+      <div ref={ref} className="container mx-auto px-4 relative z-10">
         <ProductShowcaseHeader inView={inView} />
 
         <div className="mb-10 flex flex-col md:flex-row justify-center gap-6">

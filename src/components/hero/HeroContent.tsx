@@ -1,9 +1,23 @@
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const HeroContent = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.9, 0.6]);
+
   return (
-    <div className="relative z-20 h-full flex items-center justify-center">
+    <motion.div 
+      ref={ref}
+      className="relative z-20 h-full flex items-center justify-center"
+      style={{ y, opacity }}
+    >
       {/* Light gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent z-10"></div>
       
@@ -143,7 +157,7 @@ const HeroContent = () => {
 
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
