@@ -144,7 +144,8 @@ export default {
             fontFamily: {
                 'spicefont': ['Poppins', 'sans-serif'],
                 'heritage': ['Cormorant Garamond', 'serif'],
-                'display': ['Playfair Display', 'serif']
+                'display': ['Playfair Display', 'serif'],
+                'handwritten': ['Satisfy', 'cursive']
             },
             backgroundImage: {
                 'spice-pattern': "url('/src/assets/spice-pattern.png')",
