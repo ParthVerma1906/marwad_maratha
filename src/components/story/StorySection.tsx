@@ -1,8 +1,17 @@
 
 import { useInView } from "react-intersection-observer";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const StorySection = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.1,
@@ -38,13 +47,18 @@ const StorySection = () => {
   return (
     <section
       id="story"
-      ref={ref}
+      ref={sectionRef}
       className="py-16 md:py-24 relative overflow-hidden"
     >
-      {/* Background patterns */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-turmeric/10 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-maroon/5 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute inset-0 bg-fabric-texture opacity-5 -z-10"></div>
+      {/* Background patterns with parallax */}
+      <motion.div 
+        className="absolute inset-0 -z-10"
+        style={{ y: backgroundY }}
+      >
+        <div ref={ref} className="absolute top-0 right-0 w-64 h-64 bg-turmeric/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-maroon/5 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-fabric-texture opacity-5"></div>
+      </motion.div>
 
       <div className="container mx-auto px-4">
         <motion.div
