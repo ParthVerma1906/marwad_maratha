@@ -143,12 +143,12 @@ const HeroContent = () => {
 
           {/* Trust Badge - simplified */}
           <motion.div
-            className="flex flex-col items-center justify-center gap-4 pt-6"
+            className="flex flex-col items-center justify-center gap-4 pt-6 w-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
           >
-            <div className="flex -space-x-3 mb-2">
+            <div className="flex -space-x-3 mb-2 justify-center items-center mx-auto">
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
