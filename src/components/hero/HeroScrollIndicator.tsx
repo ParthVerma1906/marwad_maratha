@@ -51,12 +51,12 @@ const HeroScrollIndicator = () => {
       </motion.div>
 
       <motion.div
-        className="flex flex-col items-center justify-center gap-3 mt-6"
+        className="flex flex-col items-center justify-center gap-3 mt-6 w-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.8 }}
       >
-        <div className="flex -space-x-3 mb-1">
+        <div className="flex justify-center -space-x-3 mb-1 w-full">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
