@@ -30,7 +30,7 @@ const HeroContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="space-y-3 max-w-4xl mx-auto px-4 sm:px-6"
-          style={{ marginTop: '20px' }}
+          style={{ marginTop: '-16px' }}
         >
           {/* Headline */}
           <motion.h1 
@@ -67,7 +67,7 @@ const HeroContent = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="mt-2 text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[650px] mx-auto font-medium text-center"
+              className="mt-2 text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[600px] mx-auto font-medium text-center"
               style={{ 
                 textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                 lineHeight: '1.8',
@@ -84,7 +84,7 @@ const HeroContent = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-4 pb-4 flex flex-col sm:flex-row gap-4 items-center justify-center"
+            className="pt-5 pb-4 flex flex-col sm:flex-row gap-4 items-center justify-center"
           >
             <motion.button
               onClick={() => {
