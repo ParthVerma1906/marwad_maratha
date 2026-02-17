@@ -15,7 +15,7 @@ const HeroContent = () => {
   return (
     <motion.div 
       ref={ref}
-      className="relative z-20 h-full flex items-center justify-center"
+      className="relative z-20 h-full flex flex-col items-center justify-center"
       style={{ y, opacity }}
     >
       {/* Light gradient overlay for text readability */}
@@ -24,13 +24,11 @@ const HeroContent = () => {
       {/* Subtle dark overlay behind text area for better readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent z-15"></div>
       
-      <div className="container mx-auto px-4 text-center h-full flex items-center justify-center relative z-20">
+      <div className="relative z-20 text-center max-w-4xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="space-y-3 max-w-4xl mx-auto px-4 sm:px-6"
-          style={{ marginTop: '-16px' }}
         >
           {/* Headline */}
           <motion.h1 
@@ -44,7 +42,7 @@ const HeroContent = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
-            <span className="block text-[2.5rem] sm:text-[3rem] md:text-[3.5rem] font-bold mb-2" style={{ 
+            <span className="block text-[2.5rem] sm:text-[3rem] md:text-[3.5rem] font-bold mb-4" style={{ 
               textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
               WebkitTextStroke: '1px rgba(255,255,255,0.1)'
             }}>
@@ -67,7 +65,7 @@ const HeroContent = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="mt-2 text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[600px] mx-auto font-medium text-center"
+              className="mt-4 text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[700px] mx-auto font-medium text-center"
               style={{ 
                 textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                 lineHeight: '1.8',
@@ -84,7 +82,7 @@ const HeroContent = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="pt-5 pb-4 flex flex-col sm:flex-row gap-4 items-center justify-center"
+            className="pt-8 flex flex-col sm:flex-row gap-4 items-center justify-center"
           >
             <motion.button
               onClick={() => {
