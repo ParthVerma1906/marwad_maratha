@@ -28,7 +28,7 @@ const HeroScrollIndicator = () => {
         }}
         className="flex flex-col items-center gap-2"
       >
-        <p className="text-sm font-light tracking-wide" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+        <p className="text-xs font-light tracking-widest uppercase opacity-70" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
           Scroll to explore
         </p>
         <motion.button
@@ -41,42 +41,13 @@ const HeroScrollIndicator = () => {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="text-[#f9f1e7] hover:text-white transition-all duration-300 cursor-pointer p-2 rounded-full hover:bg-white/10"
+          className="text-white/70 hover:text-white transition-all duration-300 cursor-pointer p-1"
           style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
           whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.95 }}
         >
-          <ArrowDown size={24} strokeWidth={2.5} />
+          <ArrowDown size={20} strokeWidth={2} />
         </motion.button>
-      </motion.div>
-
-      <motion.div
-        className="flex flex-col items-center justify-center gap-3 mt-6 w-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 0.8 }}
-      >
-        <div className="flex justify-center -space-x-3 mb-1 w-full">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-saffron/80 to-maroon/80"
-            ></div>
-          ))}
-        </div>
-        
-        <motion.p 
-          className="text-base font-light max-w-md mx-auto px-4"
-          style={{ 
-            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-            lineHeight: '1.6'
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.0, duration: 1.0 }}
-        >
-          Trusted by 2,000+ delighted customers across India — and growing.
-        </motion.p>
       </motion.div>
     </motion.div>
   );

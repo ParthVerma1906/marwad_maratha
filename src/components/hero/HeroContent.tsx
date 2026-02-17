@@ -29,8 +29,8 @@ const HeroContent = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6"
-          style={{ marginTop: '90px' }} // Increased from 60px to 90px for better spacing
+          className="space-y-5 max-w-4xl mx-auto px-4 sm:px-6"
+          style={{ marginTop: '70px' }}
         >
           {/* Headline */}
           <motion.h1 
@@ -44,7 +44,7 @@ const HeroContent = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
-            <span className="block text-[2.5rem] sm:text-[3rem] md:text-[3.5rem] font-bold mb-1" style={{ 
+            <span className="block text-[2.5rem] sm:text-[3rem] md:text-[3.5rem] font-bold mb-3" style={{ 
               textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
               WebkitTextStroke: '1px rgba(255,255,255,0.1)'
             }}>
@@ -60,9 +60,9 @@ const HeroContent = () => {
             </span>
           </motion.h1>
 
-          {/* Subtitle with improved spacing */}
+          {/* Subtitle */}
           <motion.div
-            className="space-y-4"
+            className="space-y-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
@@ -125,14 +125,15 @@ const HeroContent = () => {
                 const element = document.getElementById('products');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-white font-bold text-[16px] rounded-full transition-all duration-300"
+              className="text-[16px] rounded-full transition-all duration-300"
               style={{
-                padding: '16px 32px',
-                background: 'linear-gradient(135deg, #E6C28B, #F5DEB3)',
+                padding: '14px 32px',
+                background: 'transparent',
                 borderRadius: '50px',
-                fontWeight: 'bold',
-                color: '#5D4037',
-                boxShadow: '0 4px 15px rgba(230, 194, 139, 0.4)'
+                fontWeight: '500',
+                color: '#FFFFFF',
+                border: '1.5px solid rgba(255,255,255,0.5)',
+                letterSpacing: '0.5px'
               }}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -144,10 +145,10 @@ const HeroContent = () => {
                 stiffness: 100
               }}
               whileHover={{ 
-                scale: 1.08,
-                background: 'linear-gradient(135deg, #F4D29E, #FFE4B5)',
-                boxShadow: '0 8px 30px rgba(244, 210, 158, 0.6), 0 0 25px rgba(255, 228, 181, 0.5)',
-                y: -3
+                scale: 1.05,
+                borderColor: 'rgba(255,255,255,0.9)',
+                background: 'rgba(255,255,255,0.1)',
+                y: -2
               }}
               whileTap={{ scale: 0.95 }}
             >
