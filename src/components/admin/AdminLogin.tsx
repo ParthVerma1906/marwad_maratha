@@ -13,26 +13,47 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simple admin credential check - in a real app, this would be a proper authentication system
-    if (username === "admin" && password === "password123") {
-      // Set admin logged in in localStorage
-      localStorage.setItem("adminLoggedIn", "true");
-      
-      toast({
-        title: "Login successful",
-        description: "Welcome back, admin!",
-      });
-      
-      onLoginSuccess();
-    } else {
+    try {
+      const response = await fetch(
+        "https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/verify-admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Store the session token, not a simple boolean
+        localStorage.setItem("adminLoggedIn", "true");
+        if (data.token) {
+          localStorage.setItem("adminToken", data.token);
+        }
+        
+        toast({
+          title: "Login successful",
+          description: "Welcome back, admin!",
+        });
+        
+        onLoginSuccess();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Login failed",
+          description: "Invalid username or password.",
+        });
+      }
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: "Invalid username or password.",
+        description: "Could not connect to server. Please try again.",
       });
     }
     
