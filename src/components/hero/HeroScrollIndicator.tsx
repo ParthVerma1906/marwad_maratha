@@ -12,7 +12,7 @@ const HeroScrollIndicator = () => {
 
   return (
     <motion.div 
-      className="absolute bottom-10 left-1/2 -translate-x-1/2 text-center text-white z-20 flex flex-col items-center"
+      className="absolute bottom-[40px] left-1/2 -translate-x-1/2 text-center text-white z-20 flex flex-col items-center"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.5, duration: 0.8 }}
