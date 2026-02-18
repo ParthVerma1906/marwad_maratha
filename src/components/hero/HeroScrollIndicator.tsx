@@ -12,13 +12,10 @@ const HeroScrollIndicator = () => {
 
   return (
     <motion.div 
-      className="absolute z-20 flex flex-col items-center gap-2 text-white"
-      style={{
-        bottom: '48px',
-        left: '50%',
-      }}
-      initial={{ opacity: 0, y: 20, x: '-50%' }}
-      animate={{ opacity: 1, y: 0, x: '-50%' }}
+      className="absolute left-0 right-0 z-20 flex flex-col items-center gap-2 text-white"
+      style={{ bottom: '48px' }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.5, duration: 0.8 }}
     >
       <p 
