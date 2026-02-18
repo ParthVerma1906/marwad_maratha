@@ -16,7 +16,7 @@ const HeroContent = () => {
     <motion.div 
       ref={ref}
       className="relative z-20 h-full flex flex-col items-center justify-center"
-      style={{ y, opacity }}
+      style={{ y, opacity, transform: 'translateY(-5vh)' }}
     >
       {/* Light gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent z-10"></div>
@@ -65,7 +65,7 @@ const HeroContent = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
             <h2 
-              className="mt-4 text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[700px] mx-auto font-medium text-center"
+              className="mt-4 text-[#f9f1e7] text-[1.125rem] sm:text-[1.25rem] md:text-[1.375rem] max-w-[720px] mx-auto font-medium text-center"
               style={{ 
                 textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                 lineHeight: '1.8',
