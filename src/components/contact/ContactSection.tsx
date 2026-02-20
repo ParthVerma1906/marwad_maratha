@@ -1,263 +1,141 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import OrderDetailsForm from "./OrderDetailsForm";
+import { Phone, MessageCircle, Mail, MapPin, Clock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
+const BUSINESS_PHONE = "8830257574";
 const BUSINESS_EMAIL = "durgagurhudyoggondia@gmail.com";
-const BUSINESS_PHONE = "+91 8830257574";
 
 const ContactSection = () => {
-  const { ref, inView } = useInView({
-    triggerOnce: false,
-    threshold: 0.1,
-  });
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
+  const { toast } = useToast();
+  const [form, setForm] = useState({ name: "", phone: "", message: "" });
+  const [sending, setSending] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    // Build WhatsApp message as fallback
+    const msg = encodeURIComponent(
+      `Hi, I'm ${form.name}.\nPhone: ${form.phone}\n\n${form.message}`
+    );
+    window.open(`https://wa.me/91${BUSINESS_PHONE}?text=${msg}`, "_blank", "noopener");
+    toast({ title: "Message prepared!", description: "Opening WhatsApp to send your message." });
+    setSending(false);
+    setForm({ name: "", phone: "", message: "" });
+  };
+
+  const contactInfo = [
+    { icon: Phone, label: "Phone", value: "+91 88302 57574", href: `tel:+91${BUSINESS_PHONE}` },
+    { icon: MessageCircle, label: "WhatsApp", value: "+91 88302 57574", href: `https://wa.me/91${BUSINESS_PHONE}` },
+    { icon: Mail, label: "Email", value: BUSINESS_EMAIL, href: `mailto:${BUSINESS_EMAIL}` },
+    { icon: MapPin, label: "Address", value: "Gokuldham Colony, Near Gaurav Furniture, Fulture Peth, Gondia (441601), Maharashtra" },
+    { icon: Clock, label: "Business Hours", value: "Mon–Sat: 9:00 AM – 7:00 PM" },
+  ];
 
   return (
-    <section id="contact" ref={ref} className="py-14 md:py-24 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 rounded-full bg-turmeric/10 blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 right-0 w-40 h-40 md:w-64 md:h-64 rounded-full bg-maroon/5 blur-3xl -z-10"></div>
-      <div className="absolute inset-0 bg-spice-pattern opacity-5 -z-10"></div>
-      <div className="container mx-auto px-2 md:px-4">
+    <section id="contact" ref={ref} className="relative overflow-hidden" style={{ padding: "70px 0", background: "#FCF7F1" }}>
+      <div className="container mx-auto px-4">
         <motion.div
-          className="text-center mb-10 md:mb-12"
+          className="text-center mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.6 }}
         >
-          <span className="text-maroon font-heritage text-lg">Get in Touch</span>
-          <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">
-            Quick Order Form
+          <span className="text-accent font-heritage text-lg">Reach Out</span>
+          <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-1 mb-3" style={{ color: "#5A0A0A" }}>
+            Get in Touch
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Place your order easily with our simple form. We'll contact you shortly!
+          <p className="text-muted-foreground max-w-lg mx-auto text-sm">
+            We'd love to hear from you. Reach out for orders, questions, or just to say hello!
           </p>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Left: Contact Info */}
           <motion.div
-            className="bg-white rounded-xl shadow-lg overflow-hidden indian-border order-2 md:order-1"
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
           >
-            <div className="p-3 md:p-8">
-              <div className="mb-4">
-                <div className="rounded bg-saffron/10 border border-saffron px-2 py-1 text-xs md:text-sm text-maroon font-medium">
-                  <span>
-                    This is a demo order form and does <b>not</b> place an actual order. Your details are only shared for follow-up; no payment will be charged now.
-                  </span>
-                </div>
-              </div>
-              <h3 className="text-xl font-heritage font-bold mb-6">
-                Order Details
+            <div className="bg-white rounded-2xl p-6 md:p-8 h-full" style={{ boxShadow: "0 2px 12px rgba(90,10,10,0.06)" }}>
+              <h3 className="font-heritage text-xl font-bold mb-5" style={{ color: "#5A0A0A" }}>
+                Contact Information
               </h3>
-              <OrderDetailsForm />
+              <div className="space-y-5">
+                {contactInfo.map(({ icon: Icon, label, value, href }) => (
+                  <div key={label} className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "#FBF2E9" }}>
+                      <Icon size={18} className="text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+                      {href ? (
+                        <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener"
+                          className="text-sm font-medium hover:text-accent transition-colors">
+                          {value}
+                        </a>
+                      ) : (
+                        <p className="text-sm">{value}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground mt-6">
+                We usually respond within 30 minutes during working hours.
+              </p>
             </div>
           </motion.div>
+
+          {/* Right: Contact Form */}
           <motion.div
-            className="flex flex-col space-y-4 md:space-y-6 order-1 md:order-2"
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <motion.div
-              className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.7, delay: 0.6 }}
-            >
-              <h3 className="text-xl font-heritage font-bold mb-4">
-                Payment Options
+            <div className="bg-white rounded-2xl p-6 md:p-8 h-full" style={{ boxShadow: "0 2px 12px rgba(90,10,10,0.06)" }}>
+              <h3 className="font-heritage text-xl font-bold mb-5" style={{ color: "#5A0A0A" }}>
+                Send a Message
               </h3>
-              <div className="rounded bg-maroon/10 text-maroon px-2 py-1 text-xs md:text-sm mb-4 border border-maroon/20">
-                All payments are arranged after we contact you. You can use the preferred payment link, UPI, QR, or Card. No direct online payments are made through this form.
-              </div>
-              <div className="mb-4">
-                <details className="rounded border border-maroon/40 bg-saffron/5 py-3 px-3 group" open>
-                  <summary className="cursor-pointer font-medium flex items-center gap-2 text-maroon">
-                    <span>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M6 8h.01"/><path d="M6 16h.01"/><path d="M16 8h.01"/><path d="M8 18v.01"/><path d="M8 6v.01"/><path d="M18 8v.01"/><path d="M8 16v.01"/><path d="M16 16v.01"/><path d="M18 16v.01"/></svg>
-                    </span>
-                    Pay via UPI, QR, Card, or Payment Link
-                  </summary>
-                  <div className="mt-2 flex flex-col md:flex-row md:items-start gap-5 text-sm text-maroon">
-                    <div className="flex flex-col gap-2 flex-1">
-                      <div>
-                        <span className="font-semibold">UPI ID:</span>{" "}
-                        <span className="bg-white rounded px-2 py-1 border border-saffron/30 select-all">88302575741@ybl</span>
-                      </div>
-                      <div>
-                        <span className="font-semibold">UPI Pay Link:</span>{" "}
-                        <a
-                          className="bg-saffron/90 hover:bg-maroon/90 hover:text-white transition rounded px-3 py-1 text-maroon font-medium"
-                          href={`upi://pay?pa=88302575741@ybl&pn=Durga Gurhudyog&cu=INR`}
-                          target="_blank"
-                          rel="noopener"
-                        >
-                          Pay Now via UPI
-                        </a>
-                      </div>
-                      <div>
-                        <span className="font-semibold">Credit/Debit Card:</span>{" "}
-                        <a
-                          className="bg-maroon/90 hover:bg-saffron/90 hover:text-maroon transition rounded px-3 py-1 text-white font-medium"
-                          href="https://paytm.me/a-Paylink-Dummy"
-                          target="_blank"
-                          rel="noopener"
-                        >
-                          Pay Now via Card/Link
-                        </a>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          This link is for demo purposes. Final card link will be shared on WhatsApp or Email after order confirmation.
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <span className="font-semibold">Scan QR to pay:</span>
-                      <div className="mt-1 border border-saffron/30 rounded p-2 bg-white shadow">
-                        <div className="w-32 h-32 flex items-center justify-center bg-muted text-muted-foreground border border-saffron/30 rounded">
-                          QR Not Available Yet
-                        </div>
-                      </div>
-                      <div className="mt-2 text-xs text-muted-foreground text-center">
-                        After completing your payment, please retain your transaction ID. Our team will confirm payment via call or WhatsApp.
-                      </div>
-                    </div>
-                  </div>
-                </details>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <line x1="2" x2="22" y1="10" y2="10" />
-                  </svg>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Name</label>
+                  <input type="text" name="name" value={form.name} onChange={handleChange} required
+                    className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm"
+                    placeholder="Your name" />
                 </div>
                 <div>
-                  <h4 className="font-medium">Credit/Debit Cards</h4>
-                  <p className="text-xs md:text-sm text-muted-foreground">
-                    Card payment link will be shared on WhatsApp or email after order confirmation.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 mt-4">
-                <div className="bg-muted rounded-lg p-2 md:p-3 flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 2 3 6v14a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    <path d="M3 6h18" />
-                    <path d="M16 10a4 4 0 0 1-8 0" />
-                  </svg>
+                  <label className="block text-sm font-medium mb-1.5">Phone</label>
+                  <input type="tel" name="phone" value={form.phone} onChange={handleChange} required
+                    className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm"
+                    placeholder="Your phone number" />
                 </div>
                 <div>
-                  <h4 className="font-medium">Cash on Delivery</h4>
-                  <p className="text-xs md:text-sm text-muted-foreground">
-                    Available for local deliveries. Confirm with our team after placing the order.
-                  </p>
+                  <label className="block text-sm font-medium mb-1.5">Message</label>
+                  <textarea name="message" value={form.message} onChange={handleChange} required rows={4}
+                    className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm resize-none"
+                    placeholder="How can we help you?" />
                 </div>
-              </div>
-            </motion.div>
-            <motion.div
-              className="bg-white rounded-xl shadow-lg overflow-hidden p-4 md:p-8 h-fit"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.7, delay: 0.8 }}
-            >
-              <h3 className="text-xl font-heritage font-bold mb-4">
-                Connect With Us
-              </h3>
-              <div className="space-y-3 md:space-y-4">
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Phone</h4>
-                    <p className="text-saffron text-xs md:text-sm">+91 8830257574</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Email</h4>
-                    <p className="text-saffron text-xs md:text-sm">durgagurhudyoggondia@gmail.com</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Address</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">
-                      Gokuldham Colony, Near Gaurav Furniture, Fulture Peth, Gondia (441601)
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className="bg-muted rounded-lg p-2 md:p-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect width="20" height="16" x="2" y="4" rx="2" />
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Newsletter</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">
-                      Subscribe for new product updates and offers
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+                <button type="submit" disabled={sending}
+                  className="w-full py-3.5 rounded-xl font-semibold text-white transition-all"
+                  style={{ background: "#850E35", minHeight: "48px" }}>
+                  {sending ? "Sending..." : "Send Message"}
+                </button>
+              </form>
+              <p className="text-xs text-muted-foreground mt-4 text-center">
+                Prefer instant response?{" "}
+                <a href={`https://wa.me/91${BUSINESS_PHONE}`} target="_blank" rel="noopener"
+                  className="font-medium" style={{ color: "#25D366" }}>
+                  Chat with us on WhatsApp.
+                </a>
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>
