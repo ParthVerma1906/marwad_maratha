@@ -230,7 +230,7 @@ const Navbar = () => {
             </motion.button>
             
             <motion.button
-              onClick={() => scrollToSection('contact')}
+              onClick={() => navigate('/checkout')}
               className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-2 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
               style={{ 
                 borderRadius: '25px',
