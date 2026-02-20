@@ -1,22 +1,19 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import AdminLogin from "../admin/AdminLogin";
-import AdminPanel from "../admin/AdminPanel";
 import ShoppingCart from "../cart/ShoppingCart";
 import MobileMenu from "./MobileMenu";
 import { useCart } from "@/hooks/useCart";
 import { productImages } from "@/utils/imageAssets";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { cartItemsCount } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
   
   const isHomePage = location.pathname === '/';
   
@@ -42,12 +39,6 @@ const Navbar = () => {
       }
     };
 
-    // Check if admin is already logged in from previous session
-    const adminLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
-    if (adminLoggedIn) {
-      setShowAdminPanel(true);
-    }
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -60,17 +51,7 @@ const Navbar = () => {
   };
 
   const handleAdminLogin = () => {
-    setShowAdminLogin(true);
-  };
-
-  const handleLoginSuccess = () => {
-    setShowAdminLogin(false);
-    setShowAdminPanel(true);
-  };
-
-  const handleCloseAdminPanel = () => {
-    setShowAdminPanel(false);
-    localStorage.setItem("adminLoggedIn", "false");
+    navigate("/admin");
   };
 
   const toggleCart = () => {
@@ -284,8 +265,6 @@ const Navbar = () => {
         </div>
       </motion.header>
 
-      {showAdminLogin && <AdminLogin onLoginSuccess={handleLoginSuccess} />}
-      {showAdminPanel && <AdminPanel onClose={handleCloseAdminPanel} />}
       {showCart && <ShoppingCart onClose={toggleCart} />}
     </>
   );

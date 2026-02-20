@@ -33,7 +33,6 @@ function recordAttempt(ip: string) {
 // Constant-time string comparison
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) {
-    // Still compare to avoid timing leak on length
     let result = 1;
     for (let i = 0; i < a.length; i++) {
       result |= a.charCodeAt(i) ^ (b.charCodeAt(i % b.length) || 0);
@@ -45,6 +44,66 @@ function timingSafeEqual(a: string, b: string): boolean {
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
   return result === 0;
+}
+
+// HMAC-based token signing using Web Crypto API
+async function getSigningKey(): Promise<CryptoKey> {
+  const secret = Deno.env.get("ADMIN_TOKEN_SECRET") || Deno.env.get("ADMIN_PASSWORD") || "fallback-secret";
+  const encoder = new TextEncoder();
+  return crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign", "verify"]
+  );
+}
+
+function arrayBufferToHex(buffer: ArrayBuffer): string {
+  return [...new Uint8Array(buffer)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function createSignedToken(expiresAt: number): Promise<string> {
+  const key = await getSigningKey();
+  const payload = `admin:${expiresAt}`;
+  const encoder = new TextEncoder();
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
+  const sig = arrayBufferToHex(signature);
+  // Token format: base64(payload):signature
+  return btoa(payload) + "." + sig;
+}
+
+export async function verifySignedToken(token: string): Promise<boolean> {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 2) return false;
+    const payload = atob(parts[0]);
+    const providedSig = parts[1];
+
+    // Check expiry
+    const match = payload.match(/^admin:(\d+)$/);
+    if (!match) return false;
+    const expiresAt = parseInt(match[1], 10);
+    if (Date.now() > expiresAt) return false;
+
+    // Verify signature
+    const key = await getSigningKey();
+    const encoder = new TextEncoder();
+    const expectedSig = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
+    const expectedHex = arrayBufferToHex(expectedSig);
+
+    // Constant-time comparison
+    if (expectedHex.length !== providedSig.length) return false;
+    let diff = 0;
+    for (let i = 0; i < expectedHex.length; i++) {
+      diff |= expectedHex.charCodeAt(i) ^ providedSig.charCodeAt(i);
+    }
+    return diff === 0;
+  } catch {
+    return false;
+  }
 }
 
 serve(async (req) => {
@@ -88,9 +147,8 @@ serve(async (req) => {
 
     if (usernameMatch && passwordMatch) {
       loginAttempts.delete(ip);
-      const token = crypto.randomUUID();
-      // Token expires in 24 hours
       const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+      const token = await createSignedToken(expiresAt);
       return new Response(
         JSON.stringify({ success: true, token, expiresAt }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }

@@ -13,7 +13,7 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isAuthenticated, login, logout } = useAdminSession();
+  const { isAuthenticated, isValidating, login, logout } = useAdminSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +54,14 @@ const Admin = () => {
     }
     setIsLoading(false);
   };
+
+  if (isValidating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(135deg, #3b1f12, #1f0f08)" }}>
+        <Loader2 className="animate-spin text-white" size={32} />
+      </div>
+    );
+  }
 
   if (isAuthenticated) {
     return <AdminPanel onClose={logout} />;
