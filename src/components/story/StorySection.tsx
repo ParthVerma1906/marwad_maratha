@@ -13,7 +13,7 @@ const StorySection = () => {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
   
   const { ref, inView } = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
 
