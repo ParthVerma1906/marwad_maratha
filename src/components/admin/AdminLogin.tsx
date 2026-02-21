@@ -19,7 +19,7 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
     try {
       const response = await fetch(
-        "https://bbjtukueneekrzuieuxw.supabase.co/functions/v1/verify-admin",
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-admin`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
