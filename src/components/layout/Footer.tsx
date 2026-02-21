@@ -50,9 +50,11 @@ const Footer = () => {
             {/* Column 1 — Brand */}
             <div>
               <div className="flex items-center gap-2.5 mb-5">
-                <div className="h-10 w-10 rounded-full bg-[hsl(15,80%,50%)] flex items-center justify-center">
-                  <span className="text-white font-heritage text-xl font-bold">M</span>
-                </div>
+                <img
+                  src="/lovable-uploads/010cf85d-1380-42f9-9e85-bbad9333219c.png"
+                  alt="Marwad Maratha Logo"
+                  className="h-10 w-10 rounded-full object-cover"
+                />
                 <span className="font-heritage text-lg font-bold text-[hsl(40,30%,92%)]">
                   Marwad Maratha
                 </span>
