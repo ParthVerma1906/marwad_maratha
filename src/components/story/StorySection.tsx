@@ -1,199 +1,249 @@
-
+import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { Sun, Layers, Leaf, Quote } from "lucide-react";
+import kitchenImage from "@/assets/kitchen-origin.jpg";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: i * 0.12 },
+  }),
+};
+
+/* ───── Section 1: Origin Story ───── */
+const OriginStory = () => {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
+
+  return (
+    <div ref={ref} className="grid md:grid-cols-2 gap-10 md:gap-14 items-center">
+      <motion.div
+        className="rounded-2xl overflow-hidden shadow-lg"
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        <img
+          src={kitchenImage}
+          alt="Traditional Indian kitchen with spice jars and pickles"
+          className="w-full h-full object-cover aspect-[4/3]"
+          loading="lazy"
+        />
+      </motion.div>
+
+      <motion.div
+        className="space-y-5"
+        variants={fadeUp}
+        custom={1}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        <span className="text-maroon font-heritage text-base tracking-wide">
+          Our Story
+        </span>
+        <h2 className="text-3xl md:text-4xl font-heritage font-bold leading-tight">
+          From Our Kitchen to Your Home
+        </h2>
+        <div className="space-y-4 text-foreground/80 leading-relaxed">
+          <p>
+            Marwad Maratha began as a family tradition rooted in the kitchens of
+            Rajasthan and Maharashtra. What started as homemade pickles and
+            papads for loved ones slowly became something more.
+          </p>
+          <p>
+            Our recipes are not inventions — they are inheritances. Passed down
+            through generations, preserved with patience, and prepared with care.
+          </p>
+          <p>
+            Today, we continue the same small-batch process, ensuring every jar
+            carries the taste of home.
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+/* ───── Section 2: Our Process ───── */
+const processItems = [
+  {
+    icon: Sun,
+    title: "Sun-Dried Ingredients",
+    desc: "Carefully dried using traditional methods for authentic flavour.",
+  },
+  {
+    icon: Layers,
+    title: "Small Batch Preparation",
+    desc: "Made in limited quantities to maintain consistency and quality.",
+  },
+  {
+    icon: Leaf,
+    title: "No Artificial Preservatives",
+    desc: "Only pure ingredients. No chemicals. No shortcuts.",
+  },
+];
+
+const OurProcess = () => {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
+
+  return (
+    <div ref={ref} className="text-center">
+      <motion.h2
+        className="text-3xl md:text-4xl font-heritage font-bold mb-10"
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        How We Preserve Tradition
+      </motion.h2>
+
+      <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+        {processItems.map((item, i) => (
+          <motion.div
+            key={item.title}
+            className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-card/60"
+            variants={fadeUp}
+            custom={i + 1}
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+          >
+            <item.icon className="w-8 h-8 text-maroon" strokeWidth={1.4} />
+            <h3 className="font-heritage font-semibold text-lg">{item.title}</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {item.desc}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ───── Section 3: Our Values ───── */
+const values = [
+  "Authenticity Over Trends",
+  "Quality Over Quantity",
+  "Tradition Over Shortcuts",
+];
+
+const OurValues = () => {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
+
+  return (
+    <div ref={ref} className="text-center max-w-2xl mx-auto">
+      <motion.h2
+        className="text-3xl md:text-4xl font-heritage font-bold mb-8"
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        What We Stand For
+      </motion.h2>
+
+      <div className="space-y-4">
+        {values.map((v, i) => (
+          <motion.p
+            key={v}
+            className="text-xl md:text-2xl font-heritage text-foreground/85"
+            variants={fadeUp}
+            custom={i + 1}
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+          >
+            {v}
+          </motion.p>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ───── Section 4: Testimonial Snapshot ───── */
+const testimonials = [
+  {
+    name: "Priya Sharma",
+    location: "Mumbai",
+    quote:
+      "The mango pickle reminds me of my childhood in Rajasthan. The authentic taste brings back memories of my grandmother's kitchen.",
+  },
+  {
+    name: "Vikram Singh",
+    location: "Jaipur",
+    quote:
+      "As someone from Rajasthan, I'm very particular about my pickles. Marwad Maratha's garlic pickle is exceptional — perfectly spiced and preserved.",
+  },
+];
+
+const TestimonialSnapshot = () => {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
+
+  return (
+    <div ref={ref} className="max-w-3xl mx-auto">
+      <motion.h2
+        className="text-3xl md:text-4xl font-heritage font-bold text-center mb-8"
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        Loved by Families
+      </motion.h2>
+
+      <div className="grid sm:grid-cols-2 gap-6">
+        {testimonials.map((t, i) => (
+          <motion.div
+            key={t.name}
+            className="bg-card rounded-2xl p-6 shadow-sm relative"
+            variants={fadeUp}
+            custom={i + 1}
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+          >
+            <Quote className="w-6 h-6 text-saffron/40 mb-3" />
+            <p className="text-foreground/80 italic leading-relaxed mb-4 text-sm">
+              "{t.quote}"
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-saffron/70 to-maroon/70 flex items-center justify-center text-xs font-bold text-white">
+                {t.name.split(" ").map((n) => n[0]).join("")}
+              </div>
+              <div>
+                <p className="font-semibold text-sm">{t.name}</p>
+                <p className="text-muted-foreground text-xs">{t.location}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ───── Main Section ───── */
 const StorySection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
-  const timelineEvents = [
-    {
-      year: "2017",
-      title: "The Beginning",
-      description:
-        "Started as a family recipe sharing initiative in our hometown.",
-    },
-    {
-      year: "2020",
-      title: "Online Journey",
-      description:
-        "Launched our online presence to reach pickle and papad enthusiasts across India.",
-    },
-    {
-      year: "2022",
-      title: "Expanded Product Line",
-      description:
-        "Introduced new varieties based on traditional recipes from different regions.",
-    },
-    {
-      year: "2025",
-      title: "Looking Ahead",
-      description:
-        "Aiming to bring the authentic taste of Indian pickles and papads to international markets.",
-    },
-  ];
-
   return (
     <section
       id="story"
-      ref={sectionRef}
-      className="py-16 md:py-24 relative overflow-hidden"
+      className="py-14 md:py-20 relative overflow-hidden bg-background"
     >
-      {/* Background patterns with parallax */}
-      <motion.div 
-        className="absolute inset-0 -z-10"
-        style={{ y: backgroundY }}
-      >
-        <div ref={ref} className="absolute top-0 right-0 w-64 h-64 bg-turmeric/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-maroon/5 rounded-full blur-3xl"></div>
-        <div className="absolute inset-0 bg-fabric-texture opacity-5"></div>
-      </motion.div>
+      {/* Subtle paper texture */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+        }}
+      />
 
-      <div className="container mx-auto px-4">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.7 }}
-        >
-          <span className="text-maroon font-heritage text-lg">Our Heritage</span>
-          <h2 className="text-3xl md:text-4xl font-heritage font-bold mt-2 mb-4">
-            Cultural Storytelling
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            The journey of Marwad Maratha is rooted in the rich culinary
-            traditions of Rajasthan and Maharashtra, bringing authentic flavors
-            to your table.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative"
-          >
-            <div className="relative overflow-hidden rounded-lg indian-border">
-              <div className="aspect-[4/3] bg-gradient-to-br from-maroon/80 to-saffron/80 flex items-center justify-center">
-                <span className="text-white font-heritage text-4xl">
-                  Traditional Kitchen
-                </span>
-              </div>
-            </div>
-            <motion.div
-              className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full overflow-hidden indian-border z-10"
-              animate={{ rotate: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
-            >
-              <div className="w-full h-full bg-turmeric flex items-center justify-center">
-                <span className="text-4xl">👵</span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="space-y-6"
-          >
-            <h3 className="text-2xl font-heritage font-bold text-maroon">
-              Grandma's Secret Recipes
-            </h3>
-            <p>
-              Our journey began with a treasure trove of recipes handed down
-              through generations. Our grandmothers from both Rajasthan and
-              Maharashtra were known for their exceptional pickles and papads
-              that brought families together during meals.
-            </p>
-            <p>
-              Each recipe carries not just ingredients, but stories, traditions,
-              and the essence of Indian hospitality. The perfect balance of
-              spices, the patience of sun-drying, and the love that goes into
-              each jar is what makes our products special.
-            </p>
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              <div className="bg-muted rounded-lg p-4 text-center">
-                <h4 className="font-heritage font-semibold">Rajasthani</h4>
-                <p className="text-sm text-muted-foreground">
-                  Bold, spicy flavors that reflect the vibrant desert culture
-                </p>
-              </div>
-              <div className="bg-muted rounded-lg p-4 text-center">
-                <h4 className="font-heritage font-semibold">Maharashtrian</h4>
-                <p className="text-sm text-muted-foreground">
-                  Perfect balance of sweet, tangy and spicy elements
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
-          className="relative mt-20"
-        >
-          <h3 className="text-2xl font-heritage font-bold text-center mb-12">
-            Our Journey Since 2017
-          </h3>
-
-          {/* Timeline */}
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-maroon to-saffron h-full rounded-full"></div>
-
-            {/* Timeline events */}
-            <div className="relative z-10">
-              {timelineEvents.map((event, index) => (
-                <motion.div
-                  key={event.year}
-                  className={`mb-12 flex items-center ${
-                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                  }`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                >
-                  <div className="flex-1 md:w-1/2">
-                    <div
-                      className={`${
-                        index % 2 === 0 ? "md:text-right md:pr-8" : "md:pl-8"
-                      } p-4`}
-                    >
-                      <h4 className="text-xl font-heritage font-bold text-saffron">
-                        {event.year}
-                      </h4>
-                      <h5 className="text-lg font-medium mb-2">{event.title}</h5>
-                      <p className="text-muted-foreground">
-                        {event.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
-                    <div className="w-4 h-4 rounded-full bg-white border-4 border-maroon"></div>
-                  </div>
-
-                  <div className="flex-1 md:w-1/2 hidden md:block"></div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+      <div className="container mx-auto px-4 space-y-16 md:space-y-20 relative z-10">
+        <OriginStory />
+        <OurProcess />
+        <OurValues />
+        <TestimonialSnapshot />
       </div>
     </section>
   );
