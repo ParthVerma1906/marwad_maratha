@@ -1,14 +1,14 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Sun, Layers, Leaf, Quote } from "lucide-react";
+import { Sun, Layers, Leaf, Quote, Heart, Award, Shield } from "lucide-react";
 import kitchenImage from "@/assets/kitchen-origin.jpg";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: i * 0.12 },
+    transition: { duration: 0.5, delay: i * 0.1 },
   }),
 };
 
@@ -17,7 +17,7 @@ const OriginStory = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
 
   return (
-    <div ref={ref} className="grid md:grid-cols-2 gap-10 md:gap-14 items-center">
+    <div ref={ref} className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
       <motion.div
         className="rounded-2xl overflow-hidden shadow-lg"
         variants={fadeUp}
@@ -34,7 +34,7 @@ const OriginStory = () => {
       </motion.div>
 
       <motion.div
-        className="space-y-5"
+        className="space-y-4"
         variants={fadeUp}
         custom={1}
         initial="hidden"
@@ -44,21 +44,18 @@ const OriginStory = () => {
           Our Story
         </span>
         <h2 className="text-3xl md:text-4xl font-heritage font-bold leading-tight">
-          From Our Kitchen to Your Home
+          From Our Family Kitchen to Your Home
         </h2>
-        <div className="space-y-4 text-foreground/80 leading-relaxed">
+        <div className="space-y-3 text-foreground/80 leading-relaxed text-[0.95rem]">
           <p>
-            Marwad Maratha began as a family tradition rooted in the kitchens of
-            Rajasthan and Maharashtra. What started as homemade pickles and
-            papads for loved ones slowly became something more.
+            Marwad Maratha began not as a business, but as a family tradition.
+            What started in our kitchens in Rajasthan and Maharashtra — preparing
+            pickles and papads for loved ones — slowly became something we wanted
+            to share with more homes.
           </p>
           <p>
-            Our recipes are not inventions — they are inheritances. Passed down
-            through generations, preserved with patience, and prepared with care.
-          </p>
-          <p>
-            Today, we continue the same small-batch process, ensuring every jar
-            carries the taste of home.
+            These are not new recipes. They are inheritances. Preserved with
+            patience. Prepared with care. Made the same way our grandmothers did.
           </p>
         </div>
       </motion.div>
@@ -71,17 +68,17 @@ const processItems = [
   {
     icon: Sun,
     title: "Sun-Dried Ingredients",
-    desc: "Carefully dried using traditional methods for authentic flavour.",
+    desc: "Traditional sun-drying for authentic flavour.",
   },
   {
     icon: Layers,
     title: "Small Batch Preparation",
-    desc: "Made in limited quantities to maintain consistency and quality.",
+    desc: "Prepared in limited quantities for freshness.",
   },
   {
     icon: Leaf,
     title: "No Artificial Preservatives",
-    desc: "Only pure ingredients. No chemicals. No shortcuts.",
+    desc: "Pure ingredients. No shortcuts.",
   },
 ];
 
@@ -91,7 +88,7 @@ const OurProcess = () => {
   return (
     <div ref={ref} className="text-center">
       <motion.h2
-        className="text-3xl md:text-4xl font-heritage font-bold mb-10"
+        className="text-3xl md:text-4xl font-heritage font-bold mb-8"
         variants={fadeUp}
         custom={0}
         initial="hidden"
@@ -100,21 +97,19 @@ const OurProcess = () => {
         How We Preserve Tradition
       </motion.h2>
 
-      <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+      <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
         {processItems.map((item, i) => (
           <motion.div
             key={item.title}
-            className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-card/60"
+            className="flex flex-col items-center gap-2.5 p-5 rounded-2xl bg-card/60"
             variants={fadeUp}
             custom={i + 1}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
           >
-            <item.icon className="w-8 h-8 text-maroon" strokeWidth={1.4} />
+            <item.icon className="w-7 h-7 text-maroon" strokeWidth={1.4} />
             <h3 className="font-heritage font-semibold text-lg">{item.title}</h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {item.desc}
-            </p>
+            <p className="text-muted-foreground text-sm">{item.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -122,20 +117,20 @@ const OurProcess = () => {
   );
 };
 
-/* ───── Section 3: Our Values ───── */
-const values = [
-  "Authenticity Over Trends",
-  "Quality Over Quantity",
-  "Tradition Over Shortcuts",
+/* ───── Section 3: Our Values (Horizontal Badges) ───── */
+const valueItems = [
+  { icon: Heart, label: "Authenticity Over Trends" },
+  { icon: Award, label: "Quality Over Quantity" },
+  { icon: Shield, label: "Tradition Over Shortcuts" },
 ];
 
 const OurValues = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
 
   return (
-    <div ref={ref} className="text-center max-w-2xl mx-auto">
+    <div ref={ref} className="rounded-2xl bg-accent/30 py-8 px-4">
       <motion.h2
-        className="text-3xl md:text-4xl font-heritage font-bold mb-8"
+        className="text-3xl md:text-4xl font-heritage font-bold text-center mb-6"
         variants={fadeUp}
         custom={0}
         initial="hidden"
@@ -144,18 +139,21 @@ const OurValues = () => {
         What We Stand For
       </motion.h2>
 
-      <div className="space-y-4">
-        {values.map((v, i) => (
-          <motion.p
-            key={v}
-            className="text-xl md:text-2xl font-heritage text-foreground/85"
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-3xl mx-auto">
+        {valueItems.map((v, i) => (
+          <motion.div
+            key={v.label}
+            className="flex items-center gap-3 bg-card/80 rounded-full px-5 py-3 shadow-sm"
             variants={fadeUp}
             custom={i + 1}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
           >
-            {v}
-          </motion.p>
+            <v.icon className="w-5 h-5 text-saffron" strokeWidth={1.6} />
+            <span className="font-heritage font-semibold text-sm md:text-base text-foreground/90">
+              {v.label}
+            </span>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -168,13 +166,13 @@ const testimonials = [
     name: "Priya Sharma",
     location: "Mumbai",
     quote:
-      "The mango pickle reminds me of my childhood in Rajasthan. The authentic taste brings back memories of my grandmother's kitchen.",
+      "The mango pickle is exactly like my grandmother used to make in Rajasthan. That raw, tangy punch with the perfect balance of spices — it's hard to find this kind of authenticity anywhere else.",
   },
   {
     name: "Vikram Singh",
     location: "Jaipur",
     quote:
-      "As someone from Rajasthan, I'm very particular about my pickles. Marwad Maratha's garlic pickle is exceptional — perfectly spiced and preserved.",
+      "I've tried garlic pickles from many brands, but Marwad Maratha's is on another level. Bold, aromatic, and you can tell it's made with real care — not factory-produced.",
   },
 ];
 
@@ -183,8 +181,17 @@ const TestimonialSnapshot = () => {
 
   return (
     <div ref={ref} className="max-w-3xl mx-auto">
+      <motion.p
+        className="text-center text-muted-foreground text-sm mb-2 tracking-wide"
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        Trusted by families across Rajasthan and Maharashtra.
+      </motion.p>
       <motion.h2
-        className="text-3xl md:text-4xl font-heritage font-bold text-center mb-8"
+        className="text-3xl md:text-4xl font-heritage font-bold text-center mb-6"
         variants={fadeUp}
         custom={0}
         initial="hidden"
@@ -193,22 +200,22 @@ const TestimonialSnapshot = () => {
         Loved by Families
       </motion.h2>
 
-      <div className="grid sm:grid-cols-2 gap-6">
+      <div className="grid sm:grid-cols-2 gap-5">
         {testimonials.map((t, i) => (
           <motion.div
             key={t.name}
-            className="bg-card rounded-2xl p-6 shadow-sm relative"
+            className="bg-accent/20 rounded-2xl p-5 shadow-[0_2px_12px_-4px_hsl(var(--foreground)/0.06)] relative"
             variants={fadeUp}
             custom={i + 1}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
           >
-            <Quote className="w-6 h-6 text-saffron/40 mb-3" />
-            <p className="text-foreground/80 italic leading-relaxed mb-4 text-sm">
+            <Quote className="w-5 h-5 text-saffron/40 mb-2" />
+            <p className="text-foreground/80 italic leading-relaxed mb-3 text-sm">
               "{t.quote}"
             </p>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-saffron/70 to-maroon/70 flex items-center justify-center text-xs font-bold text-white">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-saffron/70 to-maroon/70 flex items-center justify-center text-[0.65rem] font-bold text-white">
                 {t.name.split(" ").map((n) => n[0]).join("")}
               </div>
               <div>
@@ -228,9 +235,8 @@ const StorySection = () => {
   return (
     <section
       id="story"
-      className="py-14 md:py-20 relative overflow-hidden bg-background"
+      className="py-12 md:py-16 relative overflow-hidden bg-background"
     >
-      {/* Subtle paper texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
@@ -239,7 +245,7 @@ const StorySection = () => {
         }}
       />
 
-      <div className="container mx-auto px-4 space-y-16 md:space-y-20 relative z-10">
+      <div className="container mx-auto px-4 space-y-12 md:space-y-14 relative z-10">
         <OriginStory />
         <OurProcess />
         <OurValues />
