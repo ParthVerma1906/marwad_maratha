@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ShoppingCart from "../cart/ShoppingCart";
@@ -19,11 +18,9 @@ const Navbar = () => {
   
   useEffect(() => {
     const handleScroll = () => {
-      // Check if scrolled past hero section (roughly 80vh)
       const heroHeight = window.innerHeight * 0.8;
       setScrolled(window.scrollY > heroHeight);
       
-      // Determine active section based on scroll position
       const sections = ['home', 'products', 'story', 'contact'];
       const scrollPosition = window.scrollY + 100;
       
@@ -50,23 +47,10 @@ const Navbar = () => {
     }
   };
 
-  const handleAdminLogin = () => {
-    navigate("/admin");
-  };
+  const handleAdminLogin = () => navigate("/admin");
+  const toggleCart = () => setShowCart(prev => !prev);
 
-  const toggleCart = () => {
-    setShowCart(prev => !prev);
-  };
-
-  // Determine if header should be transparent (homepage only)
-  const isTransparent = isHomePage && !scrolled;
-  
-  // Determine header height based on section - reduced height when not on hero
   const isCompactHeader = activeSection !== 'home' || scrolled;
-  
-  // Always use white text for transparent design
-  const textColorClass = 'text-white';
-  const hoverTextColorClass = 'hover:text-gray-200';
 
   return (
     <>
@@ -75,55 +59,42 @@ const Navbar = () => {
           scrolled ? "bg-black/60 backdrop-blur-sm" : "bg-transparent"
         }`}
         style={{ 
-          position: 'fixed',
           zIndex: 1000,
-          padding: isCompactHeader ? '4px 40px' : '8px 40px',
-          transition: 'all 0.5s ease-in-out'
+          padding: isCompactHeader ? '4px 0' : '8px 0',
         }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto flex items-center justify-between">
-          {/* Logo Section */}
+        <div className="w-full px-4 md:px-10 flex items-center justify-between">
+          {/* Logo */}
           <motion.a
             href="/"
-            className="flex flex-col items-start"
+            className="flex flex-col items-start flex-shrink-0"
             style={{ 
-              marginLeft: '20px',
-              marginTop: isCompactHeader ? '2px' : '6px',
-              zIndex: 10,
-              maxWidth: isCompactHeader ? '120px' : '130px', // Increased logo size
-              flexShrink: 0,
+              maxWidth: isCompactHeader ? '90px' : '100px',
               transition: 'all 0.3s ease-in-out'
             }}
             whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
           >
             <img 
               src={productImages.logo}
               alt="Marwad Maratha Logo"
+              className="w-full h-auto"
               style={{ 
-                maxWidth: '100%',
-                height: 'auto',
-                filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))', // Enhanced drop shadow
-                background: 'transparent',
-                padding: '0',
-                margin: '0'
+                filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))',
               }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                console.error("Logo failed to load:", target.src);
                 target.onerror = null;
                 target.src = '/placeholder.svg';
               }}
             />
             <div className="text-center w-full">
               <div 
-                className="font-bold text-[13px] leading-tight transition-colors duration-300 text-white"
+                className="font-bold text-[11px] md:text-[13px] leading-tight text-white"
                 style={{ 
                   fontFamily: 'Playfair Display, serif',
-                  fontWeight: '700',
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                   letterSpacing: '0.5px'
                 }}
@@ -133,8 +104,8 @@ const Navbar = () => {
             </div>
           </motion.a>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center" style={{ gap: '20px' }}>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-5">
             {[
               { name: "Home", id: "home" },
               { name: "Products", id: "products" },
@@ -144,123 +115,78 @@ const Navbar = () => {
               <motion.a
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className={`font-medium relative group cursor-pointer transition-all duration-300 ${
+                className={`font-medium relative group cursor-pointer transition-all duration-300 text-[15px] ${
                   activeSection === item.id 
                     ? 'text-white font-semibold'
-                    : `${textColorClass} ${hoverTextColorClass}`
+                    : 'text-white hover:text-gray-200'
                 }`}
                 style={{ 
                   textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
-                  fontSize: '15px',
-                  fontWeight: activeSection === item.id ? '600' : '500',
-                  margin: 0,
-                  position: 'relative'
                 }}
-                whileHover={{ 
-                  scale: 1.05,
-                  color: '#FFD700' // Yellow color on hover
-                }}
-                transition={{ duration: 0.2 }}
+                whileHover={{ scale: 1.05, color: '#FFD700' }}
               >
                 {item.name}
                 <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
                   activeSection === item.id 
                     ? 'w-full bg-yellow-400' 
                     : 'w-0 group-hover:w-full group-hover:bg-yellow-400'
-                }`}></span>
+                }`} />
               </motion.a>
             ))}
           </nav>
 
-          {/* Mobile Menu */}
-          <MobileMenu activeSection={activeSection} scrollToSection={scrollToSection} />
-
-          {/* Action Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <motion.button
-              onClick={handleAdminLogin}
-              className={`p-2 rounded-full transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
-              style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
-              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 21a7 7 0 0 0-14 0" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </motion.button>
-
+          {/* Right side actions */}
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Cart - always visible */}
             <motion.button
               onClick={toggleCart}
-              className={`p-2 rounded-full relative transition-all duration-300 ${textColorClass} ${hoverTextColorClass}`}
+              className="p-2 rounded-full relative text-white"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
-              whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)' }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="8" cy="21" r="1" />
                 <circle cx="19" cy="21" r="1" />
                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
               </svg>
               {cartItemsCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-maroon text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-maroon text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
                   {cartItemsCount}
                 </span>
               )}
             </motion.button>
-            
+
+            {/* Order Now - visible on both mobile & desktop */}
             <motion.button
               onClick={() => navigate('/checkout')}
-              className="bg-[#8B1C44] hover:bg-[#7A1A3D] text-white rounded-full py-2 px-6 flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transition-all duration-300"
-              style={{ 
-                borderRadius: '25px',
-                fontSize: isCompactHeader ? '13px' : '14px', // Even smaller when compact
-                fontWeight: '700',
-                height: isCompactHeader ? '32px' : '36px', // Reduced height when compact
-                transition: 'all 0.3s ease-in-out'
-              }}
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: '0 8px 25px rgba(139, 28, 68, 0.4)',
-                y: -2
-              }}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full flex items-center gap-1 font-bold shadow-lg transition-all duration-300 text-xs md:text-sm py-2 px-4 md:px-6"
+              style={{ minHeight: '36px' }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
               <span>Order Now</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 12h12m-6-6 6 6-6 6"></path>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 12h12m-6-6 6 6-6 6" />
               </svg>
             </motion.button>
+
+            {/* Admin - desktop only */}
+            <motion.button
+              onClick={handleAdminLogin}
+              className="hidden md:flex p-2 rounded-full text-white"
+              style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 21a7 7 0 0 0-14 0" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </motion.button>
+
+            {/* Mobile Menu */}
+            <MobileMenu activeSection={activeSection} scrollToSection={scrollToSection} />
           </div>
         </div>
       </motion.header>

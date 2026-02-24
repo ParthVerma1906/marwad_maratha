@@ -1,4 +1,3 @@
-
 import React from "react";
 
 interface ProductCategoriesProps {
@@ -17,7 +16,7 @@ const ProductCategories = ({
       <button
         key={category}
         onClick={() => onSelect(category)}
-        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+        className={`px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all min-h-[40px] ${
           activeCategory === category
             ? "bg-maroon text-white"
             : "bg-muted hover:bg-muted/80 text-foreground"

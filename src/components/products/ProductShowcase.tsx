@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -23,37 +22,34 @@ const ProductShowcase = () => {
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
   const { products, categories: allCategories } = useAllProducts(initialProducts);
 
-  // Replace "all" with "popular" and ensure no duplicates
   const categories = ["popular", ...allCategories];
 
-  // Filter products based on selected category
   const filteredProducts = activeCategory === "popular"
     ? products.filter(product => product.isPopular)
     : products.filter(product => product.category === activeCategory);
 
-  // Apply the show all or limited view
   const displayedProducts = showAllProducts 
     ? filteredProducts 
-    : filteredProducts.slice(0, 6); // Limit to 6 products when not showing all
+    : filteredProducts.slice(0, 6);
 
   return (
     <section
       id="products"
       ref={sectionRef}
-      className="py-16 md:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
+      className="py-10 md:py-16 lg:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
     >
       <motion.div 
         className="absolute inset-0 pointer-events-none"
         style={{ y }}
       >
-        <div className="absolute top-10 left-10 w-32 h-32 bg-saffron/10 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-20 right-20 w-48 h-48 bg-maroon/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-saffron/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 right-20 w-48 h-48 bg-maroon/10 rounded-full blur-3xl" />
       </motion.div>
       
-      <div ref={ref} className="container mx-auto px-4 relative z-10">
+      <div ref={ref} className="w-full px-4 md:px-8 lg:px-12 max-w-7xl mx-auto relative z-10">
         <ProductShowcaseHeader inView={inView} />
 
-        <div className="mb-10 flex flex-col md:flex-row justify-center gap-6">
+        <div className="mb-6 md:mb-10 flex flex-col md:flex-row justify-center gap-4 md:gap-6">
           <div className="space-y-2">
             <p className="text-sm font-medium text-muted-foreground">Category</p>
             <ProductCategories
@@ -61,7 +57,7 @@ const ProductShowcase = () => {
               activeCategory={activeCategory}
               onSelect={(cat) => {
                 setActiveCategory(cat);
-                setShowAllProducts(false); // Reset to showing limited products when changing category
+                setShowAllProducts(false);
               }}
             />
           </div>
@@ -70,10 +66,7 @@ const ProductShowcase = () => {
         <motion.div
           variants={{
             hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.2 },
-            },
+            visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
           }}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
