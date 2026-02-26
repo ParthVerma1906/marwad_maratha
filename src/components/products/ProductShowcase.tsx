@@ -36,31 +36,29 @@ const ProductShowcase = () => {
     <section
       id="products"
       ref={sectionRef}
-      className="py-10 md:py-16 lg:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
+      className="py-8 sm:py-10 md:py-16 lg:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
     >
       <motion.div 
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none hidden md:block"
         style={{ y }}
       >
         <div className="absolute top-10 left-10 w-32 h-32 bg-saffron/10 rounded-full blur-2xl" />
         <div className="absolute bottom-20 right-20 w-48 h-48 bg-maroon/10 rounded-full blur-3xl" />
       </motion.div>
       
-      <div ref={ref} className="w-full px-4 md:px-8 lg:px-12 max-w-7xl mx-auto relative z-10">
+      <div ref={ref} className="w-full px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto relative z-10">
         <ProductShowcaseHeader inView={inView} />
 
-        <div className="mb-6 md:mb-10 flex flex-col md:flex-row justify-center gap-4 md:gap-6">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Category</p>
-            <ProductCategories
-              categories={categories}
-              activeCategory={activeCategory}
-              onSelect={(cat) => {
-                setActiveCategory(cat);
-                setShowAllProducts(false);
-              }}
-            />
-          </div>
+        <div className="mb-4 sm:mb-6 md:mb-10">
+          <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">Category</p>
+          <ProductCategories
+            categories={categories}
+            activeCategory={activeCategory}
+            onSelect={(cat) => {
+              setActiveCategory(cat);
+              setShowAllProducts(false);
+            }}
+          />
         </div>
         
         <motion.div

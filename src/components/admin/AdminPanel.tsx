@@ -1,6 +1,6 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { LogOut, X, Package, Settings, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductsTab from "./ProductsTab";
 import SettingsTab from "./SettingsTab";
@@ -11,125 +11,100 @@ interface AdminPanelProps {
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState("products");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toast } = useToast();
 
   const handleLogout = () => {
-    toast({
-      title: "Logged out",
-      description: "You have been logged out successfully.",
-    });
+    toast({ title: "Logged out", description: "You have been logged out successfully." });
     onClose();
   };
 
+  const tabs = [
+    { id: "products", label: "Products", icon: Package },
+    { id: "settings", label: "Settings", icon: Settings },
+  ];
+
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-2 sm:p-4">
       <motion.div 
-        className="bg-white rounded-xl overflow-hidden w-full max-w-6xl h-[80vh] shadow-2xl flex flex-col"
+        className="bg-white rounded-xl overflow-hidden w-full max-w-6xl h-[95vh] sm:h-[85vh] shadow-2xl flex flex-col"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="bg-maroon text-white p-4 flex justify-between items-center">
-          <h2 className="text-xl font-heritage font-bold">Admin Dashboard</h2>
+        {/* Header */}
+        <div className="bg-maroon text-white p-3 sm:p-4 flex justify-between items-center flex-shrink-0">
           <div className="flex items-center gap-2">
+            {/* Mobile sidebar toggle */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden p-1.5 rounded hover:bg-white/20 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            >
+              <Menu size={20} />
+            </button>
+            <h2 className="text-base sm:text-xl font-heritage font-bold">Admin Dashboard</h2>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2">
             <button 
               onClick={handleLogout}
-              className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-md text-sm flex items-center gap-1"
+              className="px-2 sm:px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-md text-xs sm:text-sm flex items-center gap-1 min-h-[40px]"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16" 
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-              Logout
+              <LogOut size={14} />
+              <span className="hidden sm:inline">Logout</span>
             </button>
             <button 
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20"
+              className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-white/20 min-h-[44px] min-w-[44px]"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20" 
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
+              <X size={18} />
             </button>
           </div>
         </div>
         
-        <div className="flex h-full">
-          <div className="bg-muted w-48 p-4 flex flex-col">
-            <button
-              onClick={() => setActiveTab("products")}
-              className={`p-3 rounded-lg mb-2 flex items-center gap-2 ${
-                activeTab === "products" 
-                  ? "bg-maroon/10 text-maroon font-medium" 
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18" 
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+        <div className="flex h-full overflow-hidden relative">
+          {/* Sidebar - collapsible on mobile */}
+          {/* Overlay for mobile */}
+          {sidebarOpen && (
+            <div 
+              className="md:hidden fixed inset-0 bg-black/40 z-40"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+          
+          <div className={`
+            bg-muted w-56 p-3 flex flex-col flex-shrink-0 z-50
+            fixed md:relative inset-y-0 left-0 
+            transform transition-transform duration-200 ease-in-out
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            md:w-48
+          `}>
+            <div className="flex justify-between items-center mb-3 md:hidden">
+              <span className="font-bold text-sm">Navigation</span>
+              <button onClick={() => setSidebarOpen(false)} className="p-1 min-h-[44px] min-w-[44px] flex items-center justify-center">
+                <X size={18} />
+              </button>
+            </div>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSidebarOpen(false);
+                }}
+                className={`p-3 rounded-lg mb-2 flex items-center gap-2 min-h-[48px] text-sm ${
+                  activeTab === tab.id 
+                    ? "bg-maroon/10 text-maroon font-medium" 
+                    : "hover:bg-gray-100"
+                }`}
               >
-                <rect width="7" height="7" x="3" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="14" rx="1" />
-                <rect width="7" height="7" x="3" y="14" rx="1" />
-              </svg>
-              Products
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`p-3 rounded-lg mb-2 flex items-center gap-2 ${
-                activeTab === "settings" 
-                  ? "bg-maroon/10 text-maroon font-medium" 
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18" 
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              Settings
-            </button>
+                <tab.icon size={18} />
+                {tab.label}
+              </button>
+            ))}
           </div>
           
-          <div className="flex-1 p-6 overflow-auto">
+          {/* Main content */}
+          <div className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto">
             {activeTab === "products" && <ProductsTab />}
             {activeTab === "settings" && <SettingsTab />}
           </div>
