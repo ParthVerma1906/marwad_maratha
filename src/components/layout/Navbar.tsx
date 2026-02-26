@@ -14,12 +14,9 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const isHomePage = location.pathname === '/';
-  
   useEffect(() => {
     const handleScroll = () => {
-      const heroHeight = window.innerHeight * 0.8;
-      setScrolled(window.scrollY > heroHeight);
+      setScrolled(window.scrollY > window.innerHeight * 0.8);
       
       const sections = ['home', 'products', 'story', 'contact'];
       const scrollPosition = window.scrollY + 100;
@@ -42,48 +39,35 @@ const Navbar = () => {
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleAdminLogin = () => navigate("/admin");
   const toggleCart = () => setShowCart(prev => !prev);
-
-  const isCompactHeader = activeSection !== 'home' || scrolled;
 
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 w-full transition-all duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 w-full transition-all duration-500 ${
           scrolled ? "bg-black/60 backdrop-blur-sm" : "bg-transparent"
         }`}
-        style={{ 
-          zIndex: 1000,
-          padding: isCompactHeader ? '4px 0' : '8px 0',
-        }}
+        style={{ zIndex: 1000 }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="w-full px-4 md:px-10 flex items-center justify-between">
+        {/* Desktop: h-[70px], Mobile: h-[60px] */}
+        <div className="w-full h-[60px] md:h-[70px] px-4 md:px-6 lg:px-10 flex items-center justify-between">
           {/* Logo */}
           <motion.a
             href="/"
             className="flex flex-col items-start flex-shrink-0"
-            style={{ 
-              maxWidth: isCompactHeader ? '90px' : '100px',
-              transition: 'all 0.3s ease-in-out'
-            }}
             whileHover={{ scale: 1.02 }}
           >
             <img 
               src={productImages.logo}
               alt="Marwad Maratha Logo"
-              className="w-full h-auto"
-              style={{ 
-                filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))',
-              }}
+              className="w-[70px] md:w-[90px] h-auto"
+              style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))' }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
@@ -92,7 +76,7 @@ const Navbar = () => {
             />
             <div className="text-center w-full">
               <div 
-                className="font-bold text-[11px] md:text-[13px] leading-tight text-white"
+                className="font-bold text-[10px] md:text-[13px] leading-tight text-white"
                 style={{ 
                   fontFamily: 'Playfair Display, serif',
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
@@ -104,7 +88,7 @@ const Navbar = () => {
             </div>
           </motion.a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - centered */}
           <nav className="hidden md:flex items-center gap-5">
             {[
               { name: "Home", id: "home" },
@@ -115,14 +99,12 @@ const Navbar = () => {
               <motion.a
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className={`font-medium relative group cursor-pointer transition-all duration-300 text-[15px] ${
+                className={`font-medium relative group cursor-pointer transition-all text-[15px] ${
                   activeSection === item.id 
                     ? 'text-white font-semibold'
                     : 'text-white hover:text-gray-200'
                 }`}
-                style={{ 
-                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
-                }}
+                style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}
                 whileHover={{ scale: 1.05, color: '#FFD700' }}
               >
                 {item.name}
@@ -136,11 +118,11 @@ const Navbar = () => {
           </nav>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-2 md:gap-4">
-            {/* Cart - always visible */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Cart */}
             <motion.button
               onClick={toggleCart}
-              className="p-2 rounded-full relative text-white"
+              className="p-2 rounded-full relative text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -157,11 +139,11 @@ const Navbar = () => {
               )}
             </motion.button>
 
-            {/* Order Now - visible on both mobile & desktop */}
+            {/* Order Now - desktop only */}
             <motion.button
               onClick={() => navigate('/checkout')}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full flex items-center gap-1 font-bold shadow-lg transition-all duration-300 text-xs md:text-sm py-2 px-4 md:px-6"
-              style={{ minHeight: '36px' }}
+              className="hidden md:flex bg-primary hover:bg-primary/90 text-primary-foreground rounded-full items-center gap-1 font-bold shadow-lg text-sm py-2 px-5"
+              style={{ minHeight: '40px' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -173,8 +155,8 @@ const Navbar = () => {
 
             {/* Admin - desktop only */}
             <motion.button
-              onClick={handleAdminLogin}
-              className="hidden md:flex p-2 rounded-full text-white"
+              onClick={() => navigate("/admin")}
+              className="hidden md:flex p-2 rounded-full text-white min-h-[44px] min-w-[44px] items-center justify-center"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -185,7 +167,7 @@ const Navbar = () => {
               </svg>
             </motion.button>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu (includes Order Now inside) */}
             <MobileMenu activeSection={activeSection} scrollToSection={scrollToSection} />
           </div>
         </div>
