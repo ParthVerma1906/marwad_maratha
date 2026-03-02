@@ -18,9 +18,9 @@ const HeroContent = () => {
       style={{ y, opacity }}
     >
       {/* Bottom gradient overlay for mobile readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 max-[480px]:from-black/10 max-[480px]:via-black/30 max-[480px]:to-black/70 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 max-[480px]:from-transparent max-[480px]:via-black/20 max-[480px]:to-black/60 z-10" />
       
-      <div className="relative z-20 text-center w-full max-w-4xl mx-auto max-[480px]:px-5 px-4 sm:px-6 lg:px-8">
+      <div className="relative z-20 text-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -38,13 +38,13 @@ const HeroContent = () => {
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
             <span 
-              className="block max-[480px]:text-[1.85rem] text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem] font-bold max-[480px]:mb-2 mb-2 sm:mb-3 max-[480px]:leading-[1.2] leading-[1.15]" 
+              className="block max-[480px]:text-[1.8rem] text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem] font-bold max-[480px]:mb-3 mb-2 sm:mb-3 leading-[1.15]" 
               style={{ textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)' }}
             >
               Flavours of Tradition.
             </span>
             <span 
-              className="block max-[480px]:text-[0.95rem] text-base sm:text-xl md:text-2xl lg:text-[2rem] font-handwritten leading-tight" 
+              className="block max-[480px]:text-[0.9rem] text-base sm:text-xl md:text-2xl lg:text-[2rem] font-handwritten leading-tight" 
               style={{ color: '#FFE5B4', textShadow: '3px 3px 8px rgba(0,0,0,0.7)', fontWeight: '400' }}
             >
               Taste of Home.
@@ -56,22 +56,8 @@ const HeroContent = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
-            {/* Mobile: concise emotional hook + authority line */}
             <p 
-              className="hidden max-[480px]:block max-[480px]:mt-3 text-[#f9f1e7] max-[480px]:text-[0.935rem] font-medium max-[480px]:leading-[1.4]"
-              style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
-            >
-              Recipes passed down through generations.
-            </p>
-            <p 
-              className="hidden max-[480px]:block max-[480px]:mt-2 max-[480px]:text-[0.8rem] max-[480px]:leading-[1.4]"
-              style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)', color: 'rgba(249,241,231,0.75)' }}
-            >
-              Inspired by the rich culinary heritage of Maharashtra and Rajasthan.
-            </p>
-            {/* Desktop/tablet: original paragraph */}
-            <p 
-              className="max-[480px]:hidden mt-3 md:mt-4 text-[#f9f1e7] text-sm sm:text-base md:text-lg max-w-[720px] mx-auto font-medium leading-relaxed md:leading-[1.8]"
+              className="max-[480px]:mt-4 mt-3 md:mt-4 text-[#f9f1e7] max-[480px]:text-[0.8rem] max-[480px]:leading-[1.5] text-sm sm:text-base md:text-lg max-w-[720px] mx-auto font-medium leading-relaxed md:leading-[1.8]"
               style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
             >
               Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
@@ -83,7 +69,7 @@ const HeroContent = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="max-[480px]:pt-5 pt-5 md:pt-8 flex flex-col sm:flex-row max-[480px]:gap-3 gap-3 sm:gap-4 items-center justify-center max-[480px]:px-0 px-2 sm:px-0"
+            className="max-[480px]:pt-[22px] pt-5 md:pt-8 flex flex-col sm:flex-row max-[480px]:gap-[14px] gap-3 sm:gap-4 items-center justify-center max-[480px]:px-4 px-2 sm:px-0"
           >
             <motion.button
               onClick={() => {
