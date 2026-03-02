@@ -126,8 +126,8 @@ const HeroCarousel = () => {
         </Carousel>
       </motion.div>
 
-      {/* Reduced overlay for brighter background */}
-      <div className="absolute inset-0 bg-black/30 z-10"></div>
+      {/* Overlay: slightly stronger on mobile for text contrast */}
+      <div className="absolute inset-0 max-[480px]:bg-black/40 bg-black/30 z-10"></div>
     </>
   );
 };
