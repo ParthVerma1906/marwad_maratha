@@ -36,7 +36,7 @@ const ProductShowcase = () => {
     <section
       id="products"
       ref={sectionRef}
-      className="py-8 sm:py-10 md:py-16 lg:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
+      className="max-[480px]:py-6 py-8 sm:py-10 md:py-16 lg:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
     >
       <motion.div 
         className="absolute inset-0 pointer-events-none hidden md:block"
@@ -46,10 +46,10 @@ const ProductShowcase = () => {
         <div className="absolute bottom-20 right-20 w-48 h-48 bg-maroon/10 rounded-full blur-3xl" />
       </motion.div>
       
-      <div ref={ref} className="w-full px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto relative z-10">
+      <div ref={ref} className="w-full max-[480px]:px-3 px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto relative z-10">
         <ProductShowcaseHeader inView={inView} />
 
-        <div className="mb-4 sm:mb-6 md:mb-10">
+        <div className="max-[480px]:mb-3 mb-4 sm:mb-6 md:mb-10">
           <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">Category</p>
           <ProductCategories
             categories={categories}

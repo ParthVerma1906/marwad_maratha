@@ -55,8 +55,7 @@ const Navbar = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Desktop: h-[70px], Mobile: h-[60px] */}
-        <div className="w-full h-[60px] md:h-[70px] px-4 md:px-6 lg:px-10 flex items-center justify-between">
+        <div className="w-full max-[480px]:h-[58px] h-[60px] md:h-[70px] px-4 md:px-6 lg:px-10 flex items-center justify-between">
           {/* Logo */}
           <motion.a
             href="/"
@@ -66,7 +65,7 @@ const Navbar = () => {
             <img 
               src={productImages.logo}
               alt="Marwad Maratha Logo"
-              className="w-[70px] md:w-[90px] h-auto"
+              className="max-[480px]:w-[56px] w-[70px] md:w-[90px] h-auto"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))' }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -76,7 +75,7 @@ const Navbar = () => {
             />
             <div className="text-center w-full">
               <div 
-                className="font-bold text-[10px] md:text-[13px] leading-tight text-white"
+                className="font-bold max-[480px]:text-[9px] text-[10px] md:text-[13px] leading-tight text-white"
                 style={{ 
                   fontFamily: 'Playfair Display, serif',
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',

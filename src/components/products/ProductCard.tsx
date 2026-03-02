@@ -51,8 +51,8 @@ const ProductCard = ({ product }: ProductProps) => {
         variants={itemVariants}
         onClick={() => setShowDialog(true)}
       >
-        <div className="bg-white rounded-xl overflow-hidden shadow-md relative transition-all h-full indian-border">
-          <div className="h-40 sm:h-48 overflow-hidden relative">
+        <div className="bg-white max-[480px]:rounded-lg rounded-xl overflow-hidden shadow-md relative transition-all h-full indian-border">
+          <div className="max-[480px]:h-44 h-40 sm:h-48 overflow-hidden relative">
             <img
               src={imgSrc}
               alt={product.name}
@@ -74,18 +74,18 @@ const ProductCard = ({ product }: ProductProps) => {
             )}
           </div>
 
-          <div className="p-3 md:p-4">
+          <div className="max-[480px]:p-3 p-3 md:p-4">
             <div className="flex justify-between items-start gap-2">
-              <h3 className="font-heritage font-medium text-base md:text-lg leading-tight">
+              <h3 className="font-heritage font-medium max-[480px]:text-[0.95rem] text-base md:text-lg leading-tight">
                 {product.name}
               </h3>
-              <span className="text-maroon font-bold text-sm md:text-base whitespace-nowrap">₹{product.price}</span>
+              <span className="text-maroon font-bold max-[480px]:text-sm text-sm md:text-base whitespace-nowrap">₹{product.price}</span>
             </div>
 
             <div className="mt-3 flex justify-between items-center">
               <button
                 onClick={handleAddToCart}
-                className="bg-maroon text-white rounded-full p-2 hover:bg-maroon/90 transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
+                className="bg-maroon text-white rounded-full p-2 hover:bg-maroon/90 transition-colors max-[480px]:min-h-[44px] max-[480px]:min-w-[44px] min-h-[40px] min-w-[40px] flex items-center justify-center"
               >
                 <Plus size={16} />
               </button>
