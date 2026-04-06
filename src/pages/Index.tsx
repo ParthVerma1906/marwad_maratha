@@ -1,6 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/hero/HeroSection";
+import StatsMarqueeSection from "@/components/stats/StatsMarqueeSection";
 import ProductShowcase from "@/components/products/ProductShowcase";
 import WhyChooseSection from "@/components/why-choose/WhyChooseSection";
 import StorySection from "@/components/story/StorySection";
