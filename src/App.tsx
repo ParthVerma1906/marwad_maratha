@@ -9,7 +9,6 @@ import Admin from "./pages/Admin";
 import Checkout from "./pages/Checkout";
 import OrderReceived from "./pages/OrderReceived";
 import NotFound from "./pages/NotFound";
-import VexHero from "./pages/VexHero";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +21,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/vex" element={<VexHero />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-received" element={<OrderReceived />} />
