@@ -19,12 +19,12 @@ const HeroCarousel = () => {
   const heroImages = [
     {
       src: productImages.mangoPickle,
-      alt: "Authentic Mango Pickle in Traditional Glass Jar",
+      alt: "Marwad Maratha 25 Plus Varieties Homemade Aachar and Papad Collection",
       title: "Premium Mango Pickle"
     },
     {
       src: productImages.traditionalSetup,
-      alt: "Traditional Indian Heritage - Royal Culinary Setup",
+      alt: "Marwad Maratha Traditional Indian Heritage - Royal Culinary Setup",
       title: "Royal Heritage Recipes"
     }
   ];
@@ -108,6 +108,8 @@ const HeroCarousel = () => {
                     src={getImageSrc(index)}
                     alt={image.alt}
                     className="w-full h-full object-cover"
+                    width={1200}
+                    height={800}
                     onLoad={() => handleImageLoad(index)}
                     onError={() => handleImageError(index)}
                     loading="eager"

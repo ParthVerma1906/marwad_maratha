@@ -46,7 +46,7 @@ const ContactSection = () => {
         >
           <span className="text-accent font-heritage text-base md:text-lg">Reach Out</span>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-heritage font-bold mt-1 mb-2 md:mb-3" style={{ color: "#5A0A0A" }}>
-            Get in Touch
+            Contact Us
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-xs md:text-sm">
             We'd love to hear from you. Reach out for orders, questions, or just to say hello!

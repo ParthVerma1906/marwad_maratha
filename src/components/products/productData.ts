@@ -55,6 +55,7 @@ const initialProducts = [
     image: "/placeholder.svg",
     description: "Sweet and sour lemon pickle.",
     ingredients: ["Lemon", "Sugar", "Spices"],
+    altText: "Khatta Meetha Nimbu Chatani - Marwad Maratha Lemon Pickle",
   },
   {
     id: 7,
@@ -100,6 +101,7 @@ const initialProducts = [
     image: "/placeholder.svg",
     description: "Traditional chili pickle.",
     ingredients: ["Local Chilies", "Oil", "Spices"],
+    altText: "Desi Mirch Aachar Tikha Haraa - Traditional Handmade Green Chilli Pickle",
   },
   {
     id: 12,
@@ -128,6 +130,7 @@ const initialProducts = [
     description: "Ground green chili pickle.",
     ingredients: ["Green Chilies", "Spices", "Oil"],
     isPopular: true,
+    altText: "Athana Green Mirch Aachar - Marwad Maratha Homemade Pickle 300g",
   },
   {
     id: 15,
@@ -156,6 +159,7 @@ const initialProducts = [
     description: "Spicy garlic pickle.",
     ingredients: ["Garlic", "Oil", "Spices"],
     isPopular: true,
+    altText: "Lassan Aachar - Marwad Maratha Spicy Garlic Pickle",
   },
   // Papad
   {

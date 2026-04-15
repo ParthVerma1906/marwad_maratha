@@ -27,7 +27,7 @@ const OriginStory = () => {
       <motion.div className="space-y-3 md:space-y-4" variants={fadeUp} custom={1} initial="hidden" animate={inView ? "visible" : "hidden"}>
         <span className="text-secondary font-heritage text-sm tracking-widest uppercase">Our Story</span>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-heritage font-bold leading-tight text-foreground">
-          From Our Family Kitchen to Your Home
+          About Marwad Maratha
         </h2>
         <div className="space-y-3 text-muted-foreground text-sm md:text-base leading-relaxed">
           <p>Marwad Maratha began not as a business, but as a family tradition. What started in our kitchens in Rajasthan and Maharashtra — preparing pickles and papads for loved ones — slowly became something we wanted to share with more homes.</p>
@@ -105,7 +105,7 @@ const TestimonialSnapshot = () => {
         Trusted by families across Rajasthan and Maharashtra.
       </motion.p>
       <motion.h2 className="text-2xl md:text-3xl lg:text-4xl font-heritage font-bold text-center mb-4 md:mb-6 text-foreground" variants={fadeUp} custom={0} initial="hidden" animate={inView ? "visible" : "hidden"}>
-        Loved by Families
+        Customer Reviews
       </motion.h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
         {testimonials.map((t, i) => (

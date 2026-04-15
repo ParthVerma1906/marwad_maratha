@@ -55,8 +55,10 @@ const ProductCard = ({ product }: ProductProps) => {
           <div className="max-[480px]:h-44 h-40 sm:h-48 overflow-hidden relative">
             <img
               src={imgSrc}
-              alt={product.name}
+              alt={(product as any).altText || `${product.name} - Marwad Maratha Homemade Pickle`}
               className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              width={400}
+              height={300}
               loading="lazy"
               onError={() => {
                 setImgSrc("/placeholder.svg");
