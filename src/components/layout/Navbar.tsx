@@ -64,7 +64,7 @@ const Navbar = () => {
           >
             <img 
               src={productImages.logo}
-              alt="Marwad Maratha Logo"
+              alt="Marwad Maratha Logo - Homemade Aachar Papad Brand Gondia Maharashtra"
               className="max-[480px]:w-[56px] w-[70px] md:w-[90px] h-auto"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))' }}
               onError={(e) => {

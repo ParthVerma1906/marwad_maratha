@@ -48,8 +48,7 @@ const WhyChooseSection = () => {
                 Our Promise
               </span>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heritage font-bold text-white mt-2 md:mt-3 mb-3 md:mb-5 leading-tight">
-                Rooted in Tradition.{" "}
-                <span style={{ color: "#F4A261" }}>Crafted with Care.</span>
+                Why Choose Us
               </h2>
               <p className="text-white/80 text-sm md:text-base lg:text-lg max-w-xl leading-relaxed">
                 At Marwad Maratha, every product tells a story — of heritage kitchens,

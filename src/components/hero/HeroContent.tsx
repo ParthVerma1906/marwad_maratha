@@ -41,13 +41,13 @@ const HeroContent = () => {
               className="block max-[480px]:text-[1.8rem] text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem] font-bold max-[480px]:mb-3 mb-2 sm:mb-3 leading-[1.15]" 
               style={{ textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)' }}
             >
-              Flavours of Tradition.
+              Homemade Aachar & Papad
             </span>
             <span 
               className="block max-[480px]:text-[0.9rem] text-base sm:text-xl md:text-2xl lg:text-[2rem] font-handwritten leading-tight" 
               style={{ color: '#FFE5B4', textShadow: '3px 3px 8px rgba(0,0,0,0.7)', fontWeight: '400' }}
             >
-              Taste of Home.
+              — Marwad Maratha
             </span>
           </motion.h1>
 
