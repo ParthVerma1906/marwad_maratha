@@ -3,7 +3,7 @@ import { Image } from "lucide-react";
 
 interface ProductDetailDialogProps {
   product: {
-    id: number;
+    id: string | number;
     name: string;
     category: string;
     price: number;
@@ -11,6 +11,7 @@ interface ProductDetailDialogProps {
     description?: string;
     ingredients?: string[];
     isPopular?: boolean;
+    weight?: string;
   } | null;
   isOpen: boolean;
   onClose: () => void;

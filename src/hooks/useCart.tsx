@@ -3,19 +3,20 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { useToast } from "@/components/ui/use-toast";
 
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   quantity: number;
   image: string;
   category: string;
+  weight?: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: any, quantity?: number) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   cartTotal: number;
   cartItemsCount: number;
@@ -47,46 +48,45 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   const addToCart = (product: any, quantity = 1) => {
+    const productId = String(product.id);
     setCartItems(prevItems => {
-      // Check if the product is already in the cart
-      const existingItem = prevItems.find(item => item.id === product.id);
-      
+      const existingItem = prevItems.find(item => item.id === productId);
+
       if (existingItem) {
-        // If already in cart, update the quantity
-        const updatedItems = prevItems.map(item => 
-          item.id === product.id 
-            ? { ...item, quantity: item.quantity + quantity } 
+        const updatedItems = prevItems.map(item =>
+          item.id === productId
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
-        
+
         toast({
           title: "Updated cart",
           description: `${product.name} quantity updated in your cart.`,
         });
-        
+
         return updatedItems;
       } else {
-        // If not in cart, add it
-        const newItem = {
-          id: product.id,
+        const newItem: CartItem = {
+          id: productId,
           name: product.name,
           price: product.price,
           quantity,
           image: product.image,
-          category: product.category
+          category: product.category,
+          weight: product.weight,
         };
-        
+
         toast({
           title: "Added to cart",
           description: `${product.name} has been added to your cart.`,
         });
-        
+
         return [...prevItems, newItem];
       }
     });
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (id: string) => {
     setCartItems(prevItems => {
       const item = prevItems.find(item => item.id === id);
       if (item) {
@@ -99,7 +99,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(id);
       return;
