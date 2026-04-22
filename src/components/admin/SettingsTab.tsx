@@ -1,114 +1,190 @@
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-import { useState, useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { User, Mail, Phone } from "lucide-react";
+interface SettingsRow {
+  id: string;
+  business_name: string;
+  phone: string;
+  whatsapp: string;
+  email: string;
+  address: string | null;
+  upi_id: string | null;
+  shipping_charge: number;
+  free_shipping_above: number;
+  is_accepting_orders: boolean;
+}
 
 const SettingsTab = () => {
   const { toast } = useToast();
-  const [businessInfo, setBusinessInfo] = useState({
-    name: "Marwad Maratha",
-    email: "durgagurhudyoggondia@gmail.com",
-    phone: "+91-8830257574",
-    address: "Gokuldham Colony, Near gaurav Furniture, Fulture Peth, Gondia (441601)",
-  });
-  
-  // Load saved business info on component mount
-  useEffect(() => {
-    const savedInfo = localStorage.getItem("businessInfo");
-    if (savedInfo) {
-      try {
-        setBusinessInfo(JSON.parse(savedInfo));
-      } catch (error) {
-        console.error("Error loading business info", error);
-      }
-    }
-  }, []);
+  const [settings, setSettings] = useState<SettingsRow | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const handleBusinessUpdate = (e) => {
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.from("settings").select("*").limit(1).maybeSingle();
+      if (error) {
+        toast({ variant: "destructive", title: "Failed to load settings", description: error.message });
+      } else {
+        setSettings(data as SettingsRow);
+      }
+      setLoading(false);
+    })();
+  }, [toast]);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save business info to localStorage
-    localStorage.setItem("businessInfo", JSON.stringify(businessInfo));
-    
-    // Dispatch an event to notify other components
-    const event = new Event("businessInfoUpdated");
-    window.dispatchEvent(event);
-    
-    toast({
-      title: "Settings updated",
-      description: "Your business information has been updated successfully.",
-    });
+    if (!settings) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("settings")
+      .update({
+        business_name: settings.business_name,
+        phone: settings.phone,
+        whatsapp: settings.whatsapp,
+        email: settings.email,
+        address: settings.address,
+        upi_id: settings.upi_id,
+        shipping_charge: settings.shipping_charge,
+        free_shipping_above: settings.free_shipping_above,
+        is_accepting_orders: settings.is_accepting_orders,
+      })
+      .eq("id", settings.id);
+    setSaving(false);
+    if (error) {
+      toast({ variant: "destructive", title: "Save failed", description: error.message });
+    } else {
+      toast({ title: "Settings saved" });
+    }
   };
 
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="text-xl font-heritage font-bold mb-4">Business Information</h3>
-        <form onSubmit={handleBusinessUpdate} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Business Name</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                  <User size={18} />
-                </span>
-                <input
-                  type="text"
-                  value={businessInfo.name}
-                  onChange={(e) => setBusinessInfo({...businessInfo, name: e.target.value})}
-                  className="w-full pl-10 pr-3 py-2 border border-muted rounded-lg"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Email Address</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                  <Mail size={18} />
-                </span>
-                <input
-                  type="email"
-                  value={businessInfo.email}
-                  onChange={(e) => setBusinessInfo({...businessInfo, email: e.target.value})}
-                  className="w-full pl-10 pr-3 py-2 border border-muted rounded-lg"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Phone Number</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                  <Phone size={18} />
-                </span>
-                <input
-                  type="text"
-                  value={businessInfo.phone}
-                  onChange={(e) => setBusinessInfo({...businessInfo, phone: e.target.value})}
-                  className="w-full pl-10 pr-3 py-2 border border-muted rounded-lg"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Business Address</label>
-              <textarea
-                value={businessInfo.address}
-                onChange={(e) => setBusinessInfo({...businessInfo, address: e.target.value})}
-                className="w-full px-3 py-2 border border-muted rounded-lg"
-                rows={2}
-              ></textarea>
-            </div>
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-maroon text-white rounded-lg"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="animate-spin text-maroon" size={28} />
       </div>
-    </div>
+    );
+  }
+  if (!settings) {
+    return <div className="text-center py-10 text-muted-foreground">No settings row found.</div>;
+  }
+
+  const set = <K extends keyof SettingsRow>(key: K, value: SettingsRow[K]) =>
+    setSettings({ ...settings, [key]: value });
+
+  return (
+    <form onSubmit={handleSave} className="space-y-6 max-w-2xl">
+      <div>
+        <h3 className="text-xl font-heritage font-bold mb-1">Business Settings</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          These values are used across the storefront and checkout.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Field label="Business name">
+          <input
+            value={settings.business_name}
+            onChange={(e) => set("business_name", e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+        <Field label="Email">
+          <input
+            type="email"
+            value={settings.email}
+            onChange={(e) => set("email", e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+        <Field label="Phone">
+          <input
+            value={settings.phone}
+            onChange={(e) => set("phone", e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+        <Field label="WhatsApp">
+          <input
+            value={settings.whatsapp}
+            onChange={(e) => set("whatsapp", e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+        <div className="md:col-span-2">
+          <Field label="Address">
+            <textarea
+              value={settings.address ?? ""}
+              onChange={(e) => set("address", e.target.value)}
+              className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+              rows={2}
+            />
+          </Field>
+        </div>
+        <Field label="UPI ID (for payments)">
+          <input
+            placeholder="yourname@upi"
+            value={settings.upi_id ?? ""}
+            onChange={(e) => set("upi_id", e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+        <Field label="Shipping charge (₹)">
+          <input
+            type="number"
+            min="0"
+            value={settings.shipping_charge}
+            onChange={(e) => set("shipping_charge", Number(e.target.value))}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+        <Field label="Free shipping above (₹)">
+          <input
+            type="number"
+            min="0"
+            value={settings.free_shipping_above}
+            onChange={(e) => set("free_shipping_above", Number(e.target.value))}
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm"
+          />
+        </Field>
+
+        <div className="md:col-span-2">
+          <label className="flex items-center gap-3 p-3 border border-input rounded-lg cursor-pointer hover:bg-muted/30">
+            <input
+              type="checkbox"
+              checked={settings.is_accepting_orders}
+              onChange={(e) => set("is_accepting_orders", e.target.checked)}
+              className="w-5 h-5"
+            />
+            <div>
+              <p className="text-sm font-medium">Accepting new orders</p>
+              <p className="text-xs text-muted-foreground">
+                Turn off to temporarily pause checkout (e.g. during holidays).
+              </p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={saving}
+        className="px-5 py-2.5 bg-maroon text-white rounded-lg text-sm flex items-center gap-2 min-h-[44px]"
+      >
+        {saving && <Loader2 className="animate-spin" size={14} />}
+        Save changes
+      </button>
+    </form>
   );
 };
+
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div>
+    <label className="block text-xs font-medium mb-1">{label}</label>
+    {children}
+  </div>
+);
 
 export default SettingsTab;
