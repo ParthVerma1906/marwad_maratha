@@ -6,7 +6,7 @@ import ProductDetailDialog from "./ProductDetailDialog";
 
 interface ProductProps {
   product: {
-    id: number;
+    id: string | number;
     name: string;
     category: string;
     price: number;
@@ -14,6 +14,8 @@ interface ProductProps {
     description?: string;
     ingredients?: string[];
     isPopular?: boolean;
+    altText?: string;
+    weight?: string;
   };
 }
 
