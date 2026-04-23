@@ -19,9 +19,8 @@ const AdminPanel = ({ onSignOut, userEmail }: AdminPanelProps) => {
   const { toast } = useToast();
 
   const handleLogout = async () => {
+    toast({ title: "Logging out..." });
     await onSignOut();
-    toast({ title: "Logged out" });
-    navigate("/admin/login", { replace: true });
   };
 
   const tabs = [
@@ -50,10 +49,10 @@ const AdminPanel = ({ onSignOut, userEmail }: AdminPanelProps) => {
           )}
           <button
             onClick={handleLogout}
-            className="px-2 sm:px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-md text-xs sm:text-sm flex items-center gap-1 min-h-[40px]"
+            className="px-3 sm:px-4 py-2 bg-white text-maroon hover:bg-white/90 rounded-md text-xs sm:text-sm font-semibold flex items-center gap-1.5 min-h-[40px] shadow-sm"
           >
             <LogOut size={14} />
-            <span className="hidden sm:inline">Logout</span>
+            <span>Logout</span>
           </button>
         </div>
       </div>
