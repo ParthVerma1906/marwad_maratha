@@ -152,20 +152,6 @@ const Navbar = () => {
               </svg>
             </motion.button>
 
-            {/* Admin - desktop only */}
-            <motion.button
-              onClick={() => navigate("/admin")}
-              className="hidden md:flex p-2 rounded-full text-white min-h-[44px] min-w-[44px] items-center justify-center"
-              style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 21a7 7 0 0 0-14 0" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </motion.button>
-
             {/* Mobile Menu (includes Order Now inside) */}
             <MobileMenu activeSection={activeSection} scrollToSection={scrollToSection} />
           </div>
