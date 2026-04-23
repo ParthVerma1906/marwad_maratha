@@ -95,16 +95,6 @@ const MobileMenu = ({ activeSection, scrollToSection }: MobileMenuProps) => {
                   >
                     Order Now
                   </motion.button>
-                  <motion.button
-                    onClick={() => {
-                      navigate('/admin');
-                      setIsOpen(false);
-                    }}
-                    className="w-full border border-white/30 text-white py-3 px-6 rounded-full min-h-[48px] text-sm"
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    Admin Login
-                  </motion.button>
                 </div>
               </div>
             </motion.div>
