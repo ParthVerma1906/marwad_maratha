@@ -7,11 +7,15 @@ import { Phone, MessageCircle, CheckCircle } from "lucide-react";
 const BUSINESS_PHONE = "8830257574";
 
 interface OrderData {
+  orderNumber?: string;
   items: { name: string; quantity: number; price: number }[];
   total: number;
+  subtotal?: number;
+  shipping?: number;
   address: string;
   paymentMode: string;
   name: string;
+  phone?: string;
 }
 
 const OrderReceived = () => {
@@ -52,6 +56,11 @@ const OrderReceived = () => {
             <h1 className="font-heritage text-2xl md:text-3xl font-bold mb-2" style={{ color: "#5A0A0A" }}>
               Order Confirmation in Progress
             </h1>
+            {order?.orderNumber && (
+              <p className="text-sm font-medium mb-2" style={{ color: "#850E35" }}>
+                Order #{order.orderNumber}
+              </p>
+            )}
             <p className="text-muted-foreground text-sm mb-1">
               Thank you for your order. We are verifying your payment and will confirm via WhatsApp shortly.
             </p>
