@@ -48,8 +48,8 @@ const OrderSuccess = () => {
     }
 
     const fetchStatus = async () => {
-      const { data, error } = await supabase
-        .from("public_order_status" as any)
+      const { data, error } = await (supabase as any)
+        .from("public_order_status")
         .select("payment_status, order_status, payment_method")
         .eq("order_number", orderNumber)
         .maybeSingle();
