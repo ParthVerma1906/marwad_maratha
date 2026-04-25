@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Eye, X } from "lucide-react";
+import { Loader2, Eye, X, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -163,12 +163,23 @@ const OrdersTab = () => {
                       })}
                     </td>
                     <td className="p-3">
-                      <button
-                        onClick={() => setSelected(o)}
-                        className="p-2 hover:bg-muted rounded min-h-[40px] min-w-[40px] flex items-center justify-center"
-                      >
-                        <Eye size={16} />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        {o.payment_method === "UPI" && o.payment_status === "pending" && (
+                          <button
+                            onClick={() => updateField(o.id, "payment_status", "paid")}
+                            title="Mark Paid"
+                            className="p-2 rounded bg-green-50 text-green-700 hover:bg-green-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          >
+                            <CheckCircle2 size={16} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setSelected(o)}
+                          className="p-2 hover:bg-muted rounded min-h-[40px] min-w-[40px] flex items-center justify-center"
+                        >
+                          <Eye size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -226,6 +237,15 @@ const OrdersTab = () => {
                     View
                   </button>
                 </div>
+                {o.payment_method === "UPI" && o.payment_status === "pending" && (
+                  <button
+                    onClick={() => updateField(o.id, "payment_status", "paid")}
+                    className="mt-2 w-full py-2 rounded text-xs font-medium bg-green-600 text-white min-h-[40px] flex items-center justify-center gap-1.5"
+                  >
+                    <CheckCircle2 size={14} />
+                    Mark Payment Received
+                  </button>
+                )}
               </div>
             ))}
           </div>
