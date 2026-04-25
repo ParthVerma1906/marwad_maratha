@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.verify-token]
 verify_jwt = false
+
+[functions.notify-owner-order]
+verify_jwt = false
+
+[functions.telegram-poll]
+verify_jwt = false
