@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { z } from "zod";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { productImages } from "@/utils/imageAssets";
-import { Phone, MessageCircle, ChevronRight } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface BusinessSettings {
@@ -17,10 +18,27 @@ interface BusinessSettings {
   is_accepting_orders: boolean;
 }
 
-const FALLBACK_PHONE = "8830257574";
 const FALLBACK_UPI = "88302575741@ybl";
 
-const sanitizePhone = (raw: string) => raw.replace(/[^\d]/g, "").replace(/^91/, "");
+// ---- Strict validation schema ----
+const checkoutSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your full name").max(100),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
+  whatsapp: z
+    .string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit WhatsApp number")
+    .or(z.literal("")),
+  address: z.string().trim().min(10, "Address must be at least 10 characters").max(500),
+  city: z.string().trim().min(2, "Please enter your city").max(80),
+  pincode: z.string().trim().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
+});
+
+type FormData = z.infer<typeof checkoutSchema>;
+type FieldErrors = Partial<Record<keyof FormData, string>>;
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -28,13 +46,16 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const [settings, setSettings] = useState<BusinessSettings | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     phone: "",
+    whatsapp: "",
     address: "",
     city: "",
     pincode: "",
   });
+  const [waSameAsPhone, setWaSameAsPhone] = useState(true);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [paymentMode, setPaymentMode] = useState<"upi" | "cod">("upi");
   const [processing, setProcessing] = useState(false);
 
@@ -49,54 +70,61 @@ const Checkout = () => {
       });
   }, []);
 
-  const businessPhone = sanitizePhone(settings?.whatsapp || settings?.phone || FALLBACK_PHONE) || FALLBACK_PHONE;
   const upiId = settings?.upi_id || FALLBACK_UPI;
   const businessName = settings?.business_name || "Marwad Maratha";
-
   const shippingCharge =
     settings && cartTotal < Number(settings.free_shipping_above || 0)
       ? Number(settings.shipping_charge || 0)
       : 0;
   const totalAmount = cartTotal + shippingCharge;
 
+  // Numeric-only filtering for phone and pincode
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let v = value;
+    if (name === "phone" || name === "whatsapp") v = value.replace(/\D/g, "").slice(0, 10);
+    if (name === "pincode") v = value.replace(/\D/g, "").slice(0, 6);
+    setFormData((prev) => {
+      const next = { ...prev, [name]: v };
+      if (name === "phone" && waSameAsPhone) next.whatsapp = v;
+      return next;
+    });
+    setErrors((e) => ({ ...e, [name]: undefined }));
   };
 
-  const isFormValid =
-    formData.name.trim() &&
-    formData.phone.trim() &&
-    formData.address.trim() &&
-    formData.city.trim() &&
-    formData.pincode.trim();
-
-  const buildWhatsAppMessage = (orderNumber: string) => {
-    const items = cartItems
-      .map((i) => `• ${i.name} x${i.quantity} — ₹${i.price * i.quantity}`)
-      .join("\n");
-    return encodeURIComponent(
-      `🛒 *New Order — ${businessName}*\n` +
-        `*Order #:* ${orderNumber}\n\n` +
-        `*Items:*\n${items}\n\n` +
-        `*Subtotal:* ₹${cartTotal}\n` +
-        `*Shipping:* ${shippingCharge === 0 ? "Free" : `₹${shippingCharge}`}\n` +
-        `*Total:* ₹${totalAmount}\n\n` +
-        `*Customer:* ${formData.name}\n` +
-        `*Phone:* ${formData.phone}\n` +
-        `*Address:* ${formData.address}, ${formData.city} - ${formData.pincode}\n` +
-        `*Payment:* ${paymentMode === "upi" ? "UPI (Prepaid)" : "Cash on Delivery"}\n\n` +
-        `Please confirm 🙏`
-    );
+  const handleSameAsPhone = (checked: boolean) => {
+    setWaSameAsPhone(checked);
+    if (checked) {
+      setFormData((p) => ({ ...p, whatsapp: p.phone }));
+      setErrors((e) => ({ ...e, whatsapp: undefined }));
+    }
   };
 
-  const handleUpiPay = () => {
-    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${totalAmount}&cu=INR`;
-    window.open(upiLink, "_blank", "noopener");
-  };
+  // Live validation result for button state
+  const liveValidation = checkoutSchema.safeParse({
+    ...formData,
+    whatsapp: waSameAsPhone ? formData.phone : formData.whatsapp,
+  });
+  const isFormValid = liveValidation.success;
 
   const placeOrder = async (mode: "upi" | "cod") => {
-    if (!isFormValid) {
-      toast({ title: "Please fill all delivery details", variant: "destructive" });
+    const payload = {
+      ...formData,
+      whatsapp: waSameAsPhone ? formData.phone : formData.whatsapp,
+    };
+    const parsed = checkoutSchema.safeParse(payload);
+    if (!parsed.success) {
+      const fieldErrors: FieldErrors = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as keyof FormData;
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      toast({
+        title: "Please fix the errors below",
+        description: "Some fields are missing or invalid.",
+        variant: "destructive",
+      });
       return;
     }
     if (settings && !settings.is_accepting_orders) {
@@ -109,18 +137,19 @@ const Checkout = () => {
     }
 
     setProcessing(true);
+    console.log("[checkout] placing order", { mode, cart: cartItems, payload });
 
     try {
       const { data, error } = await supabase
         .from("orders")
         .insert({
-          order_number: "", // trigger will generate
-          customer_name: formData.name.trim(),
-          phone: formData.phone.trim(),
-          whatsapp: formData.phone.trim(),
-          address: formData.address.trim(),
-          city: formData.city.trim(),
-          pincode: formData.pincode.trim(),
+          order_number: "",
+          customer_name: parsed.data.name,
+          phone: parsed.data.phone,
+          whatsapp: parsed.data.whatsapp || parsed.data.phone,
+          address: parsed.data.address,
+          city: parsed.data.city,
+          pincode: parsed.data.pincode,
           items: cartItems.map((i) => ({
             id: i.id,
             name: i.name,
@@ -130,17 +159,17 @@ const Checkout = () => {
           })),
           total_amount: totalAmount,
           payment_method: mode === "upi" ? "UPI" : "COD",
-          payment_status: "pending",
+          payment_status: mode === "cod" ? "pending" : "pending",
           order_status: "new",
         })
         .select("order_number")
         .single();
 
       if (error || !data) {
-        console.error("Order insert failed:", error);
+        console.error("[checkout] insert failed", error);
         toast({
           title: "Could not place order",
-          description: error?.message || "Please try again.",
+          description: "Please check your connection and try again.",
           variant: "destructive",
         });
         setProcessing(false);
@@ -148,6 +177,13 @@ const Checkout = () => {
       }
 
       const orderNumber = data.order_number;
+      console.log("[checkout] order created", orderNumber);
+
+      // Notify owner via Telegram (fire-and-forget — never breaks checkout)
+      supabase.functions
+        .invoke("notify-owner-order", { body: { order_number: orderNumber } })
+        .then((r) => console.log("[checkout] notify result", r))
+        .catch((e) => console.error("[checkout] notify failed", e));
 
       sessionStorage.setItem(
         "lastOrder",
@@ -157,27 +193,28 @@ const Checkout = () => {
           total: totalAmount,
           subtotal: cartTotal,
           shipping: shippingCharge,
-          address: `${formData.address}, ${formData.city} - ${formData.pincode}`,
+          address: `${parsed.data.address}, ${parsed.data.city} - ${parsed.data.pincode}`,
           paymentMode: mode,
-          name: formData.name,
-          phone: formData.phone,
-        })
+          name: parsed.data.name,
+          phone: parsed.data.phone,
+        }),
       );
 
-      // Open WhatsApp to the owner with the formatted summary
-      const waUrl = `https://wa.me/91${businessPhone}?text=${buildWhatsAppMessage(orderNumber)}`;
-      window.open(waUrl, "_blank", "noopener");
+      // Open UPI app once for prepaid; no customer WhatsApp involvement
+      if (mode === "upi") {
+        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderNumber)}`;
+        window.open(upiLink, "_blank", "noopener");
+      }
 
       clearCart();
-      navigate("/order-received");
+      navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
     } catch (err) {
-      console.error("Checkout failure:", err);
+      console.error("[checkout] unexpected error", err);
       toast({
         title: "Something went wrong",
         description: "Please try again in a moment.",
         variant: "destructive",
       });
-    } finally {
       setProcessing(false);
     }
   };
@@ -209,6 +246,17 @@ const Checkout = () => {
       </div>
     );
   }
+
+  // Helper: render an error message
+  const FieldError = ({ name }: { name: keyof FormData }) =>
+    errors[name] ? (
+      <p className="text-xs text-red-600 mt-1.5">{errors[name]}</p>
+    ) : null;
+
+  const inputBase =
+    "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm";
+  const inputClass = (name: keyof FormData) =>
+    `${inputBase} ${errors[name] ? "border-red-500" : "border-input"}`;
 
   return (
     <div className="min-h-screen" style={{ background: "#FCF7F1" }}>
@@ -291,25 +339,51 @@ const Checkout = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  required
                   maxLength={100}
-                  className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm"
+                  className={inputClass("name")}
                   placeholder="Your full name"
                 />
+                <FieldError name="name" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1.5">Phone Number</label>
                 <input
                   type="tel"
+                  inputMode="numeric"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
-                  maxLength={20}
-                  className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm"
-                  placeholder="Your phone number"
+                  maxLength={10}
+                  className={inputClass("phone")}
+                  placeholder="10-digit mobile number"
                 />
-                <p className="text-xs text-muted-foreground mt-1.5">We may contact you to confirm your order.</p>
+                <FieldError name="phone" />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-sm font-medium">WhatsApp Number</label>
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={waSameAsPhone}
+                      onChange={(e) => handleSameAsPhone(e.target.checked)}
+                      className="accent-accent"
+                    />
+                    Same as phone
+                  </label>
+                </div>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  name="whatsapp"
+                  value={waSameAsPhone ? formData.phone : formData.whatsapp}
+                  onChange={handleChange}
+                  disabled={waSameAsPhone}
+                  maxLength={10}
+                  className={`${inputClass("whatsapp")} ${waSameAsPhone ? "opacity-60 cursor-not-allowed" : ""}`}
+                  placeholder="10-digit WhatsApp number"
+                />
+                {!waSameAsPhone && <FieldError name="whatsapp" />}
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1.5">Address</label>
@@ -317,12 +391,12 @@ const Checkout = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  required
                   rows={2}
                   maxLength={500}
-                  className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm resize-none"
-                  placeholder="Full delivery address"
+                  className={`${inputClass("address")} resize-none`}
+                  placeholder="House #, street, locality"
                 />
+                <FieldError name="address" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -332,24 +406,25 @@ const Checkout = () => {
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
-                    required
                     maxLength={80}
-                    className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm"
+                    className={inputClass("city")}
                     placeholder="City"
                   />
+                  <FieldError name="city" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1.5">Pincode</label>
                   <input
                     type="text"
+                    inputMode="numeric"
                     name="pincode"
                     value={formData.pincode}
                     onChange={handleChange}
-                    required
-                    maxLength={10}
-                    className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm"
-                    placeholder="Pincode"
+                    maxLength={6}
+                    className={inputClass("pincode")}
+                    placeholder="6-digit pincode"
                   />
+                  <FieldError name="pincode" />
                 </div>
               </div>
             </div>
@@ -374,7 +449,9 @@ const Checkout = () => {
                 />
                 <div>
                   <p className="font-semibold text-sm">UPI — Instant & Secure</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Recommended for all prepaid orders.</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Recommended. After paying, we verify and confirm automatically.
+                  </p>
                 </div>
               </label>
               <label
@@ -393,86 +470,41 @@ const Checkout = () => {
                 <div>
                   <p className="font-semibold text-sm">Cash on Delivery</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Available for verified local customers only. Contact us to request.
+                    Available for verified local customers only.
                   </p>
                 </div>
               </label>
             </div>
           </div>
 
-          {/* UPI Payment Block */}
-          {paymentMode === "upi" && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="bg-white rounded-2xl p-5 md:p-6 mb-6"
-              style={{ boxShadow: "0 2px 12px rgba(90,10,10,0.06)" }}
-            >
-              <h2 className="font-heritage text-xl font-bold mb-4" style={{ color: "#5A0A0A" }}>
-                Pay ₹{totalAmount} via UPI
-              </h2>
-              <button
-                onClick={handleUpiPay}
-                disabled={processing}
-                className="w-full py-3.5 rounded-xl font-semibold text-white mb-3 transition-all"
-                style={{ background: "#850E35", minHeight: "48px" }}
-              >
-                Pay Now
-              </button>
-              <p className="text-xs text-muted-foreground text-center mb-4">
-                After payment, return here and confirm on WhatsApp.
-              </p>
-              <button
-                onClick={() => placeOrder("upi")}
-                disabled={processing || !isFormValid}
-                className="w-full py-3.5 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all"
-                style={{ background: "#25D366", minHeight: "48px", opacity: isFormValid ? 1 : 0.6 }}
-              >
-                <MessageCircle size={18} />
-                {processing ? "Processing..." : "Confirm on WhatsApp"}
-              </button>
-            </motion.div>
-          )}
-
-          {paymentMode === "cod" && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mb-6">
-              <button
-                onClick={() => placeOrder("cod")}
-                disabled={processing || !isFormValid}
-                className="w-full py-3.5 rounded-xl font-semibold text-white transition-all"
-                style={{ background: "#850E35", minHeight: "48px", opacity: isFormValid ? 1 : 0.5 }}
-              >
-                {processing ? "Processing..." : "Place Order (Cash on Delivery)"}
-              </button>
-            </motion.div>
-          )}
-
-          {/* Support Strip */}
-          <div className="rounded-2xl p-5 md:p-6 text-center" style={{ background: "#F5EDE4" }}>
-            <p className="text-sm font-medium mb-3" style={{ color: "#5A0A0A" }}>
-              Have questions before placing your order?
+          {/* Single unified Place Order action */}
+          <button
+            onClick={() => placeOrder(paymentMode)}
+            disabled={processing || !isFormValid}
+            className="w-full py-4 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all"
+            style={{
+              background: isFormValid ? "#850E35" : "#a87d84",
+              minHeight: "52px",
+              opacity: processing ? 0.7 : 1,
+              cursor: processing || !isFormValid ? "not-allowed" : "pointer",
+            }}
+          >
+            {processing ? (
+              <>
+                <Loader2 className="animate-spin" size={18} />
+                Placing order…
+              </>
+            ) : paymentMode === "upi" ? (
+              `Place Order & Pay ₹${totalAmount}`
+            ) : (
+              `Place Order — ₹${totalAmount} (COD)`
+            )}
+          </button>
+          {!isFormValid && (
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              Fill all delivery details correctly to enable this button.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href={`https://wa.me/91${businessPhone}`}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium text-white text-sm"
-                style={{ background: "#25D366", minHeight: "48px" }}
-              >
-                <MessageCircle size={16} />
-                Chat on WhatsApp
-              </a>
-              <a
-                href={`tel:+91${businessPhone}`}
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium text-sm border"
-                style={{ borderColor: "#850E35", color: "#850E35", minHeight: "48px" }}
-              >
-                <Phone size={16} />
-                Call Us
-              </a>
-            </div>
-          </div>
+          )}
         </motion.div>
       </div>
     </div>
