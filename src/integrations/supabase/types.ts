@@ -161,6 +161,45 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_bot_state: {
+        Row: {
+          id: number
+          update_offset: number
+          updated_at: string
+        }
+        Insert: {
+          id: number
+          update_offset?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          update_offset?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_processed_callbacks: {
+        Row: {
+          action: string
+          callback_id: string
+          order_number: string
+          processed_at: string
+        }
+        Insert: {
+          action: string
+          callback_id: string
+          order_number: string
+          processed_at?: string
+        }
+        Update: {
+          action?: string
+          callback_id?: string
+          order_number?: string
+          processed_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -184,7 +223,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_order_status: {
+        Row: {
+          created_at: string | null
+          order_number: string | null
+          order_status: string | null
+          payment_method: string | null
+          payment_status: string | null
+          total_amount: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          order_number?: string | null
+          order_status?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          total_amount?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          order_number?: string | null
+          order_status?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          total_amount?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
