@@ -162,7 +162,8 @@ The site is configured with comprehensive SEO metadata:
 
 ## Screenshots
 
-> *(Recommended: add a screenshot of the homepage, product listing page, and mobile view)*
+> <img width="1900" height="976" alt="Screenshot 2026-05-12 225923" src="https://github.com/user-attachments/assets/45cd009c-c5f3-47c9-a358-2826fc1b1b9b" />
+<img width="1919" height="1077" alt="Screenshot 2026-05-12 225854" src="https://github.com/user-attachments/assets/9ee299b2-cbdc-43b7-83fc-27fd2746f429" />
 
 ---
 
