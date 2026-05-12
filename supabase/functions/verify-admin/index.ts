@@ -136,9 +136,11 @@ serve(async (req) => {
     const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASSWORD");
 
     if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+      console.error("Admin credentials not configured");
+      recordAttempt(ip);
       return new Response(
-        JSON.stringify({ error: "Server configuration error" }),
-        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        JSON.stringify({ error: "Invalid credentials" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 

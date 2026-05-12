@@ -21,14 +21,47 @@ function escapeHtml(s: string) {
     .replace(/>/g, "&gt;");
 }
 
+// Simple in-memory IP rate limiter (per-instance)
+const ipHits = new Map<string, { count: number; windowStart: number }>();
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 10;
+function isIpRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const r = ipHits.get(ip);
+  if (!r || now - r.windowStart > RATE_WINDOW_MS) {
+    ipHits.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+  r.count++;
+  return r.count > RATE_MAX;
+}
+
+// Dedupe: only notify once per order_number per instance lifetime
+const notifiedOrders = new Set<string>();
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    if (isIpRateLimited(ip)) {
+      return new Response(JSON.stringify({ ok: false, error: "rate_limited" }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { order_number } = await req.json();
     if (!order_number || typeof order_number !== "string") {
       return new Response(JSON.stringify({ error: "order_number required" }), {
         status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (notifiedOrders.has(order_number)) {
+      return new Response(JSON.stringify({ ok: true, deduped: true }), {
+        status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -61,6 +94,17 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Only notify for freshly created orders (anti-replay / anti-spam)
+    const createdAt = new Date(order.created_at).getTime();
+    if (Number.isFinite(createdAt) && Date.now() - createdAt > 10 * 60 * 1000) {
+      return new Response(JSON.stringify({ ok: true, stale: true }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    notifiedOrders.add(order_number);
 
     const items = Array.isArray(order.items) ? order.items : [];
     const itemLines = items
