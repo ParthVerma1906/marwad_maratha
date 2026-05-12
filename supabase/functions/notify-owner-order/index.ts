@@ -95,6 +95,17 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Only notify for freshly created orders (anti-replay / anti-spam)
+    const createdAt = new Date(order.created_at).getTime();
+    if (Number.isFinite(createdAt) && Date.now() - createdAt > 10 * 60 * 1000) {
+      return new Response(JSON.stringify({ ok: true, stale: true }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    notifiedOrders.add(order_number);
+
     const items = Array.isArray(order.items) ? order.items : [];
     const itemLines = items
       .map((i: any) => `• ${escapeHtml(i.name)} × ${i.quantity} — ₹${i.price * i.quantity}`)
