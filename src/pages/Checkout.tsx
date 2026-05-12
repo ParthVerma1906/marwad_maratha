@@ -137,50 +137,46 @@ const Checkout = () => {
     }
 
     setProcessing(true);
-
-    // Generate order number client-side (no SELECT required from anon)
-    const now = new Date();
-    const yyyy = now.getFullYear();
-    const mm = String(now.getMonth() + 1).padStart(2, "0");
-    const dd = String(now.getDate()).padStart(2, "0");
-    const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
-    const orderNumber = `MM-${yyyy}${mm}${dd}-${now.getTime().toString(36).toUpperCase()}-${rand}`;
-
-    console.log("[checkout] placing order", { mode, orderNumber, cart: cartItems, payload });
+    console.log("[checkout] placing order", { mode, cart: cartItems, payload });
 
     try {
-      const { error } = await supabase.from("orders").insert({
-        order_number: orderNumber,
-        customer_name: parsed.data.name,
-        phone: parsed.data.phone,
-        whatsapp: parsed.data.whatsapp || parsed.data.phone,
-        address: parsed.data.address,
-        city: parsed.data.city,
-        pincode: parsed.data.pincode,
-        items: cartItems.map((i) => ({
-          id: i.id,
-          name: i.name,
-          price: i.price,
-          quantity: i.quantity,
-          image: i.image,
-        })),
-        total_amount: totalAmount,
-        payment_method: mode === "upi" ? "UPI" : "COD",
-        payment_status: "pending",
-        order_status: "new",
-      });
+      const { data, error } = await supabase
+        .from("orders")
+        .insert({
+          order_number: "",
+          customer_name: parsed.data.name,
+          phone: parsed.data.phone,
+          whatsapp: parsed.data.whatsapp || parsed.data.phone,
+          address: parsed.data.address,
+          city: parsed.data.city,
+          pincode: parsed.data.pincode,
+          items: cartItems.map((i) => ({
+            id: i.id,
+            name: i.name,
+            price: i.price,
+            quantity: i.quantity,
+            image: i.image,
+          })),
+          total_amount: totalAmount,
+          payment_method: mode === "upi" ? "UPI" : "COD",
+          payment_status: mode === "cod" ? "pending" : "pending",
+          order_status: "new",
+        })
+        .select("order_number")
+        .single();
 
-      if (error) {
+      if (error || !data) {
         console.error("[checkout] insert failed", error);
         toast({
           title: "Could not place order",
-          description: error.message || "Please try again in a moment.",
+          description: "Please check your connection and try again.",
           variant: "destructive",
         });
         setProcessing(false);
         return;
       }
 
+      const orderNumber = data.order_number;
       console.log("[checkout] order created", orderNumber);
 
       // Notify owner via Telegram (fire-and-forget — never breaks checkout)
