@@ -2,7 +2,7 @@
 
 **Live Site → [marwadmaratha.in](https://marwadmaratha.in)**
 
-A production-deployed e-commerce web application for a homemade food brand, built with a modern React stack and shipped with a custom domain. The platform showcases and enables online ordering of 25+ varieties of traditional handcrafted pickles (Aachar) and Papad, combining culinary heritage from Rajasthan and Maharashtra.
+A production-deployed e-commerce web application for a homemade food brand, built with a modern React stack and live on a custom domain. The platform showcases and enables online ordering of 25+ varieties of traditional handcrafted pickles (Aachar) and Papad, combining culinary heritage from Rajasthan and Maharashtra.
 
 ---
 
@@ -20,11 +20,12 @@ A production-deployed e-commerce web application for a homemade food brand, buil
 
 ## Overview
 
-Marwad Maratha is a real-world business web application with a live user base. The project demonstrates end-to-end product development — from UI design and component architecture to production deployment and domain configuration.
+Marwad Maratha is a real-world business web application with a live user base. The project demonstrates end-to-end product development — from UI design and component architecture to production deployment with a custom domain.
 
 **Key highlights for reviewers:**
-- Built and deployed a fully functional e-commerce website for a real brand
-- Custom domain configured and live in production (`marwadmaratha.in`)
+- Fully functional e-commerce website for a real, active brand
+- Custom domain (`marwadmaratha.in`) purchased via Hostinger, DNS configured to Vercel
+- Deployed on Vercel with automatic GitHub-based CI/CD
 - SEO-optimised with Open Graph, Twitter Card, and structured meta tags
 - Mobile-first, responsive design using Tailwind CSS
 - Component-driven architecture using shadcn/ui and React
@@ -41,9 +42,10 @@ Marwad Maratha is a real-world business web application with a live user base. T
 | Styling | Tailwind CSS |
 | UI Components | shadcn/ui (Radix UI primitives) |
 | Routing | React Router DOM |
-| Deployment | Lovable Cloud |
+| Hosting | Vercel |
+| Domain Registrar | Hostinger |
 | Version Control | Git + GitHub |
-| Domain | marwadmaratha.in (custom domain) |
+| Domain | marwadmaratha.in |
 
 ---
 
@@ -117,33 +119,36 @@ npm run preview    # Preview the production build locally
 
 ## Deployment
 
-The application is deployed on **Lovable Cloud** with a custom domain.
+The application is hosted on **Vercel**, connected to this GitHub repository for automatic deployments.
 
 **Production URL:** https://marwadmaratha.in
 
 ### Deployment Workflow
 
-1. Push changes to the `main` branch on GitHub
-2. Lovable automatically detects the push and triggers a redeploy
-3. Live site updates within minutes — no manual CI/CD configuration required
+1. Push changes to the `main` branch
+2. Vercel automatically detects the push and triggers a new build
+3. On successful build, changes go live — zero manual steps required
 
-### Custom Domain
+Every pull request also gets its own **Vercel Preview URL**, allowing changes to be reviewed before merging to production.
 
-Domain connected via `Project > Settings > Domains` in Lovable.  
-DNS records configured to point `marwadmaratha.in` to Lovable's infrastructure.
+### Custom Domain Setup
+
+- Domain `marwadmaratha.in` registered via **Hostinger**
+- DNS nameservers / A records pointed to Vercel's infrastructure from the Hostinger dashboard
+- SSL certificate automatically provisioned by Vercel
 
 ---
 
 ## SEO & Performance
 
-The site is configured with comprehensive SEO metadata out of the box:
+The site is configured with comprehensive SEO metadata:
 
 ```html
 <!-- Indexing -->
 <meta name="robots" content="index, follow" />
 <link rel="canonical" href="https://marwadmaratha.in" />
 
-<!-- Open Graph — controls WhatsApp, Facebook link previews -->
+<!-- Open Graph — controls WhatsApp, Facebook, LinkedIn link previews -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Marwad Maratha - Homemade Aachar & Papad" />
 <meta property="og:description" content="25+ varieties of handmade traditional pickles. No preservatives. Ships Pan-India." />
@@ -157,7 +162,7 @@ The site is configured with comprehensive SEO metadata out of the box:
 
 ## Screenshots
 
-> *(Add a screenshot of the homepage, product listing page, and mobile view here for best results)*
+> *(Recommended: add a screenshot of the homepage, product listing page, and mobile view)*
 
 ---
 
