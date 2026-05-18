@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { z } from "zod";
 import { useCart } from "@/hooks/useCart";
@@ -260,6 +261,16 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen" style={{ background: "#FCF7F1" }}>
+      <Helmet>
+        <title>Checkout — Marwad Maratha</title>
+        <meta name="description" content="Securely place your order for homemade aachar and papad. UPI payment with WhatsApp confirmation." />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://marwad-maratha.lovable.app/checkout" />
+        <meta property="og:title" content="Checkout — Marwad Maratha" />
+        <meta property="og:description" content="Place your order for homemade aachar and papad with quick UPI checkout." />
+        <meta property="og:url" content="https://marwad-maratha.lovable.app/checkout" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <header className="py-4 px-6 border-b" style={{ borderColor: "hsl(20 10% 85%)" }}>
         <Link to="/" className="flex items-center gap-2">
           <img src={productImages.logo} alt="Logo" className="h-10" />

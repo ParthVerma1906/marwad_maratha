@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/hero/HeroSection";
@@ -29,6 +30,15 @@ const heritageMarquee = [
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Marwad Maratha — Homemade Aachar & Papad</title>
+        <meta name="description" content="25+ varieties of handmade traditional pickles & papad. Heirloom recipes from Rajasthan & Maharashtra. No preservatives. Ships pan-India." />
+        <link rel="canonical" href="https://marwad-maratha.lovable.app/" />
+        <meta property="og:title" content="Marwad Maratha — Homemade Aachar & Papad" />
+        <meta property="og:description" content="25+ varieties of handmade traditional pickles. No preservatives. Ships Pan-India." />
+        <meta property="og:url" content="https://marwad-maratha.lovable.app/" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Navbar />
       <main>
         <HeroSection />

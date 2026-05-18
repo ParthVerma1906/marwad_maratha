@@ -1,0 +1,10 @@
+# Marwad Maratha
+
+> Homemade traditional aachar (pickles) and papad from Rajasthan and Maharashtra. 25+ varieties, no preservatives, ships pan-India from Gondia, Maharashtra.
+
+Marwad Maratha is a family-run business producing handmade pickles and papad using heirloom recipes. Products include Athana Mirch Aachar, Desi Mirch Aachar, Nimbu Mitha Chatani, Aam ka Aachar, Lassan Aachar, Urad Dal Papad, Amla Aachar, and Gunda Aachar. Orders are placed via the website with manual UPI payment confirmed over WhatsApp.
+
+## Pages
+
+- [Home](/): Browse products, story, why-choose-us, and contact information.
+- [Checkout](/checkout): Place an order with delivery details and UPI payment.
