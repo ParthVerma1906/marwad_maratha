@@ -3,4 +3,6 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 Disallow: /admin/login
-Sitemap: https://marwadmaratha.in/sitemap.xml
+Disallow: /order-received
+Disallow: /order-success
+Sitemap: https://marwad-maratha.lovable.app/sitemap.xml
