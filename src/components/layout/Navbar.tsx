@@ -4,22 +4,23 @@ import ShoppingCart from "../cart/ShoppingCart";
 import MobileMenu from "./MobileMenu";
 import { useCart } from "@/hooks/useCart";
 import { productImages } from "@/utils/imageAssets";
-
-const WHATSAPP_URL = "https://wa.me/918830257574?text=Namaste!%20Mujhe%20Marwad%20Maratha%20se%20order%20karna%20hai.";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { cartItemsCount } = useCart();
-
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > window.innerHeight * 0.8);
-
+      
       const sections = ['home', 'products', 'story', 'contact'];
       const scrollPosition = window.scrollY + 100;
-
+      
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -61,7 +62,7 @@ const Navbar = () => {
             className="flex flex-col items-start flex-shrink-0"
             whileHover={{ scale: 1.02 }}
           >
-            <img
+            <img 
               src={productImages.logo}
               alt="Marwad Maratha Logo - Homemade Aachar Papad Brand Gondia Maharashtra"
               className="max-[480px]:w-[56px] w-[70px] md:w-[90px] h-auto"
@@ -73,9 +74,9 @@ const Navbar = () => {
               }}
             />
             <div className="text-center w-full">
-              <div
+              <div 
                 className="font-bold max-[480px]:text-[9px] text-[10px] md:text-[13px] leading-tight text-white"
-                style={{
+                style={{ 
                   fontFamily: 'Playfair Display, serif',
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                   letterSpacing: '0.5px'
@@ -86,19 +87,19 @@ const Navbar = () => {
             </div>
           </motion.a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - centered */}
           <nav className="hidden md:flex items-center gap-5">
             {[
               { name: "Home", id: "home" },
               { name: "Products", id: "products" },
-              { name: "About Us", id: "story" },
+              { name: "About", id: "story" },
               { name: "Contact", id: "contact" }
             ].map((item) => (
               <motion.a
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
                 className={`font-medium relative group cursor-pointer transition-all text-[15px] ${
-                  activeSection === item.id
+                  activeSection === item.id 
                     ? 'text-white font-semibold'
                     : 'text-white hover:text-gray-200'
                 }`}
@@ -107,8 +108,8 @@ const Navbar = () => {
               >
                 {item.name}
                 <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
-                  activeSection === item.id
-                    ? 'w-full bg-yellow-400'
+                  activeSection === item.id 
+                    ? 'w-full bg-yellow-400' 
                     : 'w-0 group-hover:w-full group-hover:bg-yellow-400'
                 }`} />
               </motion.a>
@@ -124,7 +125,6 @@ const Navbar = () => {
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              aria-label="Open cart"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="8" cy="21" r="1" />
@@ -138,25 +138,21 @@ const Navbar = () => {
               )}
             </motion.button>
 
-            {/* WhatsApp Order button - desktop */}
-            <motion.a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-1 font-bold shadow-lg text-sm py-2 px-5"
-              style={{
-                backgroundColor: '#25D366',
-                color: '#ffffff',
-                borderRadius: '8px',
-                minHeight: '44px',
-              }}
+            {/* Order Now - desktop only */}
+            <motion.button
+              onClick={() => navigate('/checkout')}
+              className="hidden md:flex bg-primary hover:bg-primary/90 text-primary-foreground rounded-full items-center gap-1 font-bold shadow-lg text-sm py-2 px-5"
+              style={{ minHeight: '40px' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
-              📱 Order on WhatsApp
-            </motion.a>
+              <span>Order Now</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 12h12m-6-6 6 6-6 6" />
+              </svg>
+            </motion.button>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu (includes Order Now inside) */}
             <MobileMenu activeSection={activeSection} scrollToSection={scrollToSection} />
           </div>
         </div>
