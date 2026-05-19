@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout";
 import OrderReceived from "./pages/OrderReceived";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
+import FloatingWhatsApp from "./components/layout/FloatingWhatsApp";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <FloatingWhatsApp />
         </BrowserRouter>
       </CartProvider>
     </TooltipProvider>
