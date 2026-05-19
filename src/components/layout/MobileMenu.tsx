@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface MobileMenuProps {
   activeSection: string;
   scrollToSection: (sectionId: string) => void;
 }
 
+const WHATSAPP_URL = "https://wa.me/918830257574?text=Namaste!%20Mujhe%20Marwad%20Maratha%20se%20order%20karna%20hai.";
+
 const MobileMenu = ({ activeSection, scrollToSection }: MobileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   const menuItems = [
     { name: "Home", id: "home" },
     { name: "Products", id: "products" },
-    { name: "About", id: "story" },
+    { name: "About Us", id: "story" },
     { name: "Contact", id: "contact" }
   ];
 
@@ -31,6 +31,8 @@ const MobileMenu = ({ activeSection, scrollToSection }: MobileMenuProps) => {
         className="p-2 text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
         style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
         whileTap={{ scale: 0.95 }}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isOpen}
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </motion.button>
@@ -59,6 +61,7 @@ const MobileMenu = ({ activeSection, scrollToSection }: MobileMenuProps) => {
                   <button
                     onClick={() => setIsOpen(false)}
                     className="text-white p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Close menu"
                   >
                     <X size={24} />
                   </button>
@@ -85,16 +88,22 @@ const MobileMenu = ({ activeSection, scrollToSection }: MobileMenuProps) => {
                 </nav>
 
                 <div className="p-5 border-t border-white/20 space-y-3">
-                  <motion.button
-                    onClick={() => {
-                      navigate('/checkout');
-                      setIsOpen(false);
+                  <motion.a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="w-full flex items-center justify-center font-bold py-3 px-6 text-base"
+                    style={{
+                      backgroundColor: '#25D366',
+                      color: '#ffffff',
+                      borderRadius: '8px',
+                      minHeight: '48px',
                     }}
-                    className="w-full bg-gradient-to-r from-saffron to-yellow-400 text-maroon font-bold py-3 px-6 rounded-full min-h-[48px] text-base"
                     whileTap={{ scale: 0.98 }}
                   >
-                    Order Now
-                  </motion.button>
+                    📱 Order on WhatsApp
+                  </motion.a>
                 </div>
               </div>
             </motion.div>
