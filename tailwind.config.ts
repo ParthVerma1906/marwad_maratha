@@ -146,9 +146,9 @@ export default {
                 'fade-in-up': 'fade-in-up 0.7s ease-out forwards',
 			},
             fontFamily: {
-                'spicefont': ['Hind', 'sans-serif'],
-                'heritage': ['"Yatra One"', 'serif'],
-                'display': ['"Playfair Display"', 'serif'],
+                'spicefont': ['Poppins', 'sans-serif'],
+                'heritage': ['Cormorant Garamond', 'serif'],
+                'display': ['Playfair Display', 'serif'],
                 'handwritten': ['Satisfy', 'cursive']
             },
             backgroundImage: {
