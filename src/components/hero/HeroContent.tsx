@@ -37,15 +37,23 @@ const HeroContent = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
           >
-            <span 
-              className="block max-[480px]:text-[1.8rem] text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem] font-bold max-[480px]:mb-3 mb-2 sm:mb-3 leading-[1.15]" 
-              style={{ textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)' }}
+            <span
+              className="block font-bold mb-3 leading-[1.15]"
+              style={{
+                fontSize: 'clamp(1.6rem, 6vw, 3.5rem)',
+                textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
+              }}
             >
               Homemade Aachar & Papad
             </span>
-            <span 
-              className="block max-[480px]:text-[0.9rem] text-base sm:text-xl md:text-2xl lg:text-[2rem] font-handwritten leading-tight" 
-              style={{ color: '#FFE5B4', textShadow: '3px 3px 8px rgba(0,0,0,0.7)', fontWeight: '400' }}
+            <span
+              className="block font-handwritten leading-tight"
+              style={{
+                fontSize: 'clamp(1rem, 3vw, 2rem)',
+                color: '#FFE5B4',
+                textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
+                fontWeight: 400,
+              }}
             >
               — Marwad Maratha
             </span>
@@ -56,9 +64,13 @@ const HeroContent = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
           >
-            <p 
-              className="max-[480px]:mt-4 mt-3 md:mt-4 text-[#f9f1e7] max-[480px]:text-[0.8rem] max-[480px]:leading-[1.5] text-sm sm:text-base md:text-lg max-w-[720px] mx-auto font-medium leading-relaxed md:leading-[1.8]"
-              style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
+            <p
+              className="mt-4 md:mt-5 text-[#f9f1e7] max-w-[720px] mx-auto font-medium"
+              style={{
+                fontSize: 'clamp(1rem, 1.6vw, 1.125rem)',
+                lineHeight: 1.65,
+                textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+              }}
             >
               Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
               prepared with heirloom recipes from the heart of Rajasthan and Maharashtra.
