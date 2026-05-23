@@ -20,14 +20,15 @@ const HeroScrollIndicator = () => {
       </p>
       <motion.button
         onClick={handleScrollDown}
-        animate={{ y: [0, 4, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="cursor-pointer p-2 max-[480px]:min-h-[36px] max-[480px]:min-w-[36px] min-h-[44px] min-w-[44px] flex items-center justify-center"
-        style={{ opacity: 0.6, filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
-        whileHover={{ scale: 1.2, opacity: 1 }}
+        aria-label="Scroll to products"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        className="cursor-pointer rounded-full min-h-[48px] min-w-[48px] flex items-center justify-center border border-white/40 bg-black/20 backdrop-blur-sm"
+        style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
+        whileHover={{ scale: 1.15, backgroundColor: 'rgba(0,0,0,0.4)' }}
         whileTap={{ scale: 0.95 }}
       >
-        <ArrowDown size={16} strokeWidth={2} />
+        <ArrowDown size={22} strokeWidth={2.2} color="white" />
       </motion.button>
     </motion.div>
   );
