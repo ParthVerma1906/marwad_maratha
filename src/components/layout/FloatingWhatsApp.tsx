@@ -13,7 +13,7 @@ const FloatingWhatsApp = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Order on WhatsApp"
-            className="fixed flex items-center justify-center rounded-full transition-transform duration-200 hover:scale-110 focus:scale-110 focus:outline-none"
+            className="hidden md:flex fixed items-center justify-center rounded-full transition-transform duration-200 hover:scale-110 focus:scale-110 focus:outline-none"
             style={{
               bottom: "24px",
               right: "24px",
