@@ -54,13 +54,13 @@ const ProductCard = ({ product }: ProductProps) => {
         onClick={() => setShowDialog(true)}
       >
         <div className="bg-white max-[480px]:rounded-lg rounded-xl overflow-hidden shadow-md relative transition-all h-full indian-border">
-          <div className="max-[480px]:h-44 h-40 sm:h-48 overflow-hidden relative">
+          <div className="relative overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
             <img
               src={imgSrc}
               alt={(product as any).altText || `${product.name} - Marwad Maratha Homemade Pickle`}
               className="w-full h-full object-cover transition-transform group-hover:scale-105"
               width={400}
-              height={300}
+              height={400}
               loading="lazy"
               onError={() => {
                 setImgSrc("/placeholder.svg");
