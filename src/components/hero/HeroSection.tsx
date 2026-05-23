@@ -7,7 +7,7 @@ const HeroSection = () => {
   return (
     <section
       id="home"
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-[90vh] md:h-screen w-full overflow-hidden"
       style={{ zIndex: 1 }}
     >
       <HeroCarousel />
