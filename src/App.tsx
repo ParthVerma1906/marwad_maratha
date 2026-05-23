@@ -12,6 +12,7 @@ import OrderReceived from "./pages/OrderReceived";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
 import FloatingWhatsApp from "./components/layout/FloatingWhatsApp";
+import BottomNav from "./components/layout/BottomNav";
 
 const queryClient = new QueryClient();
 
