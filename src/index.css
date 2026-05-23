@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,22 +88,53 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground font-spicefont;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  @media (min-width: 768px) {
+    body { font-size: 16px; }
   }
 
   h1, h2, h3 {
     @apply font-heritage font-bold;
+    line-height: 1.2;
   }
 
   h4, h5, h6 {
     @apply font-display;
+    line-height: 1.3;
+  }
+
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Reserve space for mobile bottom nav so content/footer doesn't get hidden */
+  @media (max-width: 767px) {
+    body {
+      padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    }
   }
 }
+
 
 @layer components {
   .indian-border {

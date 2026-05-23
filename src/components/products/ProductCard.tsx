@@ -54,13 +54,13 @@ const ProductCard = ({ product }: ProductProps) => {
         onClick={() => setShowDialog(true)}
       >
         <div className="bg-white max-[480px]:rounded-lg rounded-xl overflow-hidden shadow-md relative transition-all h-full indian-border">
-          <div className="max-[480px]:h-44 h-40 sm:h-48 overflow-hidden relative">
+          <div className="relative overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
             <img
               src={imgSrc}
               alt={(product as any).altText || `${product.name} - Marwad Maratha Homemade Pickle`}
               className="w-full h-full object-cover transition-transform group-hover:scale-105"
               width={400}
-              height={300}
+              height={400}
               loading="lazy"
               onError={() => {
                 setImgSrc("/placeholder.svg");
@@ -86,19 +86,20 @@ const ProductCard = ({ product }: ProductProps) => {
               <span className="text-maroon font-bold max-[480px]:text-sm text-sm md:text-base whitespace-nowrap">₹{product.price}</span>
             </div>
 
-            <div className="mt-3 flex justify-between items-center">
+            <div className="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <button
                 onClick={handleAddToCart}
-                className="bg-maroon text-white rounded-full p-2 hover:bg-maroon/90 transition-colors max-[480px]:min-h-[44px] max-[480px]:min-w-[44px] min-h-[40px] min-w-[40px] flex items-center justify-center"
+                className="bg-maroon text-white rounded-full hover:bg-maroon/90 transition-colors min-h-[44px] w-full sm:w-auto sm:min-w-[44px] sm:px-4 flex items-center justify-center gap-2 font-medium text-sm"
               >
                 <Plus size={16} />
+                <span className="sm:hidden">Add to Cart</span>
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowDetails(!showDetails);
                 }}
-                className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                className="text-sm text-muted-foreground underline-offset-4 hover:underline min-h-[44px] sm:min-h-0"
               >
                 {showDetails ? "Hide details" : "View details"}
               </button>
