@@ -107,12 +107,13 @@ const HeroCarousel = () => {
                   <img
                     src={getImageSrc(index)}
                     alt={image.alt}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-[center_top] md:object-center"
                     width={1200}
                     height={800}
                     onLoad={() => handleImageLoad(index)}
                     onError={() => handleImageError(index)}
                     loading="eager"
+                    fetchPriority="high"
                   />
                   
                   {/* Loading indicator */}
