@@ -229,6 +229,14 @@ const OrdersTab = () => {
             </span>
           )}
         </h3>
+        <button
+          onClick={toggleSound}
+          title={soundOn ? "Mute new-order alerts" : "Enable new-order alerts"}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-input bg-white text-xs min-h-[40px] hover:bg-muted"
+        >
+          {soundOn ? <Bell size={14} className="text-maroon" /> : <BellOff size={14} className="text-muted-foreground" />}
+          <span>{soundOn ? "Alerts on" : "Alerts off"}</span>
+        </button>
       </div>
 
       {/* Search + filters */}
