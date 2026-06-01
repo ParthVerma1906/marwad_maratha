@@ -10,6 +10,8 @@ const IDLE_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 hours
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAdminAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialTab = location.pathname.startsWith("/admin/orders") ? "orders" : "products";
 
   // Idle-timeout: sign out after 8h with no activity, redirect to home
   useEffect(() => {
