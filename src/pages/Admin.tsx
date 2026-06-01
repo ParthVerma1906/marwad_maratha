@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import AdminPanel from "@/components/admin/AdminPanel";
@@ -10,6 +10,8 @@ const IDLE_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 hours
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAdminAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialTab = location.pathname.startsWith("/admin/orders") ? "orders" : "products";
 
   // Idle-timeout: sign out after 8h with no activity, redirect to home
   useEffect(() => {
@@ -60,7 +62,7 @@ const Admin = () => {
     return <Navigate to="/admin/login" replace />;
   }
 
-  return <AdminPanel onSignOut={handleSignOut} userEmail={user.email ?? undefined} />;
+  return <AdminPanel onSignOut={handleSignOut} userEmail={user.email ?? undefined} initialTab={initialTab} />;
 };
 
 export default Admin;
