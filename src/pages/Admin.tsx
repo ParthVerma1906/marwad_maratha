@@ -62,7 +62,7 @@ const Admin = () => {
     return <Navigate to="/admin/login" replace />;
   }
 
-  return <AdminPanel onSignOut={handleSignOut} userEmail={user.email ?? undefined} />;
+  return <AdminPanel onSignOut={handleSignOut} userEmail={user.email ?? undefined} initialTab={initialTab} />;
 };
 
 export default Admin;
