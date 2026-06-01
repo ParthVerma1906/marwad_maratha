@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Loader2, Eye, X, CheckCircle2, Search, ShoppingBag, Clock, IndianRupee, CalendarDays } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Loader2, Eye, X, CheckCircle2, Search, ShoppingBag, Clock, IndianRupee, CalendarDays, Bell, BellOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
