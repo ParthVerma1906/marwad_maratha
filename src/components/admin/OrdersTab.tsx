@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Loader2, Eye, X, CheckCircle2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, Eye, X, CheckCircle2, Search, ShoppingBag, Clock, IndianRupee, CalendarDays } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -21,7 +21,16 @@ interface OrderRow {
   created_at: string;
 }
 
+// DB values kept as-is; UI labels mapped below
 const ORDER_STATUSES = ["new", "confirmed", "processing", "shipped", "delivered", "cancelled"];
+const STATUS_LABEL: Record<string, string> = {
+  new: "Pending",
+  confirmed: "Confirmed",
+  processing: "Packed",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+};
 const PAYMENT_STATUSES = ["pending", "paid"];
 
 const statusBadge: Record<string, string> = {
@@ -33,11 +42,18 @@ const statusBadge: Record<string, string> = {
   cancelled: "bg-red-100 text-red-700",
 };
 
+const isToday = (iso: string) => {
+  const d = new Date(iso);
+  const n = new Date();
+  return d.getDate() === n.getDate() && d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+};
+
 const OrdersTab = () => {
   const { toast } = useToast();
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>("all");
+  const [filter, setFilter] = useState<"all" | "today" | "pending" | "delivered" | string>("all");
+  const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<OrderRow | null>(null);
 
   const load = async () => {
@@ -56,6 +72,22 @@ const OrdersTab = () => {
 
   useEffect(() => {
     load();
+    // Realtime: new orders appear immediately
+    const channel = supabase
+      .channel("orders-admin")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, (payload) => {
+        if (payload.eventType === "INSERT") {
+          setOrders((os) => [payload.new as OrderRow, ...os]);
+        } else if (payload.eventType === "UPDATE") {
+          setOrders((os) => os.map((o) => (o.id === (payload.new as any).id ? (payload.new as OrderRow) : o)));
+        } else if (payload.eventType === "DELETE") {
+          setOrders((os) => os.filter((o) => o.id !== (payload.old as any).id));
+        }
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateField = async (id: string, field: "order_status" | "payment_status", value: string) => {
@@ -69,31 +101,96 @@ const OrdersTab = () => {
     }
   };
 
-  const filtered = filter === "all" ? orders : orders.filter((o) => o.order_status === filter);
+  const stats = useMemo(() => {
+    const pending = orders.filter((o) => !["delivered", "cancelled"].includes(o.order_status));
+    const revenue = orders
+      .filter((o) => o.order_status !== "cancelled")
+      .reduce((s, o) => s + Number(o.total_amount || 0), 0);
+    const today = orders.filter((o) => isToday(o.created_at));
+    return { total: orders.length, pending: pending.length, revenue, today: today.length };
+  }, [orders]);
+
+  const filtered = useMemo(() => {
+    let list = orders;
+    if (filter === "today") list = list.filter((o) => isToday(o.created_at));
+    else if (filter === "pending") list = list.filter((o) => !["delivered", "cancelled"].includes(o.order_status));
+    else if (filter === "delivered") list = list.filter((o) => o.order_status === "delivered");
+    else if (filter !== "all") list = list.filter((o) => o.order_status === filter);
+
+    const q = search.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (o) =>
+          o.order_number.toLowerCase().includes(q) ||
+          o.customer_name.toLowerCase().includes(q) ||
+          o.phone.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [orders, filter, search]);
+
   const newCount = orders.filter((o) => o.order_status === "new").length;
+
+  const StatCard = ({ icon: Icon, label, value, tint }: any) => (
+    <div className="bg-white border border-muted rounded-xl p-3 sm:p-4 flex items-center gap-3">
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${tint}`}>
+        <Icon size={18} />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[11px] sm:text-xs text-muted-foreground">{label}</p>
+        <p className="text-base sm:text-lg font-bold truncate">{value}</p>
+      </div>
+    </div>
+  );
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+      {/* Dashboard stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        <StatCard icon={ShoppingBag} label="Total Orders" value={stats.total} tint="bg-blue-50 text-blue-700" />
+        <StatCard icon={Clock} label="Pending Orders" value={stats.pending} tint="bg-amber-50 text-amber-700" />
+        <StatCard icon={IndianRupee} label="Revenue" value={`₹${stats.revenue.toLocaleString("en-IN")}`} tint="bg-green-50 text-green-700" />
+        <StatCard icon={CalendarDays} label="Orders Today" value={stats.today} tint="bg-purple-50 text-purple-700" />
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <h3 className="text-xl font-heritage font-bold">
-          Orders ({orders.length})
+          Orders ({filtered.length})
           {newCount > 0 && (
             <span className="ml-2 inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full bg-red-600 text-white text-xs">
               {newCount} new
             </span>
           )}
         </h3>
+      </div>
+
+      {/* Search + filters */}
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by Order ID, name, or phone"
+            className="w-full pl-9 pr-3 py-2 border border-input rounded-lg text-sm bg-white min-h-[44px]"
+          />
+        </div>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="px-3 py-2 border border-input rounded-lg text-sm bg-white min-h-[40px]"
+          className="px-3 py-2 border border-input rounded-lg text-sm bg-white min-h-[44px]"
         >
-          <option value="all">All statuses</option>
-          {ORDER_STATUSES.map((s) => (
-            <option key={s} value={s} className="capitalize">
-              {s}
-            </option>
-          ))}
+          <option value="all">All orders</option>
+          <option value="today">Today's orders</option>
+          <option value="pending">Pending orders</option>
+          <option value="delivered">Delivered orders</option>
+          <optgroup label="By status">
+            {ORDER_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {STATUS_LABEL[s]}
+              </option>
+            ))}
+          </optgroup>
         </select>
       </div>
 
@@ -102,7 +199,7 @@ const OrdersTab = () => {
           <Loader2 className="animate-spin text-maroon" size={28} />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">No orders here yet.</div>
+        <div className="text-center py-12 text-muted-foreground">No orders match your filters.</div>
       ) : (
         <>
           {/* Desktop */}
@@ -151,15 +248,17 @@ const OrdersTab = () => {
                       >
                         {ORDER_STATUSES.map((s) => (
                           <option key={s} value={s}>
-                            {s}
+                            {STATUS_LABEL[s]}
                           </option>
                         ))}
                       </select>
                     </td>
-                    <td className="p-3 text-xs text-muted-foreground">
-                      {new Date(o.created_at).toLocaleDateString("en-IN", {
+                    <td className="p-3 text-xs text-muted-foreground whitespace-nowrap">
+                      {new Date(o.created_at).toLocaleString("en-IN", {
                         day: "2-digit",
                         month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
                     </td>
                     <td className="p-3">
@@ -190,15 +289,15 @@ const OrdersTab = () => {
           {/* Mobile */}
           <div className="md:hidden space-y-3">
             {filtered.map((o) => (
-              <div key={o.id} className="bg-white border border-muted rounded-lg p-3">
+              <div key={o.id} className="bg-white border border-muted rounded-lg p-3" onClick={() => setSelected(o)}>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
                     <p className="font-mono text-xs text-muted-foreground">{o.order_number}</p>
                     <p className="font-medium text-sm">{o.customer_name}</p>
                     <p className="text-xs text-muted-foreground">{o.phone}</p>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[10px] capitalize ${statusBadge[o.order_status] ?? "bg-gray-100"}`}>
-                    {o.order_status}
+                  <span className={`px-2 py-0.5 rounded text-[10px] ${statusBadge[o.order_status] ?? "bg-gray-100"}`}>
+                    {STATUS_LABEL[o.order_status] ?? o.order_status}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm mb-2">
@@ -207,22 +306,22 @@ const OrdersTab = () => {
                     {o.payment_method} · {o.payment_status}
                   </span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                   <select
                     value={o.order_status}
                     onChange={(e) => updateField(o.id, "order_status", e.target.value)}
-                    className="flex-1 px-2 py-1.5 border border-input rounded text-xs bg-white min-h-[36px]"
+                    className="flex-1 px-2 py-1.5 border border-input rounded text-xs bg-white min-h-[44px]"
                   >
                     {ORDER_STATUSES.map((s) => (
                       <option key={s} value={s}>
-                        {s}
+                        {STATUS_LABEL[s]}
                       </option>
                     ))}
                   </select>
                   <select
                     value={o.payment_status}
                     onChange={(e) => updateField(o.id, "payment_status", e.target.value)}
-                    className="flex-1 px-2 py-1.5 border border-input rounded text-xs bg-white min-h-[36px]"
+                    className="flex-1 px-2 py-1.5 border border-input rounded text-xs bg-white min-h-[44px]"
                   >
                     {PAYMENT_STATUSES.map((s) => (
                       <option key={s} value={s}>
@@ -230,22 +329,7 @@ const OrdersTab = () => {
                       </option>
                     ))}
                   </select>
-                  <button
-                    onClick={() => setSelected(o)}
-                    className="px-3 py-1.5 border border-input rounded text-xs min-h-[36px]"
-                  >
-                    View
-                  </button>
                 </div>
-                {o.payment_method === "UPI" && o.payment_status === "pending" && (
-                  <button
-                    onClick={() => updateField(o.id, "payment_status", "paid")}
-                    className="mt-2 w-full py-2 rounded text-xs font-medium bg-green-600 text-white min-h-[40px] flex items-center justify-center gap-1.5"
-                  >
-                    <CheckCircle2 size={14} />
-                    Mark Payment Received
-                  </button>
-                )}
               </div>
             ))}
           </div>
@@ -267,6 +351,9 @@ const OrdersTab = () => {
                 <div>
                   <p className="font-mono text-xs text-muted-foreground">{selected.order_number}</p>
                   <h3 className="text-lg font-heritage font-bold">{selected.customer_name}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {new Date(selected.created_at).toLocaleString("en-IN")}
+                  </p>
                 </div>
                 <button onClick={() => setSelected(null)} className="p-2 hover:bg-muted rounded">
                   <X size={18} />
@@ -286,6 +373,16 @@ const OrdersTab = () => {
                   <span className="text-muted-foreground">Address:</span> {selected.address}
                   {selected.city && `, ${selected.city}`}
                   {selected.pincode && ` - ${selected.pincode}`}
+                </p>
+                <p>
+                  <span className="text-muted-foreground">Payment:</span> {selected.payment_method} ·{" "}
+                  <span className="capitalize">{selected.payment_status}</span>
+                </p>
+                <p>
+                  <span className="text-muted-foreground">Status:</span>{" "}
+                  <span className={`px-2 py-0.5 rounded text-xs ${statusBadge[selected.order_status] ?? "bg-gray-100"}`}>
+                    {STATUS_LABEL[selected.order_status] ?? selected.order_status}
+                  </span>
                 </p>
                 {selected.notes && (
                   <p>
@@ -309,9 +406,34 @@ const OrdersTab = () => {
                 </div>
               </div>
 
-              <div className="border-t border-muted pt-3 flex justify-between font-bold">
+              <div className="border-t border-muted pt-3 flex justify-between font-bold mb-4">
                 <span>Total</span>
                 <span>₹{selected.total_amount}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <select
+                  value={selected.order_status}
+                  onChange={(e) => updateField(selected.id, "order_status", e.target.value)}
+                  className="px-2 py-2 border border-input rounded text-sm bg-white min-h-[44px]"
+                >
+                  {ORDER_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {STATUS_LABEL[s]}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={selected.payment_status}
+                  onChange={(e) => updateField(selected.id, "payment_status", e.target.value)}
+                  className="px-2 py-2 border border-input rounded text-sm bg-white min-h-[44px]"
+                >
+                  {PAYMENT_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
