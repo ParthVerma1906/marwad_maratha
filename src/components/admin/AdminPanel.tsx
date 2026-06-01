@@ -10,10 +10,11 @@ import SettingsTab from "./SettingsTab";
 interface AdminPanelProps {
   onSignOut: () => void;
   userEmail?: string;
+  initialTab?: string;
 }
 
-const AdminPanel = ({ onSignOut, userEmail }: AdminPanelProps) => {
-  const [activeTab, setActiveTab] = useState("products");
+const AdminPanel = ({ onSignOut, userEmail, initialTab = "products" }: AdminPanelProps) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
