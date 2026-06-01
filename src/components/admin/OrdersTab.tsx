@@ -55,6 +55,45 @@ const OrdersTab = () => {
   const [filter, setFilter] = useState<"all" | "today" | "pending" | "delivered" | string>("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<OrderRow | null>(null);
+  const [soundOn, setSoundOn] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("adminOrderSound") !== "off";
+  });
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const initialLoadDone = useRef(false);
+
+  // Beep WAV (short, ~0.25s) embedded as data URI — no external asset needed
+  const BEEP_SRC =
+    "data:audio/wav;base64,UklGRiQEAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAEAAAAAP8DBwgKDA4QExUXGRwcHB0eHx8eHRsZFhMQDQkFAfz39e/q5d/a1tHNyMTBvru5t7a1tba2t7m6vL/Cxc7P0tXY3uDk6Ovw9PYAAQQHCgsODxESExUWFxgZGRoaGhkXFhUTERAODAoIBgUDAQH+/Pv6+ff39vb19fT09PT09fb29/j5+vv8/v8AAQIDBQYHCAkKCwwNDg8QERESExMTFBMTEhEQEA8ODg0NDAwLCwoKCQkICAcGBQQDAgEA///+/v39/f39/Pz8/Pz8/P3+/v//AAEDBAUGBwgJCgsMDQ4PEBESExMUFBQVFRUUFBMSEhEREBAPDg4NDQwLCwoKCQkICAcHBgYFBQQEBAMDAwIDAwMDAwMDAwQEBAQFBQUGBgcHBwgICQkJCQkKCgoKCgoJCQkICAgHBwYGBQUEBAMDAgIBAQAA";
+
+  const playBeep = () => {
+    if (!soundOn) return;
+    try {
+      if (!audioRef.current) audioRef.current = new Audio(BEEP_SRC);
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {});
+    } catch {}
+  };
+
+  const notifyBrowser = (title: string, body: string) => {
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      try {
+        new Notification(title, { body, icon: "/images/logo.png", tag: title });
+      } catch {}
+    }
+  };
+
+  const toggleSound = () => {
+    setSoundOn((v) => {
+      const next = !v;
+      localStorage.setItem("adminOrderSound", next ? "on" : "off");
+      if (next && typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission().catch(() => {});
+      }
+      return next;
+    });
+  };
 
   const load = async () => {
     setLoading(true);
@@ -68,18 +107,45 @@ const OrdersTab = () => {
       setOrders((data ?? []) as OrderRow[]);
     }
     setLoading(false);
+    initialLoadDone.current = true;
   };
 
   useEffect(() => {
     load();
-    // Realtime: new orders appear immediately
+    // Ask for browser notification permission once on mount (non-blocking)
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().catch(() => {});
+    }
+    // Realtime: new orders + status changes appear immediately
     const channel = supabase
       .channel("orders-admin")
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, (payload) => {
         if (payload.eventType === "INSERT") {
-          setOrders((os) => [payload.new as OrderRow, ...os]);
+          const o = payload.new as OrderRow;
+          setOrders((os) => (os.some((x) => x.id === o.id) ? os : [o, ...os]));
+          if (initialLoadDone.current) {
+            playBeep();
+            toast({
+              title: "🛎️ New order received",
+              description: `${o.customer_name} · ₹${o.total_amount} · ${o.order_number}`,
+            });
+            notifyBrowser("New order received", `${o.customer_name} • ₹${o.total_amount} • ${o.order_number}`);
+          }
         } else if (payload.eventType === "UPDATE") {
-          setOrders((os) => os.map((o) => (o.id === (payload.new as any).id ? (payload.new as OrderRow) : o)));
+          const next = payload.new as OrderRow;
+          const prev = payload.old as Partial<OrderRow>;
+          setOrders((os) => os.map((o) => (o.id === next.id ? next : o)));
+          if (initialLoadDone.current && prev?.payment_status && prev.payment_status !== next.payment_status) {
+            playBeep();
+            toast({
+              title: next.payment_status === "paid" ? "💰 Payment received" : "Payment status changed",
+              description: `${next.customer_name} · ${next.order_number} · ${prev.payment_status} → ${next.payment_status}`,
+            });
+            notifyBrowser(
+              next.payment_status === "paid" ? "Payment received" : "Payment status changed",
+              `${next.customer_name} • ${next.order_number} • ${next.payment_status}`
+            );
+          }
         } else if (payload.eventType === "DELETE") {
           setOrders((os) => os.filter((o) => o.id !== (payload.old as any).id));
         }
@@ -88,6 +154,7 @@ const OrdersTab = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateField = async (id: string, field: "order_status" | "payment_status", value: string) => {
