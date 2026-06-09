@@ -167,12 +167,20 @@ const OrdersTab = () => {
   }, []);
 
   const updateField = async (id: string, field: "order_status" | "payment_status", value: string) => {
-    const { error } = await supabase.from("orders").update({ [field]: value }).eq("id", id);
+    const patch: Record<string, any> = { [field]: value };
+    if (field === "payment_status" && value === "paid") {
+      patch.verified_at = new Date().toISOString();
+      patch.verified_by = "admin";
+      // Auto-advance to confirmed if still new/pending
+      const cur = orders.find((o) => o.id === id);
+      if (cur && cur.order_status === "new") patch.order_status = "confirmed";
+    }
+    const { error } = await supabase.from("orders").update(patch).eq("id", id);
     if (error) {
       toast({ variant: "destructive", title: "Update failed", description: error.message });
     } else {
-      setOrders((os) => os.map((o) => (o.id === id ? { ...o, [field]: value } : o)));
-      if (selected?.id === id) setSelected({ ...selected, [field]: value } as OrderRow);
+      setOrders((os) => os.map((o) => (o.id === id ? { ...o, ...patch } : o)));
+      if (selected?.id === id) setSelected({ ...selected, ...patch } as OrderRow);
       toast({ title: "Order updated" });
     }
   };
