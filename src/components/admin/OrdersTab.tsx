@@ -431,9 +431,12 @@ const OrdersTab = () => {
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="font-bold">₹{o.total_amount}</span>
                   <span className="text-xs text-muted-foreground">
-                    {o.payment_method} · {o.payment_status}
+                    {o.payment_method} · {PAYMENT_LABEL[o.payment_status] ?? o.payment_status}
                   </span>
                 </div>
+                {o.payment_reference && (
+                  <p className="text-[10px] font-mono text-muted-foreground mb-2">UTR: {o.payment_reference}</p>
+                )}
                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                   <select
                     value={o.order_status}
