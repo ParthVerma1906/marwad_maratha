@@ -199,6 +199,7 @@ const OrdersTab = () => {
     if (filter === "today") list = list.filter((o) => isToday(o.created_at));
     else if (filter === "pending") list = list.filter((o) => !["delivered", "cancelled"].includes(o.order_status));
     else if (filter === "delivered") list = list.filter((o) => o.order_status === "delivered");
+    else if (filter === "awaiting") list = list.filter((o) => o.payment_status === "awaiting_verification");
     else if (filter !== "all") list = list.filter((o) => o.order_status === filter);
 
     const q = search.trim().toLowerCase();
@@ -207,11 +208,14 @@ const OrdersTab = () => {
         (o) =>
           o.order_number.toLowerCase().includes(q) ||
           o.customer_name.toLowerCase().includes(q) ||
-          o.phone.toLowerCase().includes(q)
+          o.phone.toLowerCase().includes(q) ||
+          (o.payment_reference?.toLowerCase().includes(q) ?? false)
       );
     }
     return list;
   }, [orders, filter, search]);
+
+  const awaitingCount = orders.filter((o) => o.payment_status === "awaiting_verification").length;
 
   const newCount = orders.filter((o) => o.order_status === "new").length;
 
