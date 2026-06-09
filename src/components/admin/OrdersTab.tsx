@@ -597,7 +597,7 @@ const OrdersTab = () => {
                 >
                   {PAYMENT_STATUSES.map((s) => (
                     <option key={s} value={s}>
-                      {s}
+                      {PAYMENT_LABEL[s]}
                     </option>
                   ))}
                 </select>
