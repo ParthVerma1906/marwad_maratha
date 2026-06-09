@@ -18,6 +18,9 @@ interface OrderRow {
   payment_status: string;
   order_status: string;
   notes: string | null;
+  payment_reference: string | null;
+  verified_at: string | null;
+  verified_by: string | null;
   created_at: string;
 }
 
@@ -31,7 +34,13 @@ const STATUS_LABEL: Record<string, string> = {
   delivered: "Delivered",
   cancelled: "Cancelled",
 };
-const PAYMENT_STATUSES = ["pending", "paid"];
+const PAYMENT_STATUSES = ["pending", "awaiting_verification", "paid", "failed"];
+const PAYMENT_LABEL: Record<string, string> = {
+  pending: "Pending",
+  awaiting_verification: "Awaiting Verification",
+  paid: "Paid",
+  failed: "Failed",
+};
 
 const statusBadge: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
@@ -137,14 +146,20 @@ const OrdersTab = () => {
           setOrders((os) => os.map((o) => (o.id === next.id ? next : o)));
           if (initialLoadDone.current && prev?.payment_status && prev.payment_status !== next.payment_status) {
             playBeep();
+            const isAwaiting = next.payment_status === "awaiting_verification";
+            const title =
+              next.payment_status === "paid"
+                ? "💰 Payment received"
+                : isAwaiting
+                ? "🔔 UTR submitted — verify"
+                : "Payment status changed";
             toast({
-              title: next.payment_status === "paid" ? "💰 Payment received" : "Payment status changed",
-              description: `${next.customer_name} · ${next.order_number} · ${prev.payment_status} → ${next.payment_status}`,
+              title,
+              description: `${next.customer_name} · ${next.order_number}${
+                isAwaiting && next.payment_reference ? ` · UTR ${next.payment_reference}` : ""
+              }`,
             });
-            notifyBrowser(
-              next.payment_status === "paid" ? "Payment received" : "Payment status changed",
-              `${next.customer_name} • ${next.order_number} • ${next.payment_status}`
-            );
+            notifyBrowser(title, `${next.customer_name} • ${next.order_number}`);
           }
         } else if (payload.eventType === "DELETE") {
           setOrders((os) => os.filter((o) => o.id !== (payload.old as any).id));
@@ -158,12 +173,20 @@ const OrdersTab = () => {
   }, []);
 
   const updateField = async (id: string, field: "order_status" | "payment_status", value: string) => {
-    const { error } = await supabase.from("orders").update({ [field]: value }).eq("id", id);
+    const patch: Record<string, any> = { [field]: value };
+    if (field === "payment_status" && value === "paid") {
+      patch.verified_at = new Date().toISOString();
+      patch.verified_by = "admin";
+      // Auto-advance to confirmed if still new/pending
+      const cur = orders.find((o) => o.id === id);
+      if (cur && cur.order_status === "new") patch.order_status = "confirmed";
+    }
+    const { error } = await supabase.from("orders").update(patch).eq("id", id);
     if (error) {
       toast({ variant: "destructive", title: "Update failed", description: error.message });
     } else {
-      setOrders((os) => os.map((o) => (o.id === id ? { ...o, [field]: value } : o)));
-      if (selected?.id === id) setSelected({ ...selected, [field]: value } as OrderRow);
+      setOrders((os) => os.map((o) => (o.id === id ? { ...o, ...patch } : o)));
+      if (selected?.id === id) setSelected({ ...selected, ...patch } as OrderRow);
       toast({ title: "Order updated" });
     }
   };
@@ -182,6 +205,7 @@ const OrdersTab = () => {
     if (filter === "today") list = list.filter((o) => isToday(o.created_at));
     else if (filter === "pending") list = list.filter((o) => !["delivered", "cancelled"].includes(o.order_status));
     else if (filter === "delivered") list = list.filter((o) => o.order_status === "delivered");
+    else if (filter === "awaiting") list = list.filter((o) => o.payment_status === "awaiting_verification");
     else if (filter !== "all") list = list.filter((o) => o.order_status === filter);
 
     const q = search.trim().toLowerCase();
@@ -190,12 +214,14 @@ const OrdersTab = () => {
         (o) =>
           o.order_number.toLowerCase().includes(q) ||
           o.customer_name.toLowerCase().includes(q) ||
-          o.phone.toLowerCase().includes(q)
+          o.phone.toLowerCase().includes(q) ||
+          (o.payment_reference?.toLowerCase().includes(q) ?? false)
       );
     }
     return list;
   }, [orders, filter, search]);
 
+  const awaitingCount = orders.filter((o) => o.payment_status === "awaiting_verification").length;
   const newCount = orders.filter((o) => o.order_status === "new").length;
 
   const StatCard = ({ icon: Icon, label, value, tint }: any) => (
@@ -228,6 +254,15 @@ const OrdersTab = () => {
               {newCount} new
             </span>
           )}
+          {awaitingCount > 0 && (
+            <button
+              onClick={() => setFilter("awaiting")}
+              className="ml-2 inline-flex items-center justify-center min-w-[22px] h-[22px] px-2 rounded-full bg-amber-500 text-white text-xs"
+              title="Filter to awaiting verification"
+            >
+              {awaitingCount} to verify
+            </button>
+          )}
         </h3>
         <button
           onClick={toggleSound}
@@ -258,6 +293,7 @@ const OrdersTab = () => {
           <option value="all">All orders</option>
           <option value="today">Today's orders</option>
           <option value="pending">Pending orders</option>
+          <option value="awaiting">Awaiting verification</option>
           <option value="delivered">Delivered orders</option>
           <optgroup label="By status">
             {ORDER_STATUSES.map((s) => (
@@ -305,14 +341,25 @@ const OrdersTab = () => {
                         <select
                           value={o.payment_status}
                           onChange={(e) => updateField(o.id, "payment_status", e.target.value)}
-                          className="px-2 py-1 border border-input rounded text-xs bg-white"
+                          className={`px-2 py-1 border rounded text-xs ${
+                            o.payment_status === "awaiting_verification"
+                              ? "bg-amber-50 text-amber-800 border-amber-300"
+                              : o.payment_status === "paid"
+                              ? "bg-green-50 text-green-800 border-green-300"
+                              : "bg-white border-input"
+                          }`}
                         >
                           {PAYMENT_STATUSES.map((s) => (
                             <option key={s} value={s}>
-                              {s}
+                              {PAYMENT_LABEL[s]}
                             </option>
                           ))}
                         </select>
+                        {o.payment_reference && (
+                          <span className="font-mono text-[10px] text-muted-foreground" title="Customer UTR">
+                            UTR: {o.payment_reference}
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="p-3">
@@ -338,15 +385,27 @@ const OrdersTab = () => {
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-1">
-                        {o.payment_method === "UPI" && o.payment_status === "pending" && (
-                          <button
-                            onClick={() => updateField(o.id, "payment_status", "paid")}
-                            title="Mark Paid"
-                            className="p-2 rounded bg-green-50 text-green-700 hover:bg-green-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                          >
-                            <CheckCircle2 size={16} />
-                          </button>
-                        )}
+                        {o.payment_method === "UPI" &&
+                          ["pending", "awaiting_verification"].includes(o.payment_status) && (
+                            <>
+                              <button
+                                onClick={() => updateField(o.id, "payment_status", "paid")}
+                                title="Mark Paid"
+                                className="p-2 rounded bg-green-50 text-green-700 hover:bg-green-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                              >
+                                <CheckCircle2 size={16} />
+                              </button>
+                              {o.payment_status === "awaiting_verification" && (
+                                <button
+                                  onClick={() => updateField(o.id, "payment_status", "failed")}
+                                  title="Reject Payment"
+                                  className="p-2 rounded bg-red-50 text-red-700 hover:bg-red-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                                >
+                                  <X size={16} />
+                                </button>
+                              )}
+                            </>
+                          )}
                         <button
                           onClick={() => setSelected(o)}
                           className="p-2 hover:bg-muted rounded min-h-[40px] min-w-[40px] flex items-center justify-center"
@@ -378,9 +437,12 @@ const OrdersTab = () => {
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="font-bold">₹{o.total_amount}</span>
                   <span className="text-xs text-muted-foreground">
-                    {o.payment_method} · {o.payment_status}
+                    {o.payment_method} · {PAYMENT_LABEL[o.payment_status] ?? o.payment_status}
                   </span>
                 </div>
+                {o.payment_reference && (
+                  <p className="text-[10px] font-mono text-muted-foreground mb-2">UTR: {o.payment_reference}</p>
+                )}
                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                   <select
                     value={o.order_status}
@@ -400,7 +462,7 @@ const OrdersTab = () => {
                   >
                     {PAYMENT_STATUSES.map((s) => (
                       <option key={s} value={s}>
-                        {s}
+                        {PAYMENT_LABEL[s]}
                       </option>
                     ))}
                   </select>
@@ -451,8 +513,20 @@ const OrdersTab = () => {
                 </p>
                 <p>
                   <span className="text-muted-foreground">Payment:</span> {selected.payment_method} ·{" "}
-                  <span className="capitalize">{selected.payment_status}</span>
+                  <span className="capitalize">{PAYMENT_LABEL[selected.payment_status] ?? selected.payment_status}</span>
                 </p>
+                {selected.payment_reference && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+                    <p className="text-[11px] uppercase tracking-wide text-amber-800 font-semibold">Customer UTR</p>
+                    <p className="font-mono text-sm text-amber-900">{selected.payment_reference}</p>
+                  </div>
+                )}
+                {selected.verified_at && (
+                  <p className="text-xs text-green-700">
+                    ✓ Verified {new Date(selected.verified_at).toLocaleString("en-IN")}
+                    {selected.verified_by && ` by ${selected.verified_by}`}
+                  </p>
+                )}
                 <p>
                   <span className="text-muted-foreground">Status:</span>{" "}
                   <span className={`px-2 py-0.5 rounded text-xs ${statusBadge[selected.order_status] ?? "bg-gray-100"}`}>
@@ -465,6 +539,24 @@ const OrdersTab = () => {
                   </p>
                 )}
               </div>
+
+              {selected.payment_method === "UPI" &&
+                ["pending", "awaiting_verification"].includes(selected.payment_status) && (
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      onClick={() => updateField(selected.id, "payment_status", "paid")}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 min-h-[44px]"
+                    >
+                      <CheckCircle2 size={16} /> Mark Paid
+                    </button>
+                    <button
+                      onClick={() => updateField(selected.id, "payment_status", "failed")}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border border-red-300 text-red-700 text-sm font-medium hover:bg-red-50 min-h-[44px]"
+                    >
+                      <X size={16} /> Reject
+                    </button>
+                  </div>
+                )}
 
               <div className="border-t border-muted pt-3 mb-3">
                 <p className="text-sm font-medium mb-2">Items</p>
@@ -505,7 +597,7 @@ const OrdersTab = () => {
                 >
                   {PAYMENT_STATUSES.map((s) => (
                     <option key={s} value={s}>
-                      {s}
+                      {PAYMENT_LABEL[s]}
                     </option>
                   ))}
                 </select>

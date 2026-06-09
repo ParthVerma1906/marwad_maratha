@@ -26,11 +26,14 @@ export type Database = {
           order_number: string
           order_status: string
           payment_method: string
+          payment_reference: string | null
           payment_status: string
           phone: string
           pincode: string | null
           total_amount: number
           updated_at: string
+          verified_at: string | null
+          verified_by: string | null
           whatsapp: string | null
         }
         Insert: {
@@ -44,11 +47,14 @@ export type Database = {
           order_number: string
           order_status?: string
           payment_method?: string
+          payment_reference?: string | null
           payment_status?: string
           phone: string
           pincode?: string | null
           total_amount: number
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
           whatsapp?: string | null
         }
         Update: {
@@ -62,11 +68,14 @@ export type Database = {
           order_number?: string
           order_status?: string
           payment_method?: string
+          payment_reference?: string | null
           payment_status?: string
           phone?: string
           pincode?: string | null
           total_amount?: number
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
           whatsapp?: string | null
         }
         Relationships: []
@@ -229,6 +238,7 @@ export type Database = {
           order_number: string | null
           order_status: string | null
           payment_method: string | null
+          payment_reference: string | null
           payment_status: string | null
           total_amount: number | null
         }
@@ -237,6 +247,7 @@ export type Database = {
           order_number?: string | null
           order_status?: string | null
           payment_method?: string | null
+          payment_reference?: string | null
           payment_status?: string | null
           total_amount?: number | null
         }
@@ -245,6 +256,7 @@ export type Database = {
           order_number?: string | null
           order_status?: string | null
           payment_method?: string | null
+          payment_reference?: string | null
           payment_status?: string | null
           total_amount?: number | null
         }
@@ -273,6 +285,10 @@ export type Database = {
           _whatsapp: string
         }
         Returns: string
+      }
+      submit_payment_reference: {
+        Args: { _order_number: string; _utr: string }
+        Returns: boolean
       }
     }
     Enums: {

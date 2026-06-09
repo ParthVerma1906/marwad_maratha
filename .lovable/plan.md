@@ -1,31 +1,51 @@
-## Problem
+## Plan: Stronger manual UPI confirmation (keep current flow, no payment gateway)
 
-Checkout shows "Could not place order" even though the order insert is permitted. Root cause: the `orders` table RLS allows anonymous customers to `INSERT` but only admins to `SELECT`. The client calls `.insert(...).select("order_number").single()` — PostgREST tries to return the inserted row, RLS blocks the SELECT, the response comes back empty, and the code treats it as a failure (and the row is rolled back).
+You confirmed: stay on the manual UPI → WhatsApp/admin flow (matches the project memory rule). No PhonePe, Razorpay, or card portal will be added. Goal: make admin confirmation faster, less error-prone, and give the customer real-time visibility — without integrating any fintech gateway.
 
-## Fix
+### What changes
 
-1. **Database migration** — add an RLS policy that lets the inserter read back only the row they just created, so the `RETURNING` clause works for anonymous checkouts without exposing all orders to the public.
+1. **Order Success page — customer payment confirmation**
+   - Show a copyable UPI ID, amount, and order number prominently.
+   - Add an "I have paid — submit UTR / transaction ID" form (12-digit UTR validation).
+   - On submit, call a new `submit_payment_reference(order_number, utr)` RPC that writes to `orders.payment_reference` and sets `payment_status = 'awaiting_verification'`.
+   - Show a status badge that live-updates via Supabase Realtime (pending → awaiting_verification → confirmed).
 
-   ```sql
-   CREATE POLICY "Anyone can read their just-inserted order"
-   ON public.orders FOR SELECT
-   TO anon, authenticated
-   USING (false);
-   ```
+2. **Admin OrdersTab — one-click verify**
+   - New filter chip: **"Awaiting Verification"** (orders where customer submitted UTR).
+   - In the order detail drawer: show submitted UTR, "Mark Paid" and "Reject Payment" buttons.
+   - "Mark Paid" → sets `payment_status = 'paid'`, `order_status = 'confirmed'`, records `verified_at` + `verified_by`.
+   - "Reject Payment" → resets `payment_status = 'pending'`, adds an admin note, triggers a WhatsApp template link to ping the customer.
 
-   Since `USING (false)` would still block, the correct approach is to keep SELECT admin-only and instead **generate the order number client-side OR use a SECURITY DEFINER RPC**. Cleanest option: create a `place_order` SQL function (SECURITY DEFINER) that inserts the order and returns the `order_number`. The client calls `supabase.rpc('place_order', {...})` instead of `.from('orders').insert(...).select()`.
+3. **Telegram bot — verify from phone**
+   - Extend existing `notify-owner-order` payload to include inline buttons: **✅ Mark Paid**, **❌ Reject**, **📞 Call customer**.
+   - Existing `telegram-poll` function handles the callback and updates the same fields as the admin UI. (Infra already there — `telegram_processed_callbacks` table exists.)
 
-2. **Client change in `src/pages/Checkout.tsx`** — replace the direct `.from('orders').insert(...).select().single()` call with `supabase.rpc('place_order', { ... })`, which returns the generated `order_number` without needing SELECT permission on the table.
+4. **Checkout — better mobile UPI handoff**
+   - Mobile: keep the `upi://` deep link but also show a fallback "Open in PhonePe / GPay / Paytm" button list (just `upi://` — each app intercepts it).
+   - Desktop: show UPI QR code (generated client-side with `qrcode` lib, no API) + UPI ID, since `upi://` doesn't work on desktop.
+   - Remove the blank-tab `window.open(upi://)` issue by navigating to Order Success first, then on mobile triggering the deep link via `window.location.href` after a short delay.
 
-3. Keep all existing admin SELECT/UPDATE policies untouched so customers still cannot read other orders.
+5. **Database**
+   - Add columns to `orders`: `payment_reference text`, `verified_at timestamptz`, `verified_by text`.
+   - New RPC `submit_payment_reference(_order_number text, _utr text)` — `SECURITY DEFINER`, `anon` callable, validates 12-digit UTR, only updates rows where `payment_status IN ('pending','awaiting_verification')`.
+   - Extend `payment_status` allowed values to include `awaiting_verification`.
 
-## Why an RPC instead of loosening SELECT
+### Files to touch
 
-Granting `anon` SELECT on `orders` — even narrowly — risks exposing customer PII (names, phones, addresses) through the Data API. A SECURITY DEFINER function keeps the table locked down and only returns the single field the checkout needs.
+- New migration: columns + RPC + check constraint update
+- `src/pages/Checkout.tsx` — mobile/desktop UPI handoff fix + navigate-first
+- `src/pages/OrderSuccess.tsx` — UTR submit form, QR code, Realtime status badge
+- `src/components/admin/OrdersTab.tsx` — "Awaiting Verification" filter + verify buttons
+- `supabase/functions/notify-owner-order/index.ts` — add inline keyboard buttons
+- `supabase/functions/telegram-poll/index.ts` — handle Verify/Reject callbacks
+- New dep: `qrcode.react` for the desktop QR
 
-## Files touched
+### Out of scope
 
-- New migration: create `public.place_order(...)` function with `SECURITY DEFINER`, granted to `anon` and `authenticated`.
-- `src/pages/Checkout.tsx`: swap the insert block (lines ~143–178) for an `rpc('place_order', …)` call; keep the rest of the flow (Telegram notify, sessionStorage, UPI link, navigate) the same.
+- No PhonePe / Razorpay / Stripe / Paddle integration.
+- No automatic UPI reconciliation (would need a payment gateway or bank API access).
+- No card payments.
 
-No other files need changes.
+### Why this approach
+
+Matches your project rule: "Payment flow is manual UPI-to-WhatsApp ONLY." The UTR-submission + Realtime + Telegram one-tap verify combo gets ~90% of the speed benefit of a real gateway without onboarding paperwork, GST/merchant requirements, or per-transaction fees.
