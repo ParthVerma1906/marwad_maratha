@@ -18,6 +18,9 @@ interface OrderRow {
   payment_status: string;
   order_status: string;
   notes: string | null;
+  payment_reference: string | null;
+  verified_at: string | null;
+  verified_by: string | null;
   created_at: string;
 }
 
@@ -31,7 +34,13 @@ const STATUS_LABEL: Record<string, string> = {
   delivered: "Delivered",
   cancelled: "Cancelled",
 };
-const PAYMENT_STATUSES = ["pending", "paid"];
+const PAYMENT_STATUSES = ["pending", "awaiting_verification", "paid", "failed"];
+const PAYMENT_LABEL: Record<string, string> = {
+  pending: "Pending",
+  awaiting_verification: "Awaiting Verification",
+  paid: "Paid",
+  failed: "Failed",
+};
 
 const statusBadge: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",

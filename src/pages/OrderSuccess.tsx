@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { QRCodeSVG } from "qrcode.react";
 import { productImages } from "@/utils/imageAssets";
-import { Phone, CheckCircle, Clock, XCircle, Loader2 } from "lucide-react";
+import { Phone, CheckCircle, Clock, XCircle, Loader2, Copy, Check, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface OrderData {
   orderNumber?: string;
@@ -13,20 +15,33 @@ interface OrderData {
   paymentMode: string;
   name: string;
   phone?: string;
+  upiId?: string;
+  businessName?: string;
 }
 
-type StatusKind = "pending" | "paid" | "failed" | "cod";
+type StatusKind = "pending" | "awaiting" | "paid" | "failed" | "cod";
+
+const FALLBACK_UPI = "88302575741@ybl";
+const FALLBACK_NAME = "Marwad Maratha";
+
+const isMobile = () =>
+  typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const OrderSuccess = () => {
   const [params] = useSearchParams();
+  const { toast } = useToast();
   const orderNumber = params.get("order") || "";
   const [order, setOrder] = useState<OrderData | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<StatusKind>("pending");
   const [orderStatus, setOrderStatus] = useState<string>("new");
+  const [paymentReference, setPaymentReference] = useState<string | null>(null);
   const [polling, setPolling] = useState(true);
   const pollRef = useRef<number | null>(null);
 
-  // Hydrate from sessionStorage (for instant render)
+  const [utr, setUtr] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     const raw = sessionStorage.getItem("lastOrder");
     if (raw) {
@@ -40,7 +55,44 @@ const OrderSuccess = () => {
     }
   }, []);
 
-  // Poll the public_order_status view every 8s for status updates
+  const upiId = order?.upiId || FALLBACK_UPI;
+  const businessName = order?.businessName || FALLBACK_NAME;
+  const amount = order?.total || 0;
+
+  const upiLink = useMemo(
+    () =>
+      `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(
+        orderNumber || "",
+      )}`,
+    [upiId, businessName, amount, orderNumber],
+  );
+
+  const applyRow = (d: {
+    payment_status: string;
+    order_status: string;
+    payment_method: string;
+    payment_reference?: string | null;
+  }) => {
+    setOrderStatus(d.order_status);
+    setPaymentReference(d.payment_reference ?? null);
+    if (d.payment_method === "COD") {
+      setPaymentStatus("cod");
+      setPolling(false);
+      return;
+    }
+    if (d.payment_status === "paid") {
+      setPaymentStatus("paid");
+      setPolling(false);
+    } else if (d.payment_status === "failed") {
+      setPaymentStatus("failed");
+      setPolling(false);
+    } else if (d.payment_status === "awaiting_verification") {
+      setPaymentStatus("awaiting");
+    } else {
+      setPaymentStatus("pending");
+    }
+  };
+
   useEffect(() => {
     if (!orderNumber) {
       setPolling(false);
@@ -50,50 +102,85 @@ const OrderSuccess = () => {
     const fetchStatus = async () => {
       const { data, error } = await (supabase as any)
         .from("public_order_status")
-        .select("payment_status, order_status, payment_method")
+        .select("payment_status, order_status, payment_method, payment_reference")
         .eq("order_number", orderNumber)
         .maybeSingle();
-
       if (error) {
-        console.error("[order-success] poll error", error);
+        console.error("[order-success] fetch error", error);
         return;
       }
-      if (!data) return;
-
-      const d = data as { payment_status: string; order_status: string; payment_method: string };
-      setOrderStatus(d.order_status);
-
-      if (d.payment_method === "COD") {
-        setPaymentStatus("cod");
-        setPolling(false);
-        return;
-      }
-      if (d.payment_status === "paid") {
-        setPaymentStatus("paid");
-        setPolling(false);
-      } else if (d.payment_status === "failed") {
-        setPaymentStatus("failed");
-        setPolling(false);
-      } else {
-        setPaymentStatus("pending");
-      }
+      if (data) applyRow(data);
     };
 
     fetchStatus();
-    pollRef.current = window.setInterval(fetchStatus, 8000);
-    // Stop polling after 10 minutes regardless
+
+    const channel = supabase
+      .channel(`order-${orderNumber}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "orders", filter: `order_number=eq.${orderNumber}` },
+        (payload) => {
+          applyRow(payload.new as any);
+        },
+      )
+      .subscribe();
+
+    pollRef.current = window.setInterval(fetchStatus, 15000);
     const stopAt = window.setTimeout(() => {
       if (pollRef.current) window.clearInterval(pollRef.current);
       setPolling(false);
-    }, 10 * 60 * 1000);
+    }, 15 * 60 * 1000);
 
     return () => {
+      supabase.removeChannel(channel);
       if (pollRef.current) window.clearInterval(pollRef.current);
       window.clearTimeout(stopAt);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderNumber]);
 
-  // Status badge config
+  const copyUpi = async () => {
+    try {
+      await navigator.clipboard.writeText(upiId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      toast({ title: "Copy failed", description: "Long-press to copy manually.", variant: "destructive" });
+    }
+  };
+
+  const submitUtr = async () => {
+    const clean = utr.replace(/\s+/g, "");
+    if (!/^[0-9A-Za-z]{10,23}$/.test(clean)) {
+      toast({
+        title: "Invalid UTR",
+        description: "Enter the 12-digit transaction reference from your UPI app.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSubmitting(true);
+    const { data, error } = await supabase.rpc("submit_payment_reference", {
+      _order_number: orderNumber,
+      _utr: clean,
+    });
+    setSubmitting(false);
+    if (error || !data) {
+      toast({
+        title: "Could not submit",
+        description: error?.message ?? "Order already verified or not found.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setPaymentStatus("awaiting");
+    setPaymentReference(clean);
+    toast({
+      title: "Thanks — we'll verify your payment",
+      description: "Status will update automatically here.",
+    });
+  };
+
   const badge = (() => {
     switch (paymentStatus) {
       case "paid":
@@ -120,16 +207,27 @@ const OrderSuccess = () => {
           bg: "#FDECEC",
           fg: "#9B1C1C",
         };
+      case "awaiting":
+        return {
+          icon: <Clock size={20} />,
+          label: "Awaiting Verification",
+          desc: `Reference ${paymentReference ?? ""} received. Our team will confirm shortly.`,
+          bg: "#FFF6E0",
+          fg: "#8A5A00",
+        };
       default:
         return {
           icon: <Clock size={20} />,
-          label: "Payment Pending Verification",
-          desc: "Your order is placed. We'll verify your UPI payment shortly — this page will update automatically.",
+          label: "Payment Pending",
+          desc: "Complete the UPI payment, then submit your transaction reference below.",
           bg: "#FFF6E0",
           fg: "#8A5A00",
         };
     }
   })();
+
+  const showPayBlock =
+    order?.paymentMode === "upi" && (paymentStatus === "pending" || paymentStatus === "awaiting");
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#FCF7F1" }}>
@@ -150,28 +248,29 @@ const OrderSuccess = () => {
           className="w-full max-w-lg"
         >
           <div
-            className="bg-white rounded-2xl p-6 md:p-8 text-center"
+            className="bg-white rounded-2xl p-6 md:p-8"
             style={{ boxShadow: "0 2px 16px rgba(90,10,10,0.08)" }}
           >
-            <h1 className="font-heritage text-2xl md:text-3xl font-bold mb-2" style={{ color: "#5A0A0A" }}>
-              Order Placed Successfully
-            </h1>
-            {orderNumber && (
-              <p className="text-sm font-medium mb-5" style={{ color: "#850E35" }}>
-                Order #{orderNumber}
-              </p>
-            )}
+            <div className="text-center">
+              <h1 className="font-heritage text-2xl md:text-3xl font-bold mb-2" style={{ color: "#5A0A0A" }}>
+                Order Placed Successfully
+              </h1>
+              {orderNumber && (
+                <p className="text-sm font-medium mb-5" style={{ color: "#850E35" }}>
+                  Order #{orderNumber}
+                </p>
+              )}
+            </div>
 
-            {/* Live status badge */}
             <div
-              className="flex items-start gap-3 rounded-xl p-4 mb-5 text-left"
+              className="flex items-start gap-3 rounded-xl p-4 mb-5"
               style={{ background: badge.bg, color: badge.fg }}
             >
               <div className="mt-0.5 flex-shrink-0">{badge.icon}</div>
               <div className="flex-1">
                 <p className="font-semibold text-sm flex items-center gap-2">
                   {badge.label}
-                  {polling && paymentStatus === "pending" && (
+                  {polling && (paymentStatus === "pending" || paymentStatus === "awaiting") && (
                     <Loader2 size={14} className="animate-spin opacity-70" />
                   )}
                 </p>
@@ -179,9 +278,84 @@ const OrderSuccess = () => {
               </div>
             </div>
 
-            {/* Mini Order Summary */}
+            {showPayBlock && (
+              <div className="rounded-xl p-4 mb-5 border" style={{ borderColor: "#E8D9C4", background: "#FBF6EF" }}>
+                <h3 className="font-semibold text-sm mb-3" style={{ color: "#5A0A0A" }}>
+                  Pay ₹{amount} via UPI
+                </h3>
+
+                <div className="flex items-center justify-between gap-2 bg-white border border-muted rounded-lg p-3 mb-3">
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-muted-foreground">UPI ID</p>
+                    <p className="font-mono text-sm font-semibold truncate" style={{ color: "#5A0A0A" }}>
+                      {upiId}
+                    </p>
+                  </div>
+                  <button
+                    onClick={copyUpi}
+                    className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium min-h-[40px]"
+                    style={{ background: copied ? "#E6F7EC" : "#850E35", color: copied ? "#0F6D2E" : "#fff" }}
+                  >
+                    {copied ? <Check size={14} /> : <Copy size={14} />}
+                    {copied ? "Copied" : "Copy"}
+                  </button>
+                </div>
+
+                {!isMobile() ? (
+                  <div className="flex flex-col items-center gap-2 mb-3 p-3 bg-white rounded-lg border border-muted">
+                    <QRCodeSVG value={upiLink} size={168} includeMargin />
+                    <p className="text-xs text-muted-foreground text-center">
+                      Scan with any UPI app (PhonePe, GPay, Paytm)
+                    </p>
+                  </div>
+                ) : (
+                  <a
+                    href={upiLink}
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-white mb-3"
+                    style={{ background: "#850E35", minHeight: "48px" }}
+                  >
+                    <Smartphone size={16} />
+                    Open UPI App to Pay
+                  </a>
+                )}
+
+                {paymentStatus !== "awaiting" ? (
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: "#5A0A0A" }}>
+                      After paying, enter your 12-digit UPI reference / UTR
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={utr}
+                        onChange={(e) => setUtr(e.target.value.replace(/\s+/g, "").slice(0, 23))}
+                        placeholder="e.g. 432109876543"
+                        className="flex-1 px-3 py-2 border border-input rounded-lg text-sm bg-white min-h-[44px] font-mono"
+                      />
+                      <button
+                        onClick={submitUtr}
+                        disabled={submitting}
+                        className="px-4 py-2 rounded-lg font-medium text-white text-sm min-h-[44px] disabled:opacity-60"
+                        style={{ background: "#850E35" }}
+                      >
+                        {submitting ? <Loader2 size={16} className="animate-spin" /> : "Submit"}
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">
+                      Find this in your UPI app under "Transaction History" → "UTR" or "RRN".
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-xs p-3 rounded-lg" style={{ background: "#FFF6E0", color: "#8A5A00" }}>
+                    Reference <span className="font-mono font-semibold">{paymentReference}</span> submitted.
+                  </div>
+                )}
+              </div>
+            )}
+
             {order && (
-              <div className="text-left rounded-xl p-4 mb-5" style={{ background: "#FBF6EF" }}>
+              <div className="rounded-xl p-4 mb-5" style={{ background: "#FBF6EF" }}>
                 <h3 className="font-semibold text-sm mb-2" style={{ color: "#5A0A0A" }}>
                   Order Summary
                 </h3>
@@ -214,8 +388,7 @@ const OrderSuccess = () => {
               </div>
             )}
 
-            {/* Order status timeline */}
-            <div className="text-left rounded-xl p-4 mb-5" style={{ background: "#FBF6EF" }}>
+            <div className="rounded-xl p-4 mb-5" style={{ background: "#FBF6EF" }}>
               <h3 className="font-semibold text-sm mb-1" style={{ color: "#5A0A0A" }}>
                 Order Status
               </h3>
@@ -224,8 +397,7 @@ const OrderSuccess = () => {
               </p>
             </div>
 
-            {/* Support — call only, no customer-side WhatsApp send */}
-            <p className="text-xs text-muted-foreground mb-3">Need help with this order?</p>
+            <p className="text-xs text-muted-foreground mb-3 text-center">Need help with this order?</p>
             <a
               href="tel:+918830257574"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium text-sm border w-full"
@@ -235,7 +407,7 @@ const OrderSuccess = () => {
               Call Us
             </a>
 
-            <Link to="/" className="block mt-5 text-sm text-accent hover:underline">
+            <Link to="/" className="block mt-5 text-sm text-accent hover:underline text-center">
               ← Back to Home
             </Link>
           </div>
