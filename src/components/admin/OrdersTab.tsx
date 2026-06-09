@@ -146,14 +146,20 @@ const OrdersTab = () => {
           setOrders((os) => os.map((o) => (o.id === next.id ? next : o)));
           if (initialLoadDone.current && prev?.payment_status && prev.payment_status !== next.payment_status) {
             playBeep();
+            const isAwaiting = next.payment_status === "awaiting_verification";
+            const title =
+              next.payment_status === "paid"
+                ? "💰 Payment received"
+                : isAwaiting
+                ? "🔔 UTR submitted — verify"
+                : "Payment status changed";
             toast({
-              title: next.payment_status === "paid" ? "💰 Payment received" : "Payment status changed",
-              description: `${next.customer_name} · ${next.order_number} · ${prev.payment_status} → ${next.payment_status}`,
+              title,
+              description: `${next.customer_name} · ${next.order_number}${
+                isAwaiting && next.payment_reference ? ` · UTR ${next.payment_reference}` : ""
+              }`,
             });
-            notifyBrowser(
-              next.payment_status === "paid" ? "Payment received" : "Payment status changed",
-              `${next.customer_name} • ${next.order_number} • ${next.payment_status}`
-            );
+            notifyBrowser(title, `${next.customer_name} • ${next.order_number}`);
           }
         } else if (payload.eventType === "DELETE") {
           setOrders((os) => os.filter((o) => o.id !== (payload.old as any).id));
