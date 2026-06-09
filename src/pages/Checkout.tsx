@@ -191,17 +191,25 @@ const Checkout = () => {
           paymentMode: mode,
           name: parsed.data.name,
           phone: parsed.data.phone,
+          upiId,
+          businessName,
         }),
       );
 
-      // Open UPI app once for prepaid; no customer WhatsApp involvement
-      if (mode === "upi") {
-        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderNumber)}`;
-        window.open(upiLink, "_blank", "noopener");
-      }
-
       clearCart();
       navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
+
+      // On mobile only, trigger the UPI app after navigation commits.
+      // Desktop sees the QR + UTR form on Order Success instead.
+      if (mode === "upi") {
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile) {
+          const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderNumber)}`;
+          setTimeout(() => {
+            window.location.href = upiLink;
+          }, 250);
+        }
+      }
     } catch (err) {
       console.error("[checkout] unexpected error", err);
       toast({
