@@ -287,6 +287,7 @@ const OrdersTab = () => {
           <option value="all">All orders</option>
           <option value="today">Today's orders</option>
           <option value="pending">Pending orders</option>
+          <option value="awaiting">Awaiting verification</option>
           <option value="delivered">Delivered orders</option>
           <optgroup label="By status">
             {ORDER_STATUSES.map((s) => (
