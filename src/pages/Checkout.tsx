@@ -141,32 +141,26 @@ const Checkout = () => {
     console.log("[checkout] placing order", { mode, cart: cartItems, payload });
 
     try {
-      const { data, error } = await supabase
-        .from("orders")
-        .insert({
-          order_number: "",
-          customer_name: parsed.data.name,
-          phone: parsed.data.phone,
-          whatsapp: parsed.data.whatsapp || parsed.data.phone,
-          address: parsed.data.address,
-          city: parsed.data.city,
-          pincode: parsed.data.pincode,
-          items: cartItems.map((i) => ({
-            id: i.id,
-            name: i.name,
-            price: i.price,
-            quantity: i.quantity,
-            image: i.image,
-          })),
-          total_amount: totalAmount,
-          payment_method: mode === "upi" ? "UPI" : "COD",
-          payment_status: mode === "cod" ? "pending" : "pending",
-          order_status: "new",
-        })
-        .select("order_number")
-        .single();
+      const { data: orderNumber, error } = await supabase.rpc("place_order", {
+        _customer_name: parsed.data.name,
+        _phone: parsed.data.phone,
+        _whatsapp: parsed.data.whatsapp || parsed.data.phone,
+        _address: parsed.data.address,
+        _city: parsed.data.city,
+        _pincode: parsed.data.pincode,
+        _items: cartItems.map((i) => ({
+          id: i.id,
+          name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+          image: i.image,
+        })) as any,
+        _total_amount: totalAmount,
+        _payment_method: mode === "upi" ? "UPI" : "COD",
+        _notes: null,
+      });
 
-      if (error || !data) {
+      if (error || !orderNumber) {
         console.error("[checkout] insert failed", error);
         toast({
           title: "Could not place order",
@@ -177,7 +171,6 @@ const Checkout = () => {
         return;
       }
 
-      const orderNumber = data.order_number;
       console.log("[checkout] order created", orderNumber);
 
       // Notify owner via Telegram (fire-and-forget — never breaks checkout)
