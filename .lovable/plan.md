@@ -1,72 +1,31 @@
+## Problem
 
+Checkout shows "Could not place order" even though the order insert is permitted. Root cause: the `orders` table RLS allows anonymous customers to `INSERT` but only admins to `SELECT`. The client calls `.insert(...).select("order_number").single()` — PostgREST tries to return the inserted row, RLS blocks the SELECT, the response comes back empty, and the code treats it as a failure (and the row is rolled back).
 
-## Plan: Full SEO Optimization
+## Fix
 
-### Overview
-Comprehensive SEO overhaul across `index.html`, component headings, image alt texts, and static files.
+1. **Database migration** — add an RLS policy that lets the inserter read back only the row they just created, so the `RETURNING` clause works for anonymous checkouts without exposing all orders to the public.
 
-### Changes
+   ```sql
+   CREATE POLICY "Anyone can read their just-inserted order"
+   ON public.orders FOR SELECT
+   TO anon, authenticated
+   USING (false);
+   ```
 
-**1. `index.html` — Meta tags, Schema, Fonts**
-- Update `<title>` to specified value
-- Add/replace: meta description, keywords, robots, canonical
-- Update all OG tags (og:title, og:description, og:image using the collage image from `productImages`, og:url, og:type)
-- Update Twitter card tags
-- Add JSON-LD `<script>` for LocalBusiness schema
-- Add JSON-LD `<script>` for 3 Product schemas (Athana Mirch ₹100/300g, Desi Mirch ₹100/300g, Nimbu Mitha Chatani)
-- Add Cormorant Garamond to existing Google Fonts link (if not already present — checking existing font imports)
+   Since `USING (false)` would still block, the correct approach is to keep SELECT admin-only and instead **generate the order number client-side OR use a SECURITY DEFINER RPC**. Cleanest option: create a `place_order` SQL function (SECURITY DEFINER) that inserts the order and returns the `order_number`. The client calls `supabase.rpc('place_order', {...})` instead of `.from('orders').insert(...).select()`.
 
-**2. `src/components/hero/HeroContent.tsx` — H1 tag**
-- Change the H1 content from "Flavours of Tradition. / Taste of Home." to "Homemade Aachar & Papad — Marwad Maratha" (visually styled the same way)
+2. **Client change in `src/pages/Checkout.tsx`** — replace the direct `.from('orders').insert(...).select().single()` call with `supabase.rpc('place_order', { ... })`, which returns the generated `order_number` without needing SELECT permission on the table.
 
-**3. `src/components/products/ProductShowcaseHeader.tsx` — H2 tag**
-- Change H2 from "Most Preferred Products" to "Our Products"
+3. Keep all existing admin SELECT/UPDATE policies untouched so customers still cannot read other orders.
 
-**4. `src/components/story/StorySection.tsx` — H2 tags**
-- Change "From Our Family Kitchen to Your Home" → "About Marwad Maratha"
-- Change "Loved by Families" → "Customer Reviews"
+## Why an RPC instead of loosening SELECT
 
-**5. `src/components/why-choose/WhyChooseSection.tsx` — H2 tag**
-- Change heading to include "Why Choose Us" (replace "Rooted in Tradition. Crafted with Care.")
+Granting `anon` SELECT on `orders` — even narrowly — risks exposing customer PII (names, phones, addresses) through the Data API. A SECURITY DEFINER function keeps the table locked down and only returns the single field the checkout needs.
 
-**6. `src/components/contact/ContactSection.tsx` — H2 tag**
-- Change "Get in Touch" → "Contact Us"
+## Files touched
 
-**7. `src/components/layout/Navbar.tsx` — Logo alt text**
-- Update logo `alt` to specified brand alt text
+- New migration: create `public.place_order(...)` function with `SECURITY DEFINER`, granted to `anon` and `authenticated`.
+- `src/pages/Checkout.tsx`: swap the insert block (lines ~143–178) for an `rpc('place_order', …)` call; keep the rest of the flow (Telegram notify, sessionStorage, UPI link, navigate) the same.
 
-**8. `src/components/products/ProductCard.tsx` — Image alt text**
-- Product images already use `product.name` as alt. The specific alt texts for named products will be handled by updating the product data or adding a mapping for known product names.
-
-**9. `src/components/products/productData.ts` — Add alt text fields**
-- Add `altText` property to Athana Mirch, Desi Mirch, Nimbu Mitha products with the specified SEO alt texts
-
-**10. `src/components/hero/HeroCarousel.tsx` — Image alt texts**
-- Update alt text for collage/product images to match specified values
-- Add `width` and `height` attributes to hero images
-
-**11. `public/sitemap.xml` — New file**
-- Create with URLs: `/`, `/products`, `/about`, `/contact` under `https://marwadmaratha.in`
-
-**12. `public/robots.txt` — Update**
-- Simplify to `User-agent: * / Allow: / / Sitemap: https://marwadmaratha.in/sitemap.xml`
-
-**13. Image performance**
-- Verify `loading="lazy"` on below-fold images (already present on most)
-- Add explicit `width`/`height` to product card images and hero images to prevent CLS
-
-### Files Touched
-- `index.html` (meta, schema, fonts)
-- `src/components/hero/HeroContent.tsx` (H1)
-- `src/components/hero/HeroCarousel.tsx` (alt texts, dimensions)
-- `src/components/products/ProductShowcaseHeader.tsx` (H2)
-- `src/components/products/ProductCard.tsx` (alt text + dimensions)
-- `src/components/products/productData.ts` (altText fields)
-- `src/components/story/StorySection.tsx` (H2s)
-- `src/components/why-choose/WhyChooseSection.tsx` (H2)
-- `src/components/contact/ContactSection.tsx` (H2)
-- `src/components/layout/Navbar.tsx` (logo alt)
-- `src/components/layout/Footer.tsx` (no heading changes needed)
-- `public/sitemap.xml` (new)
-- `public/robots.txt` (update)
-
+No other files need changes.
