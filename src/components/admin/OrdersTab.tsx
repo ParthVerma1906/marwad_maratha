@@ -379,15 +379,27 @@ const OrdersTab = () => {
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-1">
-                        {o.payment_method === "UPI" && o.payment_status === "pending" && (
-                          <button
-                            onClick={() => updateField(o.id, "payment_status", "paid")}
-                            title="Mark Paid"
-                            className="p-2 rounded bg-green-50 text-green-700 hover:bg-green-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                          >
-                            <CheckCircle2 size={16} />
-                          </button>
-                        )}
+                        {o.payment_method === "UPI" &&
+                          ["pending", "awaiting_verification"].includes(o.payment_status) && (
+                            <>
+                              <button
+                                onClick={() => updateField(o.id, "payment_status", "paid")}
+                                title="Mark Paid"
+                                className="p-2 rounded bg-green-50 text-green-700 hover:bg-green-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                              >
+                                <CheckCircle2 size={16} />
+                              </button>
+                              {o.payment_status === "awaiting_verification" && (
+                                <button
+                                  onClick={() => updateField(o.id, "payment_status", "failed")}
+                                  title="Reject Payment"
+                                  className="p-2 rounded bg-red-50 text-red-700 hover:bg-red-100 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                                >
+                                  <X size={16} />
+                                </button>
+                              )}
+                            </>
+                          )}
                         <button
                           onClick={() => setSelected(o)}
                           className="p-2 hover:bg-muted rounded min-h-[40px] min-w-[40px] flex items-center justify-center"
