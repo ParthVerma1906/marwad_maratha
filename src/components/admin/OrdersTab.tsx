@@ -218,8 +218,6 @@ const OrdersTab = () => {
   const awaitingCount = orders.filter((o) => o.payment_status === "awaiting_verification").length;
   const newCount = orders.filter((o) => o.order_status === "new").length;
 
-  const newCount = orders.filter((o) => o.order_status === "new").length;
-
   const StatCard = ({ icon: Icon, label, value, tint }: any) => (
     <div className="bg-white border border-muted rounded-xl p-3 sm:p-4 flex items-center gap-3">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${tint}`}>
