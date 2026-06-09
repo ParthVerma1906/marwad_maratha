@@ -507,8 +507,20 @@ const OrdersTab = () => {
                 </p>
                 <p>
                   <span className="text-muted-foreground">Payment:</span> {selected.payment_method} ·{" "}
-                  <span className="capitalize">{selected.payment_status}</span>
+                  <span className="capitalize">{PAYMENT_LABEL[selected.payment_status] ?? selected.payment_status}</span>
                 </p>
+                {selected.payment_reference && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+                    <p className="text-[11px] uppercase tracking-wide text-amber-800 font-semibold">Customer UTR</p>
+                    <p className="font-mono text-sm text-amber-900">{selected.payment_reference}</p>
+                  </div>
+                )}
+                {selected.verified_at && (
+                  <p className="text-xs text-green-700">
+                    ✓ Verified {new Date(selected.verified_at).toLocaleString("en-IN")}
+                    {selected.verified_by && ` by ${selected.verified_by}`}
+                  </p>
+                )}
                 <p>
                   <span className="text-muted-foreground">Status:</span>{" "}
                   <span className={`px-2 py-0.5 rounded text-xs ${statusBadge[selected.order_status] ?? "bg-gray-100"}`}>
@@ -521,6 +533,24 @@ const OrdersTab = () => {
                   </p>
                 )}
               </div>
+
+              {selected.payment_method === "UPI" &&
+                ["pending", "awaiting_verification"].includes(selected.payment_status) && (
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      onClick={() => updateField(selected.id, "payment_status", "paid")}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 min-h-[44px]"
+                    >
+                      <CheckCircle2 size={16} /> Mark Paid
+                    </button>
+                    <button
+                      onClick={() => updateField(selected.id, "payment_status", "failed")}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border border-red-300 text-red-700 text-sm font-medium hover:bg-red-50 min-h-[44px]"
+                    >
+                      <X size={16} /> Reject
+                    </button>
+                  </div>
+                )}
 
               <div className="border-t border-muted pt-3 mb-3">
                 <p className="text-sm font-medium mb-2">Items</p>
