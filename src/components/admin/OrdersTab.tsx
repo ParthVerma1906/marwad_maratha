@@ -335,14 +335,25 @@ const OrdersTab = () => {
                         <select
                           value={o.payment_status}
                           onChange={(e) => updateField(o.id, "payment_status", e.target.value)}
-                          className="px-2 py-1 border border-input rounded text-xs bg-white"
+                          className={`px-2 py-1 border rounded text-xs ${
+                            o.payment_status === "awaiting_verification"
+                              ? "bg-amber-50 text-amber-800 border-amber-300"
+                              : o.payment_status === "paid"
+                              ? "bg-green-50 text-green-800 border-green-300"
+                              : "bg-white border-input"
+                          }`}
                         >
                           {PAYMENT_STATUSES.map((s) => (
                             <option key={s} value={s}>
-                              {s}
+                              {PAYMENT_LABEL[s]}
                             </option>
                           ))}
                         </select>
+                        {o.payment_reference && (
+                          <span className="font-mono text-[10px] text-muted-foreground" title="Customer UTR">
+                            UTR: {o.payment_reference}
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="p-3">
