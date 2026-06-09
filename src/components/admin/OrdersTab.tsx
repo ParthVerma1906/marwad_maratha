@@ -248,6 +248,15 @@ const OrdersTab = () => {
               {newCount} new
             </span>
           )}
+          {awaitingCount > 0 && (
+            <button
+              onClick={() => setFilter("awaiting")}
+              className="ml-2 inline-flex items-center justify-center min-w-[22px] h-[22px] px-2 rounded-full bg-amber-500 text-white text-xs"
+              title="Filter to awaiting verification"
+            >
+              {awaitingCount} to verify
+            </button>
+          )}
         </h3>
         <button
           onClick={toggleSound}
