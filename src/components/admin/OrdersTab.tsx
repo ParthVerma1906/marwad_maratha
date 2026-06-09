@@ -216,6 +216,7 @@ const OrdersTab = () => {
   }, [orders, filter, search]);
 
   const awaitingCount = orders.filter((o) => o.payment_status === "awaiting_verification").length;
+  const newCount = orders.filter((o) => o.order_status === "new").length;
 
   const newCount = orders.filter((o) => o.order_status === "new").length;
 
