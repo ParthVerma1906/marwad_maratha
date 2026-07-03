@@ -210,7 +210,7 @@ const Checkout = () => {
         console.error("[checkout] rzp create failed", rzpErr, rzp);
         toast({
           title: "Could not start payment",
-          description: "Falling back to manual UPI.",
+          description: rzp?.error?.description || rzp?.error || rzpErr?.message || "Falling back to manual UPI.",
           variant: "destructive",
         });
         clearCart();
