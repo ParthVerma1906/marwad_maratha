@@ -30,6 +30,10 @@ export type Database = {
           payment_status: string
           phone: string
           pincode: string | null
+          provider: string | null
+          provider_order_id: string | null
+          provider_payment_id: string | null
+          provider_signature: string | null
           total_amount: number
           updated_at: string
           verified_at: string | null
@@ -51,6 +55,10 @@ export type Database = {
           payment_status?: string
           phone: string
           pincode?: string | null
+          provider?: string | null
+          provider_order_id?: string | null
+          provider_payment_id?: string | null
+          provider_signature?: string | null
           total_amount: number
           updated_at?: string
           verified_at?: string | null
@@ -72,6 +80,10 @@ export type Database = {
           payment_status?: string
           phone?: string
           pincode?: string | null
+          provider?: string | null
+          provider_order_id?: string | null
+          provider_payment_id?: string | null
+          provider_signature?: string | null
           total_amount?: number
           updated_at?: string
           verified_at?: string | null
@@ -264,12 +276,24 @@ export type Database = {
       }
     }
     Functions: {
+      attach_razorpay_order: {
+        Args: { _order_number: string; _provider_order_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      mark_razorpay_paid: {
+        Args: {
+          _provider_order_id: string
+          _provider_payment_id: string
+          _provider_signature: string
+        }
+        Returns: string
       }
       place_order: {
         Args: {

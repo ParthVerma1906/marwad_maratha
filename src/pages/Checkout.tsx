@@ -108,6 +108,16 @@ const Checkout = () => {
   });
   const isFormValid = liveValidation.success;
 
+  const loadRazorpay = (): Promise<boolean> =>
+    new Promise((resolve) => {
+      if ((window as any).Razorpay) return resolve(true);
+      const s = document.createElement("script");
+      s.src = "https://checkout.razorpay.com/v1/checkout.js";
+      s.onload = () => resolve(true);
+      s.onerror = () => resolve(false);
+      document.body.appendChild(s);
+    });
+
   const placeOrder = async (mode: "upi" | "cod") => {
     const payload = {
       ...formData,
@@ -138,7 +148,7 @@ const Checkout = () => {
     }
 
     setProcessing(true);
-    console.log("[checkout] placing order", { mode, cart: cartItems, payload });
+    console.log("[checkout] placing order", { mode });
 
     try {
       const { data: orderNumber, error } = await supabase.rpc("place_order", {
@@ -149,11 +159,7 @@ const Checkout = () => {
         _city: parsed.data.city,
         _pincode: parsed.data.pincode,
         _items: cartItems.map((i) => ({
-          id: i.id,
-          name: i.name,
-          price: i.price,
-          quantity: i.quantity,
-          image: i.image,
+          id: i.id, name: i.name, price: i.price, quantity: i.quantity, image: i.image,
         })) as any,
         _total_amount: totalAmount,
         _payment_method: mode === "upi" ? "UPI" : "COD",
@@ -162,61 +168,113 @@ const Checkout = () => {
 
       if (error || !orderNumber) {
         console.error("[checkout] insert failed", error);
-        toast({
-          title: "Could not place order",
-          description: "Please check your connection and try again.",
-          variant: "destructive",
-        });
-        setProcessing(false);
+        toast({ title: "Could not place order", description: "Please try again.", variant: "destructive" });
         return;
       }
 
-      console.log("[checkout] order created", orderNumber);
+      const orderPayload = {
+        orderNumber, items: cartItems, total: totalAmount, subtotal: cartTotal,
+        shipping: shippingCharge,
+        address: `${parsed.data.address}, ${parsed.data.city} - ${parsed.data.pincode}`,
+        paymentMode: mode, name: parsed.data.name, phone: parsed.data.phone,
+        upiId, businessName,
+      };
+      sessionStorage.setItem("lastOrder", JSON.stringify(orderPayload));
 
-      // Notify owner via Telegram (fire-and-forget — never breaks checkout)
-      supabase.functions
-        .invoke("notify-owner-order", { body: { order_number: orderNumber } })
-        .then((r) => console.log("[checkout] notify result", r))
-        .catch((e) => console.error("[checkout] notify failed", e));
-
-      sessionStorage.setItem(
-        "lastOrder",
-        JSON.stringify({
-          orderNumber,
-          items: cartItems,
-          total: totalAmount,
-          subtotal: cartTotal,
-          shipping: shippingCharge,
-          address: `${parsed.data.address}, ${parsed.data.city} - ${parsed.data.pincode}`,
-          paymentMode: mode,
-          name: parsed.data.name,
-          phone: parsed.data.phone,
-          upiId,
-          businessName,
-        }),
-      );
-
-      clearCart();
-      navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
-
-      // On mobile only, trigger the UPI app after navigation commits.
-      // Desktop sees the QR + UTR form on Order Success instead.
-      if (mode === "upi") {
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        if (isMobile) {
-          const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderNumber)}`;
-          setTimeout(() => {
-            window.location.href = upiLink;
-          }, 250);
-        }
+      // COD: just navigate; notify owner
+      if (mode === "cod") {
+        supabase.functions.invoke("notify-owner-order", { body: { order_number: orderNumber } })
+          .catch((e) => console.error("[checkout] notify failed", e));
+        clearCart();
+        navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
+        return;
       }
+
+      // UPI: open Razorpay
+      const ok = await loadRazorpay();
+      if (!ok) {
+        toast({
+          title: "Payment SDK failed to load",
+          description: "You can still complete payment via UPI on the next page.",
+          variant: "destructive",
+        });
+        clearCart();
+        navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
+        return;
+      }
+
+      const { data: rzp, error: rzpErr } = await supabase.functions.invoke("razorpay-create-order", {
+        body: { order_number: orderNumber, amount: totalAmount },
+      });
+      if (rzpErr || !rzp?.order_id) {
+        console.error("[checkout] rzp create failed", rzpErr, rzp);
+        toast({
+          title: "Could not start payment",
+          description: "Falling back to manual UPI.",
+          variant: "destructive",
+        });
+        clearCart();
+        navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
+        return;
+      }
+
+      const options = {
+        key: rzp.key_id,
+        amount: rzp.amount,
+        currency: rzp.currency,
+        order_id: rzp.order_id,
+        name: businessName,
+        description: `Order ${orderNumber}`,
+        prefill: {
+          name: parsed.data.name,
+          contact: parsed.data.phone,
+        },
+        notes: { order_number: orderNumber },
+        theme: { color: "#850E35" },
+        handler: async (resp: any) => {
+          try {
+            const { data: v, error: vErr } = await supabase.functions.invoke("razorpay-verify-payment", {
+              body: {
+                razorpay_order_id: resp.razorpay_order_id,
+                razorpay_payment_id: resp.razorpay_payment_id,
+                razorpay_signature: resp.razorpay_signature,
+              },
+            });
+            if (vErr || !v?.success) {
+              toast({ title: "Payment verification failed", description: "Contact support with your payment ID.", variant: "destructive" });
+              return;
+            }
+            clearCart();
+            navigate(`/order-success?order=${encodeURIComponent(orderNumber)}&paid=1`);
+          } catch (err) {
+            console.error("[checkout] verify error", err);
+            toast({ title: "Verification error", description: "Please contact support.", variant: "destructive" });
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setProcessing(false);
+            toast({ title: "Payment cancelled", description: "You can retry from Order Success page." });
+            clearCart();
+            navigate(`/order-success?order=${encodeURIComponent(orderNumber)}`);
+          },
+        },
+      };
+
+      const rz = new (window as any).Razorpay(options);
+      rz.on("payment.failed", (resp: any) => {
+        console.error("[razorpay] payment failed", resp?.error);
+        toast({
+          title: "Payment failed",
+          description: resp?.error?.description || "Please try again.",
+          variant: "destructive",
+        });
+      });
+      rz.open();
     } catch (err) {
       console.error("[checkout] unexpected error", err);
-      toast({
-        title: "Something went wrong",
-        description: "Please try again in a moment.",
-        variant: "destructive",
-      });
+      toast({ title: "Something went wrong", description: "Please try again.", variant: "destructive" });
+    } finally {
       setProcessing(false);
     }
   };
