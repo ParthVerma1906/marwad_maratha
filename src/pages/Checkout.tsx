@@ -231,6 +231,19 @@ const Checkout = () => {
         },
         notes: { order_number: orderNumber },
         theme: { color: "#850E35" },
+        method: { upi: true, card: true, netbanking: true, wallet: true },
+        config: {
+          display: {
+            blocks: {
+              upi_block: {
+                name: "Pay via UPI",
+                instruments: [{ method: "upi" }],
+              },
+            },
+            sequence: ["block.upi_block"],
+            preferences: { show_default_blocks: true },
+          },
+        },
         handler: async (resp: any) => {
           try {
             const { data: v, error: vErr } = await supabase.functions.invoke("razorpay-verify-payment", {
