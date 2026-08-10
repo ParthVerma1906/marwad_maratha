@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://atjmbprryznwhwsinrtj.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "marwad-maratha",
+      "version": "0.1.0",
+      "title": "Marwad Maratha"
+    },
+    "tools": [
+      {
+        "name": "list_products",
+        "title": "List products",
+        "description": "List Marwad Maratha products (pickles, papads, masalas) with optional category or name search.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "search": {
+              "description": "Filter by product name (partial match).",
+              "type": "string"
+            },
+            "category": {
+              "description": "Filter by category, e.g. 'pickles' or 'papad'.",
+              "type": "string"
+            },
+            "only_available": {
+              "description": "Only return products currently in stock.",
+              "type": "boolean"
+            },
+            "limit": {
+              "description": "Max rows to return (default 25).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_orders",
+        "title": "List orders",
+        "description": "List customer orders, newest first. Requires an admin account; other users receive no rows.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "order_status": {
+              "description": "Filter by fulfilment status.",
+              "type": "string",
+              "enum": [
+                "pending",
+                "confirmed",
+                "packed",
+                "shipped",
+                "delivered",
+                "cancelled"
+              ]
+            },
+            "payment_status": {
+              "description": "Filter by payment status, e.g. 'paid' or 'pending'.",
+              "type": "string"
+            },
+            "search": {
+              "description": "Match order number, customer name, or phone.",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Max rows to return (default 20).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_order",
+        "title": "Get order details",
+        "description": "Fetch one order by its order number (e.g. MM-2025-0042), including items, address and payment details. Admin only.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "order_number": {
+              "type": "string",
+              "minLength": 3,
+              "description": "The order number, e.g. MM-2025-0042."
+            }
+          },
+          "required": [
+            "order_number"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "update_order_status",
+        "title": "Update order status",
+        "description": "Update the fulfilment status (and optionally the payment status) of an order. Admin only.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "order_number": {
+              "type": "string",
+              "minLength": 3,
+              "description": "The order number, e.g. MM-2025-0042."
+            },
+            "order_status": {
+              "description": "New fulfilment status.",
+              "type": "string",
+              "enum": [
+                "pending",
+                "confirmed",
+                "packed",
+                "shipped",
+                "delivered",
+                "cancelled"
+              ]
+            },
+            "payment_status": {
+              "description": "New payment status.",
+              "type": "string",
+              "enum": [
+                "pending",
+                "awaiting_verification",
+                "paid",
+                "failed",
+                "refunded"
+              ]
+            }
+          },
+          "required": [
+            "order_number"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_business_settings",
+        "title": "Get business settings",
+        "description": "Read the storefront's business settings: contact details, shipping charges and whether orders are being accepted.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

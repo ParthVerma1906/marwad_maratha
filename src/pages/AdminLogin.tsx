@@ -33,6 +33,11 @@ const writeAttempts = (s: AttemptState) => {
   localStorage.setItem(RATE_KEY, JSON.stringify(s));
 };
 
+const safeNext = (value: string | null): string | null => {
+  if (!value) return null;
+  return value.startsWith("/") && !value.startsWith("//") ? value : null;
+};
+
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +47,8 @@ const AdminLogin = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, isAdmin, loading } = useAdminAuth();
+  const nextPath =
+    safeNext(new URLSearchParams(window.location.search).get("next")) ?? "/admin";
 
   // Set noindex meta tag for this page
   useEffect(() => {
@@ -69,7 +76,7 @@ const AdminLogin = () => {
   }, [attempts.lockedUntil]);
 
   if (!loading && user && isAdmin) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to={nextPath} replace />;
   }
 
   const isLocked = attempts.lockedUntil > now;
@@ -110,7 +117,7 @@ const AdminLogin = () => {
       localStorage.setItem("adminLastActivity", String(Date.now()));
 
       toast({ title: "Welcome back, admin!" });
-      navigate("/admin", { replace: true });
+      navigate(nextPath, { replace: true });
     } catch (err: any) {
       const next: AttemptState = {
         count: attempts.count + 1,

@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout";
 import OrderReceived from "./pages/OrderReceived";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
+import OAuthConsent from "./pages/OAuthConsent";
 import FloatingWhatsApp from "./components/layout/FloatingWhatsApp";
 import BottomNav from "./components/layout/BottomNav";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-received" element={<OrderReceived />} />
             <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
