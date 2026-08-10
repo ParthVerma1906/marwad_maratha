@@ -76,7 +76,7 @@ const AdminLogin = () => {
   }, [attempts.lockedUntil]);
 
   if (!loading && user && isAdmin) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to={nextPath} replace />;
   }
 
   const isLocked = attempts.lockedUntil > now;
@@ -117,7 +117,7 @@ const AdminLogin = () => {
       localStorage.setItem("adminLastActivity", String(Date.now()));
 
       toast({ title: "Welcome back, admin!" });
-      navigate("/admin", { replace: true });
+      navigate(nextPath, { replace: true });
     } catch (err: any) {
       const next: AttemptState = {
         count: attempts.count + 1,
