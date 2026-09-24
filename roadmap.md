@@ -1,0 +1,1 @@
+- [ ] Broaden SEO work toward relevant aachar and papad searches: verify product/brand content, assess keyword opportunities, and apply accurate on-page improvements without promising rankings.
