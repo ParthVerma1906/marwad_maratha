@@ -31,11 +31,10 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>Marwad Maratha — Homemade Aachar & Papad</title>
-        <meta name="description" content="25+ varieties of handmade traditional pickles & papad. Heirloom recipes from Rajasthan & Maharashtra. No preservatives. Ships pan-India." />
-        <link rel="canonical" href="https://marwad-maratha.lovable.app/" />
-        <meta property="og:title" content="Marwad Maratha — Homemade Aachar & Papad" />
-        <meta property="og:description" content="25+ varieties of handmade traditional pickles. No preservatives. Ships Pan-India." />
+        <title>Homemade Aachar &amp; Papad Online | Marwad Maratha</title>
+        <meta name="description" content="Shop handmade Indian aachar (pickles) and papad from Marwad Maratha. Family recipes from Rajasthan and Maharashtra, made in Gondia with no preservatives. Ships pan-India." />
+        <meta property="og:title" content="Homemade Aachar &amp; Papad Online | Marwad Maratha" />
+        <meta property="og:description" content="Shop handmade Indian aachar (pickles) and papad from Marwad Maratha. Family recipes from Rajasthan and Maharashtra, made in Gondia with no preservatives. Ships pan-India." />
         <meta property="og:url" content="https://marwad-maratha.lovable.app/" />
         <meta property="og:type" content="website" />
       </Helmet>
