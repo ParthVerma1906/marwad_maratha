@@ -13,9 +13,9 @@ const ProductShowcaseHeader = ({ inView }: ProductShowcaseHeaderProps) => {
       transition={{ duration: 0.7 }}
     >
       <span className="text-maroon font-heritage text-sm sm:text-base md:text-lg">Handcrafted with Love</span>
-      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heritage font-bold mt-1.5 sm:mt-2 mb-2 sm:mb-4">Our Products</h2>
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heritage font-bold mt-1.5 sm:mt-2 mb-2 sm:mb-4">Homemade Aachar, Pickle &amp; Papad</h2>
       <p className="text-muted-foreground max-w-2xl mx-auto text-xs sm:text-sm md:text-base">
-        Explore our collection of traditional pickles and snacks, made with recipes passed down through generations.
+        Browse handmade Indian aachar (pickle) and papad, prepared with family recipes from Rajasthan and Maharashtra.
       </p>
     </motion.div>
   );
