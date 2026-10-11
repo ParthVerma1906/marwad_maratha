@@ -67,12 +67,15 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				// Indian-inspired color palette
-				turmeric: '#FEC006',
-				maroon: '#850E35',
-				saffron: '#FF671F',
+				turmeric: 'hsl(var(--mustard))',
+				maroon: 'hsl(var(--primary))',
+				saffron: 'hsl(var(--terracotta))',
+				terracotta: 'hsl(var(--terracotta))',
+				mustard: 'hsl(var(--mustard))',
+				earth: { DEFAULT: 'hsl(var(--earth))', foreground: 'hsl(var(--earth-foreground))' },
 				indianRed: '#CD5C5C',
 				mehendi: '#5C9735',
-				spiceYellow: '#FEF7CD',
+				spiceYellow: 'hsl(var(--cream-deep))',
 				terracotta: '#E2725B',
 				royalPurple: '#8B5CF6',
 				peacockBlue: '#016064',
@@ -146,9 +149,9 @@ export default {
                 'fade-in-up': 'fade-in-up 0.7s ease-out forwards',
 			},
             fontFamily: {
-                'spicefont': ['Poppins', 'sans-serif'],
+                'spicefont': ['"Source Sans 3"', 'system-ui', 'sans-serif'],
                 'heritage': ['Cormorant Garamond', 'serif'],
-                'display': ['Playfair Display', 'serif'],
+                'display': ['Cormorant Garamond', 'serif'],
                 'handwritten': ['Satisfy', 'cursive']
             },
             backgroundImage: {
