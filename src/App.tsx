@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MotionConfig } from "framer-motion";
 import { CartProvider } from "@/hooks/useCart";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
@@ -18,6 +19,7 @@ import BottomNav from "./components/layout/BottomNav";
 const queryClient = new QueryClient();
 
 const App = () => (
+  <MotionConfig reducedMotion="user">
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <CartProvider>
@@ -42,6 +44,7 @@ const App = () => (
       </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
+  </MotionConfig>
 );
 
 export default App;
