@@ -26,7 +26,7 @@ const ShoppingCart = ({ onClose }: ShoppingCartProps) => {
       onClick={onClose}
     >
       <motion.div 
-        className="bg-card w-full sm:w-96 sm:max-w-md h-[80vh] sm:h-auto sm:max-h-[90vh] rounded-t-xl sm:rounded-xl shadow-xl overflow-hidden flex flex-col"
+        className="bg-white w-full sm:w-96 sm:max-w-md h-[80vh] sm:h-auto sm:max-h-[90vh] rounded-t-xl sm:rounded-xl shadow-xl overflow-hidden flex flex-col"
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
@@ -37,7 +37,7 @@ const ShoppingCart = ({ onClose }: ShoppingCartProps) => {
             <ShoppingBag size={20} />
             Your Cart
           </h2>
-          <button onClick={onClose} aria-label="Close cart" className="rounded-full hover:bg-primary-foreground/20 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-primary-foreground">
+          <button onClick={onClose} className="rounded-full hover:bg-white/20 p-1 text-white">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -70,16 +70,16 @@ const ShoppingCart = ({ onClose }: ShoppingCartProps) => {
                   <div className="ml-3 flex-1">
                     <div className="flex justify-between">
                       <h3 className="font-medium text-sm">{item.name}</h3>
-                      <button onClick={() => removeFromCart(item.id)} aria-label={`Remove ${item.name}`} className="p-2 text-muted-foreground hover:text-destructive">
+                      <button onClick={() => removeFromCart(item.id)} className="text-muted-foreground hover:text-destructive">
                         <Trash2 size={15} />
                       </button>
                     </div>
                     <p className="text-xs text-muted-foreground capitalize">{item.category}</p>
                     <div className="flex justify-between items-center mt-1">
                       <div className="flex items-center border rounded-full overflow-hidden">
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} aria-label={`Decrease ${item.name} quantity`} className="min-h-[40px] min-w-[40px] flex items-center justify-center hover:bg-muted"><Minus size={13} /></button>
+                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 py-1 hover:bg-muted"><Minus size={13} /></button>
                         <span className="px-2 min-w-7 text-center text-sm">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} aria-label={`Increase ${item.name} quantity`} className="min-h-[40px] min-w-[40px] flex items-center justify-center hover:bg-muted"><Plus size={13} /></button>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 py-1 hover:bg-muted"><Plus size={13} /></button>
                       </div>
                       <p className="font-medium text-sm">₹{item.price * item.quantity}</p>
                     </div>

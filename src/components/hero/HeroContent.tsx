@@ -1,43 +1,128 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
-const scrollTo = (id: string) =>
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+const HeroContent = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.9, 0.6]);
 
-const HeroContent = () => (
-  <div className="relative z-20 h-full flex flex-col items-center justify-end pb-24 md:justify-center md:pb-0">
-    <motion.div
-      className="text-center w-full max-w-3xl mx-auto px-6"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+  return (
+    <motion.div 
+      ref={ref}
+      className="relative z-20 h-full flex flex-col items-center justify-end max-[480px]:justify-center max-[480px]:pb-0 pb-16 sm:justify-center sm:pb-0"
+      style={{ y, opacity }}
     >
-      <p className="text-sm md:text-base font-semibold tracking-[0.2em] uppercase text-mustard mb-4">
-        Marwad Maratha · Gondia · Since 2018
-      </p>
-      <h1 className="font-heritage font-bold text-earth-foreground leading-[1.1] text-[clamp(2.25rem,7vw,4.5rem)] [text-shadow:0_2px_16px_hsl(var(--earth)/0.6)]">
-        Flavours of Tradition.
-        <span className="block italic font-semibold">Taste of Home.</span>
-      </h1>
-      <p className="mt-6 text-base md:text-lg text-earth-foreground/90 max-w-xl mx-auto">
-        Homemade aachar and papad from a family kitchen in Gondia — recipes carried
-        from Rajasthan to Maharashtra, made in small batches.
-      </p>
-      <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-        <button
-          onClick={() => scrollTo("products")}
-          className="min-h-[48px] px-8 rounded-full bg-primary text-primary-foreground font-semibold text-base transition-transform hover:scale-[1.03] active:scale-[0.98]"
+      {/* Bottom gradient overlay for mobile readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 max-[480px]:from-transparent max-[480px]:via-black/20 max-[480px]:to-black/60 z-10" />
+      
+      <div className="relative z-20 text-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
         >
-          Explore Our Flavours
-        </button>
-        <button
-          onClick={() => scrollTo("story")}
-          className="min-h-[48px] px-8 rounded-full border-2 border-earth-foreground/70 text-earth-foreground font-semibold text-base transition-colors hover:bg-earth-foreground/10"
-        >
-          Our Story
-        </button>
+          <motion.h1 
+            className="font-display text-white"
+            style={{ 
+              textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
+              fontFamily: 'Playfair Display, serif',
+              letterSpacing: '2px'
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+          >
+            <span
+              className="block font-bold mb-3 leading-[1.15]"
+              style={{
+                fontSize: 'clamp(1.6rem, 6vw, 3.5rem)',
+                textShadow: '4px 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
+              }}
+            >
+              Homemade Aachar & Papad
+            </span>
+            <span
+              className="block font-handwritten leading-tight"
+              style={{
+                fontSize: 'clamp(1rem, 3vw, 2rem)',
+                color: '#FFE5B4',
+                textShadow: '3px 3px 8px rgba(0,0,0,0.7)',
+                fontWeight: 400,
+              }}
+            >
+              — Marwad Maratha
+            </span>
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+          >
+            <p
+              className="mt-4 md:mt-5 text-[#f9f1e7] max-w-[720px] mx-auto font-medium"
+              style={{
+                fontSize: 'clamp(1rem, 1.6vw, 1.125rem)',
+                lineHeight: 1.65,
+                textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+              }}
+            >
+              Taste the richness of handmade pickles and papads,<br className="hidden sm:block" />
+              prepared with heirloom recipes from the heart of Rajasthan and Maharashtra.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+            className="max-[480px]:pt-[22px] pt-5 md:pt-8 flex flex-col sm:flex-row max-[480px]:gap-[14px] gap-3 sm:gap-4 items-center justify-center max-[480px]:px-4 px-2 sm:px-0"
+          >
+            <motion.button
+              onClick={() => {
+                const element = document.getElementById('products');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-white font-bold max-[480px]:text-[0.875rem] text-sm sm:text-base md:text-lg rounded-full w-full sm:w-auto"
+              style={{
+                padding: '12px 28px',
+                minHeight: '48px',
+                background: 'linear-gradient(135deg, #7A1E1E, #C48A00)',
+                boxShadow: '0 4px 16px rgba(122, 30, 30, 0.3)',
+              }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Shop Now
+            </motion.button>
+
+            <motion.button
+              onClick={() => {
+                const element = document.getElementById('products');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="max-[480px]:text-[0.875rem] text-sm md:text-base rounded-full w-full sm:w-auto"
+              style={{
+                padding: '12px 28px',
+                minHeight: '48px',
+                color: '#FFFFFF',
+                border: '1.5px solid rgba(255,255,255,0.5)',
+              }}
+              whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.9)', background: 'rgba(255,255,255,0.1)' }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Explore Products
+            </motion.button>
+          </motion.div>
+        </motion.div>
       </div>
     </motion.div>
-  </div>
-);
+  );
+};
 
 export default HeroContent;

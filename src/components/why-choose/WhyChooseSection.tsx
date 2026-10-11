@@ -16,8 +16,8 @@ const features = [
   },
   {
     icon: Gem,
-    title: "Carefully Chosen Ingredients",
-    description: "Simple spices and produce, prepared the way our family always has.",
+    title: "Premium Quality Ingredients",
+    description: "Sourced directly from trusted farmers — only the finest spices and produce.",
   },
   {
     icon: ShieldCheck,
@@ -27,13 +27,13 @@ const features = [
 ];
 
 const WhyChooseSection = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
 
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden py-16 md:py-24 bg-earth text-earth-foreground"
-      
+      className="relative overflow-hidden py-12 md:py-16 lg:py-24"
+      style={{ background: "linear-gradient(135deg, #3b1f12, #1f0f08)" }}
     >
       <div className="w-full px-4 md:px-8 lg:px-12 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
@@ -44,13 +44,13 @@ const WhyChooseSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="font-heritage text-base md:text-lg tracking-wide text-mustard" >
+              <span className="font-heritage text-base md:text-lg tracking-wide" style={{ color: "#F4A261" }}>
                 Our Promise
               </span>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heritage font-bold text-earth-foreground mt-2 md:mt-3 mb-3 md:mb-5 leading-tight">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heritage font-bold text-white mt-2 md:mt-3 mb-3 md:mb-5 leading-tight">
                 Why Choose Us
               </h2>
-              <p className="text-earth-foreground/85 text-sm md:text-base lg:text-lg max-w-xl leading-relaxed">
+              <p className="text-white/80 text-sm md:text-base lg:text-lg max-w-xl leading-relaxed">
                 At Marwad Maratha, every product tells a story — of heritage kitchens,
                 of sun-drenched spices, and of recipes that have stood the test of time.
               </p>
@@ -66,16 +66,16 @@ const WhyChooseSection = () => {
                   transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
                 >
                   <div
-                    className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-mustard/15 text-mustard"
-                    
+                    className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: "rgba(244, 162, 97, 0.15)" }}
                   >
-                    <feature.icon size={20}  />
+                    <feature.icon size={20} style={{ color: "#F4A261" }} />
                   </div>
                   <div>
-                    <h4 className="text-earth-foreground font-semibold text-base md:text-lg mb-1">
+                    <h4 className="text-white font-semibold text-base md:text-lg mb-1">
                       {feature.title}
                     </h4>
-                    <p className="text-earth-foreground/75 text-sm md:text-base leading-relaxed">
+                    <p className="text-white/70 text-sm md:text-base leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -91,7 +91,7 @@ const WhyChooseSection = () => {
             animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            <div className="overflow-hidden rounded-2xl" >
+            <div className="overflow-hidden rounded-2xl" style={{ boxShadow: "0 25px 60px rgba(0, 0, 0, 0.4)" }}>
               <img
                 src={traditionalKitchenImg}
                 alt="Traditional Indian kitchen with handcrafted pickles and spices"

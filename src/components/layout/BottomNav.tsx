@@ -24,9 +24,6 @@ const BottomNav = () => {
     }
   };
 
-  // Keep form-heavy and private pages clear of the sticky bar
-  const hidden = /^\/(checkout|admin|order-|\.lovable)/.test(location.pathname);
-
   const items = [
     { label: "Home", icon: Home, onClick: () => goToSection("home") },
     { label: "Products", icon: Package, onClick: () => goToSection("products") },
@@ -43,17 +40,14 @@ const BottomNav = () => {
     },
   ];
 
-  if (hidden) return null;
-
   return (
     <>
       <nav
-        aria-label="Quick navigation"
-        className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border"
+        className="md:hidden fixed bottom-0 left-0 right-0 bg-[#FAF3E7] border-t border-[#E8D9BC]"
         style={{
           zIndex: 9998,
           paddingBottom: "env(safe-area-inset-bottom)",
-          boxShadow: "0 -2px 12px hsl(var(--foreground) / 0.08)",
+          boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
         }}
       >
         <ul className="flex items-stretch justify-around">
@@ -62,12 +56,12 @@ const BottomNav = () => {
               <button
                 onClick={onClick}
                 aria-label={label}
-                className="relative w-full flex flex-col items-center justify-center gap-1 py-2 min-h-[56px] text-primary active:bg-secondary transition-colors"
+                className="relative w-full flex flex-col items-center justify-center gap-1 py-2 min-h-[56px] text-[#7A1E1E] active:bg-[#F1E4CA] transition-colors"
               >
-                <Icon size={22} strokeWidth={2} aria-hidden="true" />
-                <span className="text-xs font-medium">{label}</span>
+                <Icon size={22} strokeWidth={2} />
+                <span className="text-[10px] font-medium tracking-wide">{label}</span>
                 {badge != null && badge > 0 && (
-                  <span className="absolute top-1 right-[28%] bg-primary text-primary-foreground text-xs rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center font-bold">
+                  <span className="absolute top-1 right-[28%] bg-[#7A1E1E] text-white text-[9px] rounded-full min-w-[16px] h-[16px] px-1 flex items-center justify-center font-bold">
                     {badge}
                   </span>
                 )}

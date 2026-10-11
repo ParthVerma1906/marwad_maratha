@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProductCategories from "./ProductCategories";
 import ProductGrid from "./ProductGrid";
@@ -10,10 +10,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductShowcase = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   const [activeCategory, setActiveCategory] = useState<string>("popular");
   const [showAllProducts, setShowAllProducts] = useState(false);
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
   const { products, categories: allCategories, loading, error } = useAllProducts();
 
   const categories = ["popular", ...allCategories];
@@ -30,8 +36,15 @@ const ProductShowcase = () => {
     <section
       id="products"
       ref={sectionRef}
-      className="py-16 md:py-24 bg-background relative overflow-hidden"
+      className="max-[480px]:py-6 py-8 sm:py-10 md:py-16 lg:py-24 bg-gradient-to-b from-background via-spiceYellow/20 to-background relative overflow-hidden"
     >
+      <motion.div 
+        className="absolute inset-0 pointer-events-none hidden md:block"
+        style={{ y }}
+      >
+        <div className="absolute top-10 left-10 w-32 h-32 bg-saffron/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 right-20 w-48 h-48 bg-maroon/10 rounded-full blur-3xl" />
+      </motion.div>
       
       <div ref={ref} className="w-full max-[480px]:px-3 px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto relative z-10">
         <ProductShowcaseHeader inView={inView} />
@@ -59,7 +72,7 @@ const ProductShowcase = () => {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-card rounded-lg overflow-hidden shadow-md">
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-md">
                   <Skeleton className="h-40 sm:h-48 w-full" />
                   <div className="p-4 space-y-3">
                     <Skeleton className="h-4 w-3/4" />

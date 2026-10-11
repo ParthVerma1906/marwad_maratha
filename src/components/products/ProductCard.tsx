@@ -53,7 +53,7 @@ const ProductCard = ({ product }: ProductProps) => {
         variants={itemVariants}
         onClick={() => setShowDialog(true)}
       >
-        <div className="bg-card rounded-lg overflow-hidden border border-border shadow-sm relative transition-shadow hover:shadow-md h-full">
+        <div className="bg-white max-[480px]:rounded-lg rounded-xl overflow-hidden shadow-md relative transition-all h-full indian-border">
           <div className="relative overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
             <img
               src={imgSrc}
@@ -72,7 +72,7 @@ const ProductCard = ({ product }: ProductProps) => {
               </span>
             </div>
             {product.isPopular && (
-              <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded">
+              <div className="absolute top-2 right-2 bg-saffron text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded">
                 Popular
               </div>
             )}
