@@ -19,12 +19,12 @@ const HeroCarousel = () => {
   const heroImages = [
     {
       src: productImages.mangoPickle,
-      alt: "Marwad Maratha 25 Plus Varieties Homemade Aachar and Papad Collection",
+      alt: "Homemade mango aachar in a glass jar by Marwad Maratha",
       title: "Premium Mango Pickle"
     },
     {
       src: productImages.traditionalSetup,
-      alt: "Marwad Maratha Traditional Indian Heritage - Royal Culinary Setup",
+      alt: "Traditional Indian setting with homemade aachar and papad",
       title: "Royal Heritage Recipes"
     }
   ];
@@ -35,7 +35,7 @@ const HeroCarousel = () => {
 
   // Auto-rotate carousel
   useEffect(() => {
-    if (!api) {
+    if (!api || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
 
@@ -55,11 +55,9 @@ const HeroCarousel = () => {
     heroImages.forEach((image, index) => {
       const img = new Image();
       img.onload = () => {
-        console.log(`Hero image ${index + 1} loaded successfully: ${image.src}`);
         setLoadedImages(prev => new Set([...prev, index]));
       };
       img.onerror = () => {
-        console.error(`Hero image ${index + 1} failed to load: ${image.src}`);
         setImageErrors(prev => new Set([...prev, index]));
       };
       img.src = image.src;
@@ -67,18 +65,15 @@ const HeroCarousel = () => {
   }, []);
 
   const handleImageLoad = (index: number) => {
-    console.log(`Image ${index + 1} displayed successfully`);
     setLoadedImages(prev => new Set([...prev, index]));
   };
 
   const handleImageError = (index: number) => {
-    console.error(`Image ${index + 1} display failed, marking as error`);
     setImageErrors(prev => new Set([...prev, index]));
   };
 
   const getImageSrc = (index: number) => {
     if (imageErrors.has(index)) {
-      console.log(`Using placeholder for image ${index + 1} due to error`);
       return "/placeholder.svg";
     }
     return heroImages[index].src;
@@ -90,7 +85,7 @@ const HeroCarousel = () => {
       <motion.div 
         ref={ref}
         className="absolute inset-0 w-full h-full"
-        style={{ y, opacity }}
+        
       >
         <Carousel
           className="w-full h-full"
@@ -130,8 +125,8 @@ const HeroCarousel = () => {
       </motion.div>
 
       {/* Overlay: base dim + strong bottom gradient for text contrast (mobile especially) */}
-      <div className="absolute inset-0 bg-black/30 md:bg-black/30 z-10" />
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-earth/40 z-10" />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-earth/90 via-earth/40 to-transparent z-10 pointer-events-none" />
     </>
   );
 };

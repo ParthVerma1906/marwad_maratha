@@ -16,9 +16,8 @@ const productMarquee = [
 ];
 
 const trustMarquee = [
-  "NO PRESERVATIVES", "FSSAI CERTIFIED", "HANDMADE IN SMALL BATCHES",
-  "SHIPS PAN-INDIA", "100% HOMEMADE", "25+ VARIETIES",
-  "500+ FAMILIES SERVED", "PREMIUM QUALITY",
+  "FAMILY-RUN SINCE 2018", "GONDIA, MAHARASHTRA", "HANDMADE IN SMALL BATCHES",
+  "RAJASTHAN × MAHARASHTRA", "AACHAR", "PAPAD", "SHIPS PAN-INDIA",
 ];
 
 const heritageMarquee = [
@@ -45,8 +44,8 @@ const Index = () => {
         {/* Products marquee — maroon strip after hero */}
         <MarqueeDivider
           items={productMarquee}
-          bgColor="#8B1A1A"
-          textColor="#FAF0E6"
+          bgColor="hsl(var(--primary))"
+          textColor="hsl(var(--primary-foreground))"
           speed={22}
         />
 
@@ -57,8 +56,8 @@ const Index = () => {
         {/* Trust marquee — dark gold strip before Why Choose */}
         <MarqueeDivider
           items={trustMarquee}
-          bgColor="#1C0A04"
-          textColor="#C8860A"
+          bgColor="hsl(var(--earth))"
+          textColor="hsl(var(--mustard))"
           dotColor="rgba(200,134,10,0.3)"
           speed={28}
           reverse
@@ -71,8 +70,8 @@ const Index = () => {
         {/* Heritage marquee — warm strip before Story */}
         <MarqueeDivider
           items={heritageMarquee}
-          bgColor="#5A1A0A"
-          textColor="rgba(250,240,230,0.7)"
+          bgColor="hsl(var(--earth))"
+          textColor="hsl(var(--earth-foreground))"
           dotColor="rgba(250,240,230,0.25)"
           speed={26}
         />
@@ -84,8 +83,8 @@ const Index = () => {
         {/* Final marquee — maroon strip before Contact */}
         <MarqueeDivider
           items={[...productMarquee, ...trustMarquee.slice(0, 4)]}
-          bgColor="#8B1A1A"
-          textColor="#FAF0E6"
+          bgColor="hsl(var(--primary))"
+          textColor="hsl(var(--primary-foreground))"
           speed={30}
           reverse
         />
