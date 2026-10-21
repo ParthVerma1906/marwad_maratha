@@ -1,1 +1,2 @@
 - [x] Broaden SEO work toward relevant aachar and papad searches: verified existing product/brand content and applied accurate on-page improvements without promising rankings.
+- [ ] Repair batch 1: stage server-authoritative order pricing/validation and minimal Checkout integration; run focused isolated checks; do not deploy.
