@@ -1,1 +1,2 @@
 - [x] Broaden SEO work toward relevant aachar and papad searches: verified existing product/brand content and applied accurate on-page improvements without promising rankings.
+- [ ] Repair batch 1: server-authoritative order pricing/validation and minimal Checkout integration. Blocked: managed migrations cannot be staged without immediate hosted application, conflicting with the no-deployment boundary; needs permission to apply the additive migration or a separate draft.
